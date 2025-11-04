@@ -1,0 +1,58 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: store-hackathon-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: storedb
+      POSTGRES_USER: storeuser
+      POSTGRES_PASSWORD: storepass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - store-network
+
+  # Backend API (Express.js)
+  backend:
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfile
+    container_name: store-hackathon-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_URL: "postgresql://storeuser:storepass@postgres:5432/storedb?schema=public"
+      JWT_SECRET: "your-secret-key-here-change-in-production"
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres
+    networks:
+      - store-network
+
+  # Frontend (Vue.js)
+  frontend:
+    build:
+      context: ./apps/frontend
+      dockerfile: Dockerfile
+    container_name: store-hackathon-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - store-network
+
+volumes:
+  postgres-data:
+    driver: local
+
+networks:
+  store-network:
+    driver: bridge

@@ -1,0 +1,219 @@
+<template>
+  <div class="container">
+    <h1>Checkout</h1>
+
+    <div class="grid grid-2">
+      <div class="checkout-form card">
+        <h2>Billing Information</h2>
+        <form @submit.prevent="submitOrder">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input
+              v-model="form.name"
+              type="text"
+              class="form-input"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input
+              v-model="form.email"
+              type="email"
+              class="form-input"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Address</label>
+            <input
+              v-model="form.address"
+              type="text"
+              class="form-input"
+              required
+            />
+          </div>
+
+          <div class="grid grid-2">
+            <div class="form-group">
+              <label class="form-label">City</label>
+              <input
+                v-model="form.city"
+                type="text"
+                class="form-input"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">ZIP Code</label>
+              <input
+                v-model="form.zipCode"
+                type="text"
+                class="form-input"
+                required
+              />
+            </div>
+          </div>
+
+          <h3>Payment Information</h3>
+          <div class="form-group">
+            <label class="form-label">Card Number</label>
+            <input
+              v-model="form.cardNumber"
+              type="text"
+              class="form-input"
+              placeholder="1234 5678 9012 3456"
+              required
+            />
+          </div>
+
+          <div class="grid grid-2">
+            <div class="form-group">
+              <label class="form-label">Expiry Date</label>
+              <input
+                v-model="form.expiryDate"
+                type="text"
+                class="form-input"
+                placeholder="MM/YY"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">CVV</label>
+              <input
+                v-model="form.cvv"
+                type="text"
+                class="form-input"
+                placeholder="123"
+                required
+              />
+            </div>
+          </div>
+
+          <button type="submit" class="btn" :disabled="processing">
+            {{ processing ? "Processing..." : "Place Order" }}
+          </button>
+        </form>
+      </div>
+
+      <div class="order-summary card">
+        <h2>Order Summary</h2>
+        <div
+          v-for="item in cartStore.items"
+          :key="item.id"
+          class="summary-item"
+        >
+          <span>{{ item.name }} × {{ item.quantity }}</span>
+          <span>${{ (item.price * item.quantity).toFixed(2) }}</span>
+        </div>
+        <div class="summary-total">
+          <strong>Total: ${{ cartStore.totalPrice.toFixed(2) }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="orderComplete" class="alert alert-success">
+      <h3>Order Placed Successfully!</h3>
+      <p>Thank you for your purchase. Your order ID is: {{ orderId }}</p>
+      <router-link to="/products" class="btn">Continue Shopping</router-link>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from "vue";
+import { useCartStore } from "../stores/cart";
+import axios from "axios";
+
+const cartStore = useCartStore();
+
+const form = ref({
+  name: "",
+  email: "",
+  address: "",
+  city: "",
+  zipCode: "",
+  cardNumber: "",
+  expiryDate: "",
+  cvv: "",
+});
+
+const processing = ref(false);
+const orderComplete = ref(false);
+const orderId = ref(null);
+
+async function submitOrder() {
+  processing.value = true;
+
+  try {
+    const orderData = {
+      items: cartStore.items,
+      total: cartStore.totalPrice,
+      customer: {
+        name: form.value.name,
+        email: form.value.email,
+        address: form.value.address,
+        city: form.value.city,
+        zipCode: form.value.zipCode,
+      },
+      payment: {
+        cardNumber: form.value.cardNumber,
+        expiryDate: form.value.expiryDate,
+        cvv: form.value.cvv,
+      },
+    };
+
+    const response = await axios.post("/api/orders", orderData);
+    orderId.value = response.data.id;
+    orderComplete.value = true;
+    cartStore.clearCart();
+  } catch (error) {
+    console.error("Order submission failed:", error);
+    alert("Failed to place order. Please try again.");
+  } finally {
+    processing.value = false;
+  }
+}
+</script>
+
+<style scoped>
+.checkout-form h2,
+.order-summary h2 {
+  margin-bottom: 1rem;
+}
+
+.checkout-form h3 {
+  margin: 2rem 0 1rem 0;
+  color: #667eea;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.summary-total {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid #667eea;
+  font-size: 1.2rem;
+}
+
+.alert {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.alert h3 {
+  margin-bottom: 1rem;
+}
+
+.alert p {
+  margin-bottom: 1rem;
+}
+</style>
