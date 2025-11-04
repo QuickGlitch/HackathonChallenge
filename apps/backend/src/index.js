@@ -3,15 +3,30 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import fs from "fs";
+import path from "path";
 import { PrismaClient } from "@prisma/client";
 
 // Import routes
 import productRoutes from "./routes/products.js";
 import orderRoutes from "./routes/orders.js";
+import userRoutes from "./routes/users.js";
 
 // Load environment variables
 dotenv.config();
+
+// Create logs directory if it doesn't exist
+const logsDir = path.join(process.cwd(), "logs");
+if (!fs.existsSync(logsDir)) {
+  fs.mkdirSync(logsDir, { recursive: true });
+}
+
+// Create a write stream for morgan logs
+const accessLogStream = fs.createWriteStream(path.join(logsDir, "access.log"), {
+  flags: "a",
+});
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -21,15 +36,25 @@ const prisma = new PrismaClient();
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 1 * 60 * 1000, // 1 minute
   max: 10, // limit each IP to 100 requests per windowMs
   message: "Too many requests from this IP, please try again later.",
 });
 
 // Middleware
-app.use(helmet());
-app.use(cors());
+app.set("trust proxy", true); // Trust proxy headers for IP address detection
+// app.use(helmet());
+app.use(
+  cors({
+    origin: true, // Allow all origins for development
+    credentials: true, // Allow cookies to be sent
+  })
+);
+// // Log to console
 app.use(morgan("combined"));
+// Log to file
+app.use(morgan("combined", { stream: accessLogStream }));
+app.use(cookieParser());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(limiter);
@@ -43,6 +68,7 @@ app.use((req, res, next) => {
 // Routes
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/users", userRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

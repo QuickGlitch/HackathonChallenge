@@ -9,6 +9,8 @@
           <router-link to="/cart" class="nav-link"
             >Cart ({{ cartStore.itemCount }})</router-link
           >
+          <router-link to="/login" class="nav-link">Login</router-link>
+          <router-link to="/register" class="nav-link">Register</router-link>
         </nav>
       </div>
     </header>

@@ -7,6 +7,22 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model User {
+    id        Int      @default(autoincrement())
+    PII       String   @default("favourite color is blue")
+    username  String   @id @unique
+    password  String
+    name      String?
+    role      String   @default("customer") // customer, admin
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    orders Order[]
+
+    @@map("users")
+}
+
 model Product {
     id          Int      @id @default(autoincrement())
     name        String
@@ -28,13 +44,14 @@ model Order {
     total           Float
     status          String   @default("pending") // pending, processing, shipped, delivered, cancelled
     customerName    String
-    customerEmail   String
-    shippingAddress String
+    clientIpAddress String   @default("unknown")
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
 
     // Relations
-    items OrderItem[]
+    user   User        @relation(fields: [userId], references: [username])
+    userId String
+    items  OrderItem[]
 
     @@map("orders")
 }

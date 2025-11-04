@@ -5,6 +5,57 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🌱 Seeding database...");
 
+  // Create sample users
+  const users = [
+    {
+      username: "Hackors1",
+      password: "go team 1",
+      PII: "fantasizes about starting a Dutch cuisine restaurant: The Hungry Herring",
+      role: "customer",
+    },
+    {
+      username: "Hackors2",
+      password: "taco2",
+      PII: "Things Lord of the Rings is overrated...",
+      role: "customer",
+    },
+    {
+      username: "Hackors3",
+      password: "Team3",
+      PII: "Dyes their hair every color of the rainbow on a monthly basis",
+      role: "customer",
+    },
+    {
+      username: "Hackors4",
+      password: "PW4",
+      PII: "Collects vintage typewriters and has a collection of over 50",
+      role: "customer",
+    },
+    {
+      username: "Hackors5",
+      password: "password123",
+      PII: "Does a one man show, Mike Myers inspired, of Romeo and Juliet.",
+      role: "customer",
+    },
+  ];
+
+  // Check if users already exist
+  const existingUsers = await prisma.user.count();
+
+  if (existingUsers > 0) {
+    console.log("Users already exist, skipping user creation...");
+  } else {
+    console.log("Creating sample users...");
+
+    for (const user of users) {
+      await prisma.user.create({
+        data: user,
+      });
+    }
+
+    console.log(`✅ Created ${users.length} sample users!`);
+  }
+
   // Create some sample products
   const products = [
     {

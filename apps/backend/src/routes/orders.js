@@ -2,6 +2,34 @@ import express from "express";
 
 const router = express.Router();
 
+// Helper function to get client IP address
+function getClientIpAddress(req) {
+  return (
+    req.ip ||
+    req.connection.remoteAddress ||
+    req.socket.remoteAddress ||
+    (req.connection.socket ? req.connection.socket.remoteAddress : null) ||
+    req.headers["x-forwarded-for"]?.split(",")[0] ||
+    req.headers["x-real-ip"] ||
+    "unknown"
+  );
+}
+
+// Helper function to check order limits
+async function checkOrderLimits(prisma, customerName, ipAddress) {
+  const orderTotalSum = await prisma.order.aggregate({
+    where: {
+      clientIpAddress: ipAddress,
+    },
+    _sum: {
+      total: true,
+    },
+  });
+
+  const totalValue = orderTotalSum._sum.total || 0;
+  return totalValue >= 100000; // Return true if limit exceeded (based on total value)
+}
+
 // GET /api/orders - Get all orders (admin endpoint)
 router.get("/", async (req, res) => {
   try {
@@ -57,14 +85,30 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
+    // Get client IP address
+    const clientIpAddress = getClientIpAddress(req);
+
+    // Check order limits (1 million orders per username or IP address)
+    const isLimitExceeded = await checkOrderLimits(
+      req.prisma,
+      customer.name,
+      clientIpAddress
+    );
+
+    if (isLimitExceeded) {
+      return res.status(405).json({
+        error:
+          "Order limit exceeded for this IP address 🤔. Please contact support 🤡",
+      });
+    }
+
     // Create the order with items
     const order = await req.prisma.order.create({
       data: {
         total: parseFloat(total),
         status: "pending",
         customerName: customer.name,
-        customerEmail: customer.email,
-        shippingAddress: `${customer.address}, ${customer.city} ${customer.zipCode}`,
+        clientIpAddress: clientIpAddress,
         items: {
           create: items.map((item) => ({
             productId: item.id,
