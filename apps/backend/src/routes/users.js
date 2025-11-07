@@ -1,6 +1,7 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { authenticateToken, requireAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -8,37 +9,6 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 const JWT_REFRESH_SECRET =
   process.env.JWT_REFRESH_SECRET || "your-refresh-secret-key";
-
-// Middleware to verify JWT token
-const authenticateToken = (req, res, next) => {
-  token = req.cookies?.accessToken;
-
-  // If no token in cookies, try to get it from Authorization header
-  if (!token) {
-    const authHeader = req.headers["authorization"];
-    let token = authHeader && authHeader.split(" ")[1];
-  }
-
-  if (!token) {
-    return res.status(401).json({ error: "Access token required" });
-  }
-
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ error: "Invalid or expired token" });
-    }
-    req.user = user;
-    next();
-  });
-};
-
-// Middleware to check if user is admin
-const requireAdmin = (req, res, next) => {
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ error: "Admin access required" });
-  }
-  next();
-};
 
 // POST /api/users - Create a new user
 router.post("/", async (req, res) => {
@@ -117,7 +87,11 @@ router.post("/login", async (req, res) => {
     }
 
     // Generate tokens
-    const tokenPayload = { username: user.username, role: user.role };
+    const tokenPayload = {
+      userId: user.id,
+      username: user.username,
+      role: user.role,
+    };
     const accessToken = jwt.sign(tokenPayload, JWT_SECRET, {
       expiresIn: "15m",
     });

@@ -1,4 +1,5 @@
 import express from "express";
+import { authenticateToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -17,17 +18,13 @@ function getClientIpAddress(req) {
 
 // Helper function to check order limits
 async function checkOrderLimits(prisma, customerName, ipAddress) {
-  const orderTotalSum = await prisma.order.aggregate({
+  const orderCount = await prisma.order.count({
     where: {
       clientIpAddress: ipAddress,
     },
-    _sum: {
-      total: true,
-    },
   });
 
-  const totalValue = orderTotalSum._sum.total || 0;
-  return totalValue >= 100000; // Return true if limit exceeded (based on total value)
+  return orderCount >= 50; // Return true if limit exceeded (based on number of orders)
 }
 
 // GET /api/orders - Get all orders (admin endpoint)
@@ -77,7 +74,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST /api/orders - Create a new order
-router.post("/", async (req, res) => {
+router.post("/", authenticateToken, async (req, res) => {
   try {
     const { items, total, customer, payment } = req.body;
 
@@ -107,6 +104,7 @@ router.post("/", async (req, res) => {
       data: {
         total: parseFloat(total),
         status: "pending",
+        userId: req.user.userId,
         customerName: customer.name,
         clientIpAddress: clientIpAddress,
         items: {
