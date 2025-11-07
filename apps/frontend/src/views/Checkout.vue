@@ -2,7 +2,13 @@
   <div class="container">
     <h1>Checkout</h1>
 
-    <div class="grid grid-2">
+    <div v-if="!authStore.isLoggedIn" class="alert alert-error">
+      <h3>Login Required</h3>
+      <p>You must be logged in to place an order.</p>
+      <router-link to="/login" class="btn">Login</router-link>
+    </div>
+
+    <div v-else class="grid grid-2">
       <div class="checkout-form card">
         <h2>Billing Information</h2>
         <form @submit.prevent="submitOrder">
@@ -47,11 +53,18 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useCartStore } from "../stores/cart";
+import { useAuthStore } from "../stores/auth";
 import axios from "axios";
 
 const cartStore = useCartStore();
+const authStore = useAuthStore();
+
+// Ensure auth is initialized when component mounts
+onMounted(() => {
+  authStore.ensureInitialized();
+});
 
 const form = ref({
   name: "",
@@ -89,13 +102,21 @@ async function submitOrder() {
       },
     };
 
-    const response = await axios.post("/api/orders", orderData);
+    const response = await axios.post("/api/orders", orderData, {
+      withCredentials: true, // Include cookies for authentication
+    });
     orderId.value = response.data.id;
     orderComplete.value = true;
     cartStore.clearCart();
   } catch (error) {
     console.error("Order submission failed:", error);
-    alert("Failed to place order. Please try again.");
+    if (error.response?.status === 401) {
+      alert(
+        "You must be logged in to place an order. Please login and try again."
+      );
+    } else {
+      alert("Failed to place order. Please try again.");
+    }
   } finally {
     processing.value = false;
   }

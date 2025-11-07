@@ -69,8 +69,10 @@
 <script setup>
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
+import { useAuthStore } from "../stores/auth";
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 // Form data
 const form = reactive({
@@ -123,46 +125,27 @@ const handleLogin = async () => {
   generalError.value = "";
   successMessage.value = "";
 
-  try {
-    const response = await fetch("http://localhost:3001/api/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include", // Include cookies
-      body: JSON.stringify({
-        username: form.username,
-        password: form.password,
-      }),
-    });
+  const result = await authStore.login({
+    username: form.username,
+    password: form.password,
+  });
 
-    const data = await response.json();
+  if (result.success) {
+    successMessage.value = "Login successful! Redirecting...";
 
-    if (response.ok) {
-      successMessage.value = "Login successful! Redirecting...";
+    // Reset form
+    form.username = "";
+    form.password = "";
 
-      // Reset form
-      form.username = "";
-      form.password = "";
-
-      // Store user info if needed (optional, since we're using cookies)
-      if (data.user) {
-        localStorage.setItem("user", JSON.stringify(data.user));
-      }
-
-      // Redirect to home page after success
-      setTimeout(() => {
-        router.push("/");
-      }, 1500);
-    } else {
-      generalError.value = data.error || "Login failed";
-    }
-  } catch (error) {
-    console.error("Login error:", error);
-    generalError.value = "Network error. Please try again.";
-  } finally {
-    isLoading.value = false;
+    // Redirect to home page after success
+    setTimeout(() => {
+      router.push("/");
+    }, 1500);
+  } else {
+    generalError.value = result.error;
   }
+
+  isLoading.value = false;
 };
 </script>
 

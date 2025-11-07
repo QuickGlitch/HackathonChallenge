@@ -9,8 +9,27 @@
           <router-link to="/cart" class="nav-link"
             >Cart ({{ cartStore.itemCount }})</router-link
           >
-          <router-link to="/login" class="nav-link">Login</router-link>
-          <router-link to="/register" class="nav-link">Register</router-link>
+          <router-link
+            v-if="!authStore.isLoggedIn"
+            to="/login"
+            class="nav-link"
+          >
+            Login
+          </router-link>
+          <router-link
+            v-if="!authStore.isLoggedIn"
+            to="/register"
+            class="nav-link"
+          >
+            Register
+          </router-link>
+          <router-link
+            v-if="authStore.isLoggedIn"
+            to="/logout"
+            class="nav-link"
+          >
+            Logout
+          </router-link>
         </nav>
       </div>
     </header>
@@ -29,8 +48,12 @@
 
 <script setup>
 import { useCartStore } from "./stores/cart";
+import { useAuthStore } from "./stores/auth";
 
 const cartStore = useCartStore();
+const authStore = useAuthStore();
+
+// Auth store now initializes automatically when created
 </script>
 
 <style scoped>

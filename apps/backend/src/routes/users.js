@@ -189,6 +189,32 @@ router.get("/", authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
+// GET /api/users/me - Get current user's profile
+router.get("/me", authenticateToken, async (req, res) => {
+  try {
+    const user = await req.prisma.user.findUnique({
+      where: { username: req.user.username },
+      select: {
+        username: true,
+        name: true,
+        role: true,
+        PII: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // GET /api/users/:username - Get specific user
 router.get("/:username", authenticateToken, async (req, res) => {
   try {
@@ -299,31 +325,5 @@ router.delete(
     }
   }
 );
-
-// GET /api/users/profile/me - Get current user's profile
-router.get("/profile/me", authenticateToken, async (req, res) => {
-  try {
-    const user = await req.prisma.user.findUnique({
-      where: { username: req.user.username },
-      select: {
-        username: true,
-        name: true,
-        role: true,
-        PII: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    res.json(user);
-  } catch (error) {
-    console.error("Error fetching user profile:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
 
 export default router;
