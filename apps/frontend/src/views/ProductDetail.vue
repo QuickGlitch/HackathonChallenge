@@ -8,7 +8,11 @@
 
     <div v-else-if="product" class="product-detail">
       <div class="grid grid-2">
-        <div>
+        <div class="product-image-container">
+          <!-- Reseller badge for products not from main store -->
+          <div v-if="product.sellerId !== 1" class="reseller-badge">
+            Reseller
+          </div>
           <img :src="product.image" :alt="product.name" class="product-image" />
         </div>
         <div class="product-info">
@@ -68,9 +72,33 @@ onMounted(async () => {
   padding: 2rem 0;
 }
 
+.product-image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
 .product-image {
   width: 100%;
   border-radius: 8px;
+}
+
+.reseller-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  color: white;
+  padding: 6px 12px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4);
+  z-index: 100;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .product-info h1 {

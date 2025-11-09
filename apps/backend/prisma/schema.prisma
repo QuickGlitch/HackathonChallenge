@@ -18,7 +18,8 @@ model User {
     updatedAt DateTime @updatedAt
 
     // Relations
-    orders Order[]
+    orders   Order[]
+    products Product[] // Products sold by this user
 
     @@map("users")
 }
@@ -30,10 +31,12 @@ model Product {
     price       Float
     image       String?
     category    String   @default("General")
+    sellerId    Int      @default(1)
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
 
     // Relations
+    seller     User        @relation(fields: [sellerId], references: [id])
     orderItems OrderItem[]
 
     @@map("products")

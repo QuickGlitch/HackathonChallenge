@@ -7,6 +7,7 @@ import Checkout from "../views/Checkout.vue";
 import Register from "../views/Register.vue";
 import Login from "../views/Login.vue";
 import Logout from "../views/Logout.vue";
+import Reseller from "../views/Reseller.vue";
 
 const routes = [
   {
@@ -48,6 +49,11 @@ const routes = [
     path: "/logout",
     name: "Logout",
     component: Logout,
+  },
+  {
+    path: "/reseller",
+    name: "Reseller",
+    component: Reseller,
   },
 ];
 

@@ -14,6 +14,8 @@
         :key="product.id"
         class="card product-card"
       >
+        <!-- Reseller badge for products not from main store -->
+        <div v-if="product.sellerId !== 1" class="reseller-badge">Reseller</div>
         <img :src="product.image" :alt="product.name" class="product-image" />
         <div class="product-info">
           <h3>{{ product.name }}</h3>
@@ -59,11 +61,31 @@ onMounted(() => {
 }
 
 .product-card {
+  position: relative;
   transition: transform 0.3s;
+  overflow: hidden;
 }
 
 .product-card:hover {
   transform: translateY(-4px);
+}
+
+.reseller-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  color: white;
+  padding: 4px 8px;
+  font-size: 0.65rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4);
+  z-index: 100;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .product-image {

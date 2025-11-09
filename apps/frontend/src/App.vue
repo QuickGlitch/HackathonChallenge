@@ -10,6 +10,13 @@
             >Cart ({{ cartStore.itemCount }})</router-link
           >
           <router-link
+            v-if="authStore.isLoggedIn"
+            to="/reseller"
+            class="nav-link"
+          >
+            Reseller
+          </router-link>
+          <router-link
             v-if="!authStore.isLoggedIn"
             to="/login"
             class="nav-link"

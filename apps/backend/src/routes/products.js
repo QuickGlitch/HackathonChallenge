@@ -1,6 +1,112 @@
 import express from "express";
+import multer from "multer";
+import path from "path";
+import { authenticateToken } from "../middleware/auth.js";
 
 const router = express.Router();
+
+// Helper function to ensure image URLs are absolute
+function ensureAbsoluteImageUrl(imageUrl) {
+  if (!imageUrl) return "https://via.placeholder.com/300x200";
+
+  // If it's already absolute, return as is
+  if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+    return imageUrl;
+  }
+
+  // If it's relative, make it absolute
+  if (imageUrl.startsWith("/static/")) {
+    const baseUrl =
+      process.env.BASE_URL || `http://localhost:${process.env.PORT || 3001}`;
+    return `${baseUrl}${imageUrl}`;
+  }
+
+  return imageUrl;
+}
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(process.cwd(), "src", "static", "images"));
+  },
+  filename: (req, file, cb) => {
+    // Generate unique filename with timestamp and random number
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, "product-" + uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept only image files
+    if (file.mimetype.startsWith("image/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only image files are allowed!"), false);
+    }
+  },
+});
+
+// POST /api/products/register - Register a new product by a user (authenticated)
+router.post(
+  "/register",
+  authenticateToken,
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      const { name, description, price, category } = req.body;
+      const userId = req.user.userId; // Get user ID from authenticated token
+
+      if (!name || !description || !price) {
+        return res
+          .status(400)
+          .json({ error: "Missing required fields: name, description, price" });
+      }
+
+      // Validate price is a number
+      const productPrice = parseFloat(price);
+      if (isNaN(productPrice) || productPrice <= 0) {
+        return res
+          .status(400)
+          .json({ error: "Price must be a valid positive number" });
+      }
+
+      // Handle image file
+      let imageUrl = "https://via.placeholder.com/300x200"; // default image
+      if (req.file) {
+        // Create the full URL path for the uploaded image
+        const baseUrl =
+          process.env.BASE_URL ||
+          `http://localhost:${process.env.PORT || 3001}`;
+        imageUrl = `${baseUrl}/static/images/${req.file.filename}`;
+      }
+
+      const product = await req.prisma.product.create({
+        data: {
+          name: name.trim(),
+          description: description.trim(),
+          price: productPrice,
+          image: imageUrl,
+          category: category?.trim() || "General",
+          sellerId: userId,
+        },
+      });
+
+      res.status(201).json({
+        success: true,
+        message: "Product registered successfully",
+        product,
+      });
+    } catch (error) {
+      console.error("Error registering product:", error);
+      res.status(500).json({ error: "Failed to register product" });
+    }
+  }
+);
 
 // GET /api/products - Get all products
 router.get("/", async (req, res) => {
@@ -8,7 +114,14 @@ router.get("/", async (req, res) => {
     const products = await req.prisma.product.findMany({
       orderBy: { createdAt: "desc" },
     });
-    res.json(products);
+
+    // Ensure all image URLs are absolute
+    const productsWithAbsoluteUrls = products.map((product) => ({
+      ...product,
+      image: ensureAbsoluteImageUrl(product.image),
+    }));
+
+    res.json(productsWithAbsoluteUrls);
   } catch (error) {
     console.error("Error fetching products:", error);
     res.status(500).json({ error: "Failed to fetch products" });
@@ -27,7 +140,13 @@ router.get("/:id", async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    res.json(product);
+    // Ensure image URL is absolute
+    const productWithAbsoluteUrl = {
+      ...product,
+      image: ensureAbsoluteImageUrl(product.image),
+    };
+
+    res.json(productWithAbsoluteUrl);
   } catch (error) {
     console.error("Error fetching product:", error);
     res.status(500).json({ error: "Failed to fetch product" });

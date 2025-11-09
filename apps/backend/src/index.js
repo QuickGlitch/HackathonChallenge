@@ -59,6 +59,9 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(limiter);
 
+// Serve static files
+app.use("/static", express.static(path.join(process.cwd(), "src", "static")));
+
 // Make Prisma available to all routes
 app.use((req, res, next) => {
   req.prisma = prisma;
