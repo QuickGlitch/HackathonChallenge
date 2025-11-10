@@ -17,12 +17,6 @@ store-hackathon/
 
 ## 🚀 Quick Start
 
-### Prerequisites
-
-- Node.js 18+ and npm
-- Docker and Docker Compose
-- Git
-
 ### Development Setup
 
 1. **Clone the repository**
@@ -38,7 +32,7 @@ store-hackathon/
 
 3. **Start the database**
    ```bash
-   npm run docker:up -- -f docker-compose.dev.yml
+   npm run docker:up
    ```
 
 4. **Set up the backend**
