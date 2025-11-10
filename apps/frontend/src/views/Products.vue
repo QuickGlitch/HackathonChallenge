@@ -23,35 +23,39 @@
 
       <div v-if="productStore.loading" class="loading">Loading products...</div>
 
-    <div v-else-if="productStore.error" class="alert alert-error">
-      {{ productStore.error }}
-    </div>
+      <div v-else-if="productStore.error" class="alert alert-error">
+        {{ productStore.error }}
+      </div>
 
-    <div v-else class="grid grid-3">
-      <div
-        v-for="product in productStore.products"
-        :key="product.id"
-        class="card product-card"
-      >
-        <!-- Reseller badge for products not from main store -->
-        <div v-if="product.sellerId !== 1" class="reseller-badge">Reseller</div>
-        <img :src="product.image" :alt="product.name" class="product-image" />
-        <div class="product-info">
-          <h3>{{ product.name }}</h3>
-          <p class="product-description">{{ product.description }}</p>
-          <div class="product-price">${{ product.price.toFixed(2) }}</div>
-          <div class="product-actions">
-            <router-link
-              :to="`/products/${product.id}`"
-              class="btn btn-secondary"
-            >
-              View Details
-            </router-link>
-            <button @click="addToCart(product)" class="btn">Add to Cart</button>
+      <div v-else class="grid grid-3">
+        <div
+          v-for="product in productStore.products"
+          :key="product.id"
+          class="card product-card"
+        >
+          <!-- Reseller badge for products not from main store -->
+          <div v-if="product.sellerId !== 1" class="reseller-badge">
+            Reseller
+          </div>
+          <img :src="product.image" :alt="product.name" class="product-image" />
+          <div class="product-info">
+            <h3>{{ product.name }}</h3>
+            <p class="product-description">{{ product.description }}</p>
+            <div class="product-price">${{ product.price.toFixed(2) }}</div>
+            <div class="product-actions">
+              <router-link
+                :to="`/products/${product.id}`"
+                class="btn btn-secondary"
+              >
+                View Details
+              </router-link>
+              <button @click="addToCart(product)" class="btn">
+                Add to Cart
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
   </div>
 </template>
@@ -64,12 +68,13 @@ import { useCartStore } from "../stores/cart";
 const productStore = useProductStore();
 const cartStore = useCartStore();
 const searchQuery = ref("");
+let debounceTimer = null;
 
 function addToCart(product) {
   cartStore.addToCart(product);
 }
 
-function handleSearch() {
+function performSearch() {
   if (searchQuery.value.trim()) {
     productStore.searchProducts(searchQuery.value.trim());
   } else {
@@ -77,7 +82,23 @@ function handleSearch() {
   }
 }
 
+function handleSearch() {
+  // Clear existing timer
+  if (debounceTimer) {
+    clearTimeout(debounceTimer);
+  }
+
+  // Set new timer for debounced search
+  debounceTimer = setTimeout(() => {
+    performSearch();
+  }, 300); // 300ms delay
+}
+
 function clearSearch() {
+  // Clear any pending search
+  if (debounceTimer) {
+    clearTimeout(debounceTimer);
+  }
   searchQuery.value = "";
   productStore.fetchProducts();
 }
