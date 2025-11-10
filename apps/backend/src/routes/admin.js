@@ -14,7 +14,7 @@ router.get("/legacy", async (req, res) => {
 });
 
 // Honeypot: Fake admin login that logs attempts
-router.post("/secret-admin-login", async (req, res) => {
+router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   // Log the attempt (this is the real purpose)
@@ -29,22 +29,6 @@ router.post("/secret-admin-login", async (req, res) => {
       hint: "Try the default admin:admin123", // Fake hint
     });
   }, Math.random() * 2000 + 1000); // Random delay to seem authentic
-});
-
-// Fake debug endpoint that looks exploitable
-router.get("/debug/:userId", async (req, res) => {
-  // Log the attempt
-  console.log(
-    `[HONEYPOT] Debug endpoint accessed with userId: ${req.params.userId} from IP: ${req.ip}`
-  );
-
-  // Return fake debug info
-  res.json({
-    debug: "Debug mode enabled",
-    // This looks like it's exposing sensitive info but it's fake
-    query: `SELECT * FROM users WHERE id = ${req.params.userId}`,
-    warning: "Debug endpoint should not be accessible in production",
-  });
 });
 
 export default router;
