@@ -56,6 +56,11 @@ export const useProductStore = defineStore("products", () => {
     }
   }
 
+  // Add a method to manually set products (for debug panel)
+  function setProducts(newProducts) {
+    products.value = newProducts;
+  }
+
   return {
     products,
     loading,
@@ -63,5 +68,6 @@ export const useProductStore = defineStore("products", () => {
     fetchProducts,
     fetchProduct,
     searchProducts,
+    setProducts,
   };
 });

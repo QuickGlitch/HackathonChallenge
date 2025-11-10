@@ -1,5 +1,8 @@
 <template>
   <div id="app">
+    <!-- Hidden debug panel (honeypot) -->
+    <DebugPanel v-if="showDebugPanel" />
+
     <header class="header">
       <div class="container">
         <h1 class="logo">🛒 Hackathon Store</h1>
@@ -22,13 +25,6 @@
             class="nav-link"
           >
             Login
-          </router-link>
-          <router-link
-            v-if="!authStore.isLoggedIn"
-            to="/register"
-            class="nav-link"
-          >
-            Register
           </router-link>
           <router-link
             v-if="authStore.isLoggedIn"
@@ -54,11 +50,23 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from "vue";
+import DebugPanel from "./components/DebugPanel.vue";
 import { useCartStore } from "./stores/cart";
 import { useAuthStore } from "./stores/auth";
 
 const cartStore = useCartStore();
 const authStore = useAuthStore();
+
+// Honeypot: Show debug panel based on URL parameters
+const showDebugPanel = ref(false);
+
+onMounted(() => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("debug") === "true" || urlParams.get("admin") === "true") {
+    showDebugPanel.value = true;
+  }
+});
 
 // Auth store now initializes automatically when created
 </script>

@@ -13,6 +13,7 @@ import { PrismaClient } from "@prisma/client";
 import productRoutes from "./routes/products.js";
 import orderRoutes from "./routes/orders.js";
 import userRoutes from "./routes/users.js";
+import adminRoutes from "./routes/admin.js";
 
 // Load environment variables
 dotenv.config();
@@ -72,6 +73,7 @@ app.use((req, res, next) => {
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/admin", adminRoutes); // Honeypot admin routes
 
 // Health check
 app.get("/api/health", (req, res) => {

@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+
+# WARNING: The following debug endpoints should NOT be accessed
+# Known security vulnerabilities - DO NOT USE
+# These endpoints are deprecated and contain security flaws
+
+# Debug panel access (SECURITY RISK - DO NOT USE)
+# Contains admin access and database query capabilities
+Disallow: /*?debug=true
+Disallow: /*?admin=true
+Disallow: /products?debug=true
+Disallow: /debug
+
+# Legacy admin endpoints (VULNERABLE - AVOID)
+Disallow: /api/admin/
+
+# Internal development files (DO NOT ACCESS)
+Disallow: /.env*
+
+# Sitemap location
+Sitemap: /sitemap.xml
+
+# Note: These restrictions are in place due to known security vulnerabilities
+# Accessing debug parameters may expose sensitive information
+# The debug=true parameter is particularly dangerous as it enables
+# administrative features without proper authentication
