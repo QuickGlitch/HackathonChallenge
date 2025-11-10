@@ -12,7 +12,7 @@ Disallow: /*?admin=true
 Disallow: /products?debug=true
 Disallow: /debug
 
-# Legacy admin endpoints (VULNERABLE - AVOID)
+# Admin endpoints
 Disallow: /api/admin/
 
 # Internal development files (DO NOT ACCESS)

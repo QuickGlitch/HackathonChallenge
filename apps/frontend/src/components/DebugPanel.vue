@@ -112,7 +112,7 @@ const fetchHiddenProducts = async () => {
           "Premium organic honey facial moisturizer with anti-aging properties. Made from rare Manuka honey.",
         price: 89.99,
         image:
-          "https://via.placeholder.com/300x200/FFD700/000000?text=Honey+Cream",
+          "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=300&h=200&fit=crop",
         category: "Beauty",
         sellerId: 1,
         createdAt: new Date().toISOString(),
@@ -125,7 +125,7 @@ const fetchHiddenProducts = async () => {
           "Hand-crafted wooden honey jar with traditional bee motifs. Perfect for storing artisanal honey.",
         price: 45.5,
         image:
-          "https://via.placeholder.com/300x200/8B4513/FFD700?text=Honey+Jar",
+          "https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=300&h=200&fit=crop",
         category: "Kitchen",
         sellerId: 1,
         createdAt: new Date().toISOString(),
@@ -138,7 +138,7 @@ const fetchHiddenProducts = async () => {
           "Concentrated honey supplement with royal jelly and propolis. Boost your immunity naturally.",
         price: 124.99,
         image:
-          "https://via.placeholder.com/300x200/FFD700/8B0000?text=Honey+Elixir",
+          "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300&h=200&fit=crop",
         category: "Health",
         sellerId: 1,
         createdAt: new Date().toISOString(),
@@ -151,7 +151,7 @@ const fetchHiddenProducts = async () => {
           "Ergonomic pillow with honeycomb ventilation design. Infused with honey-scented aromatherapy.",
         price: 67.75,
         image:
-          "https://via.placeholder.com/300x200/FFFACD/000000?text=Honey+Pillow",
+          "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=200&fit=crop",
         category: "Home",
         sellerId: 1,
         createdAt: new Date().toISOString(),
