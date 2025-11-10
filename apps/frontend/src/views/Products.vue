@@ -1,8 +1,27 @@
 <template>
-  <div class="container">
-    <h1>Products</h1>
+  <div>
+    <!-- Search bar section with light gray background -->
+    <div class="search-section">
+      <div class="container">
+        <div class="search-container">
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search products..."
+            class="search-input"
+            @input="handleSearch"
+          />
+          <button @click="clearSearch" class="btn btn-secondary">
+            Clear Search
+          </button>
+        </div>
+      </div>
+    </div>
 
-    <div v-if="productStore.loading" class="loading">Loading products...</div>
+    <div class="container">
+      <h1>Products</h1>
+
+      <div v-if="productStore.loading" class="loading">Loading products...</div>
 
     <div v-else-if="productStore.error" class="alert alert-error">
       {{ productStore.error }}
@@ -33,19 +52,34 @@
         </div>
       </div>
     </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useProductStore } from "../stores/products";
 import { useCartStore } from "../stores/cart";
 
 const productStore = useProductStore();
 const cartStore = useCartStore();
+const searchQuery = ref("");
 
 function addToCart(product) {
   cartStore.addToCart(product);
+}
+
+function handleSearch() {
+  if (searchQuery.value.trim()) {
+    productStore.searchProducts(searchQuery.value.trim());
+  } else {
+    productStore.fetchProducts();
+  }
+}
+
+function clearSearch() {
+  searchQuery.value = "";
+  productStore.fetchProducts();
 }
 
 onMounted(() => {
@@ -54,6 +88,38 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.search-section {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 1rem 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.search-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background-color: white;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
 .loading {
   text-align: center;
   padding: 2rem;

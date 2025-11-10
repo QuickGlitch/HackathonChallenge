@@ -40,11 +40,28 @@ export const useProductStore = defineStore("products", () => {
     }
   }
 
+  async function searchProducts(searchTerm) {
+    try {
+      loading.value = true;
+      error.value = null;
+      const response = await api.get(`/products/search`, {
+        params: { q: searchTerm },
+      });
+      products.value = response.data;
+    } catch (err) {
+      error.value = "Failed to search products";
+      console.error("Error searching products:", err);
+    } finally {
+      loading.value = false;
+    }
+  }
+
   return {
     products,
     loading,
     error,
     fetchProducts,
     fetchProduct,
+    searchProducts,
   };
 });

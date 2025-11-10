@@ -128,6 +128,41 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET /api/products/search - Search products by name (VULNERABLE to SQL injection for training)
+router.get("/search", async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q) {
+      return res
+        .status(400)
+        .json({ error: "Search query parameter 'q' is required" });
+    }
+
+    // VULNERABILITY: Direct string interpolation into raw SQL query
+    // This allows SQL injection attacks for training purposes
+    const rawQuery = `
+      SELECT id, name, description, price, image, category, "sellerId", "createdAt", "updatedAt"
+      FROM products 
+      WHERE name ILIKE '%${q}%' 
+      ORDER BY "createdAt" DESC
+    `;
+
+    const products = await req.prisma.$queryRawUnsafe(rawQuery);
+
+    // Ensure all image URLs are absolute
+    const productsWithAbsoluteUrls = products.map((product) => ({
+      ...product,
+      image: ensureAbsoluteImageUrl(product.image),
+    }));
+
+    res.json(productsWithAbsoluteUrls);
+  } catch (error) {
+    console.error("Error searching products:", error);
+    res.status(500).json({ error: "Failed to search products" });
+  }
+});
+
 // GET /api/products/:id - Get a single product
 router.get("/:id", async (req, res) => {
   try {
