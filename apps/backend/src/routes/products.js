@@ -188,7 +188,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST /api/products - Create a new product (admin only - for demo purposes)
+// POST /api/products - Create a new product
 router.post("/", authenticateToken, async (req, res) => {
   try {
     const { name, description, price, image, category } = req.body;
