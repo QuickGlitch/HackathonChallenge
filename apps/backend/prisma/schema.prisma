@@ -18,8 +18,9 @@ model User {
     updatedAt DateTime @updatedAt
 
     // Relations
-    orders   Order[]
-    products Product[] // Products sold by this user
+    orders        Order[]
+    products      Product[] // Products sold by this user
+    payableOrders OrderItem[] // Order items payable to this user
 
     @@map("users")
 }
@@ -60,15 +61,17 @@ model Order {
 }
 
 model OrderItem {
-    id       Int   @id @default(autoincrement())
-    quantity Int
-    price    Float
+    id        Int   @id @default(autoincrement())
+    quantity  Int
+    price     Float
+    payableTo Int   @default(1)
 
     // Relations
-    order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-    orderId   Int
-    product   Product @relation(fields: [productId], references: [id])
-    productId Int
+    order         Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+    orderId       Int
+    product       Product @relation(fields: [productId], references: [id])
+    productId     Int
+    payableToUser User    @relation(fields: [payableTo], references: [id])
 
     @@map("order_items")
 }
