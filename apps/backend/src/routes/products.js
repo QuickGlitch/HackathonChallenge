@@ -189,7 +189,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST /api/products - Create a new product (admin only - for demo purposes)
-router.post("/", async (req, res) => {
+router.post("/", authenticateToken, async (req, res) => {
   try {
     const { name, description, price, image, category } = req.body;
 
@@ -215,7 +215,7 @@ router.post("/", async (req, res) => {
 });
 
 // PUT /api/products/:id - Update a product
-router.put("/:id", async (req, res) => {
+router.put("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { name, description, price, image, category } = req.body;
@@ -242,7 +242,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // DELETE /api/products/:id - Delete a product
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
 
