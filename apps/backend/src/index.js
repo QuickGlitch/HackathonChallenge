@@ -14,6 +14,7 @@ import productRoutes from "./routes/products.js";
 import orderRoutes from "./routes/orders.js";
 import userRoutes from "./routes/users.js";
 import adminRoutes from "./routes/admin.js";
+import scoresRoutes from "./routes/scores.js";
 
 // Load environment variables
 dotenv.config();
@@ -38,8 +39,12 @@ const prisma = new PrismaClient();
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 10, // limit each IP to 100 requests per windowMs
+  max: 10, // limit each IP to 10 requests per windowMs
   message: "Too many requests from this IP, please try again later.",
+  skip: (req) => {
+    // Skip rate limiting for scoreboard endpoints
+    return req.path.startsWith("/api/scores");
+  },
 });
 
 // Middleware
@@ -74,6 +79,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes); // Honeypot admin routes
+app.use("/api/scores", scoresRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

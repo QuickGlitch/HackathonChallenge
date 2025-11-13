@@ -49,6 +49,20 @@ services:
     networks:
       - store-network
 
+  # Scoreboard (Vue.js)
+  scoreboard:
+    build:
+      context: ./apps/scoreboard
+      dockerfile: Dockerfile
+    container_name: store-hackathon-scoreboard
+    restart: unless-stopped
+    ports:
+      - "5174:5174"
+    depends_on:
+      - backend
+    networks:
+      - store-network
+
 volumes:
   postgres-data:
     driver: local

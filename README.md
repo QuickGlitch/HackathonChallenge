@@ -8,7 +8,8 @@ A full-stack web application built for educational pentesting purposes. This pro
 store-hackathon/
 ├── apps/
 │   ├── frontend/          # Vue.js application
-│   └── backend/           # Express.js API server
+│   ├── backend/           # Express.js API server
+│   └── scoreboard/        # Vue.js hackathon scoreboard
 ├── .github/               # GitHub workflows and copilot instructions
 ├── docker-compose.yml     # Production Docker setup
 ├── docker-compose.dev.yml # Development Docker setup
@@ -56,6 +57,7 @@ store-hackathon/
    This will start:
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:3001
+   - Scoreboard: http://localhost:5174
 
 ## 🐋 Docker Deployment
 
@@ -125,6 +127,13 @@ docker-compose exec backend npm run db:seed
 - Comprehensive error handling
 - Health check endpoint
 
+### Scoreboard (Vue.js)
+- Real-time hackathon team scoring
+- Interactive bar charts using Chart.js
+- Auto-refreshing every 30 seconds
+- Team scoring based on order analytics
+- Responsive design with gradient UI
+
 ### Database Schema
 - **Products**: Store items with details and pricing
 - **Orders**: Customer orders with items
@@ -159,6 +168,9 @@ This application includes several security vulnerabilities intentionally for edu
 
 ### Health
 - `GET /api/health` - Server health check
+
+### Scores
+- `GET /api/scores` - Get team scores for hackathon scoreboard
 
 ## 🔧 Environment Variables
 
