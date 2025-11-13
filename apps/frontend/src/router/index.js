@@ -8,6 +8,7 @@ import Register from "../views/Register.vue";
 import Login from "../views/Login.vue";
 import Logout from "../views/Logout.vue";
 import Reseller from "../views/Reseller.vue";
+import Forum from "../views/Forum.vue";
 
 const routes = [
   {
@@ -54,6 +55,11 @@ const routes = [
     path: "/reseller",
     name: "Reseller",
     component: Reseller,
+  },
+  {
+    path: "/forum",
+    name: "Forum",
+    component: Forum,
   },
 ];
 

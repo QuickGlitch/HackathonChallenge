@@ -9,6 +9,7 @@
         <nav class="nav">
           <router-link to="/" class="nav-link">Home</router-link>
           <router-link to="/products" class="nav-link">Products</router-link>
+          <router-link to="/forum" class="nav-link">Forum</router-link>
           <router-link to="/cart" class="nav-link"
             >Cart ({{ cartStore.itemCount }})</router-link
           >

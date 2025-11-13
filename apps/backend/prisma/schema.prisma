@@ -21,6 +21,7 @@ model User {
     orders        Order[]
     products      Product[] // Products sold by this user
     payableOrders OrderItem[] // Order items payable to this user
+    forumMessages ForumMessage[] // Forum messages authored by this user
 
     @@map("users")
 }
@@ -74,4 +75,18 @@ model OrderItem {
     payableToUser User    @relation(fields: [payableTo], references: [id])
 
     @@map("order_items")
+}
+
+model ForumMessage {
+    id        Int      @id @default(autoincrement())
+    title     String
+    body      String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    author   User @relation(fields: [authorId], references: [id])
+    authorId Int
+
+    @@map("forum_messages")
 }

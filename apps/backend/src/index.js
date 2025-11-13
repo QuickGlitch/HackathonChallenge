@@ -15,6 +15,7 @@ import orderRoutes from "./routes/orders.js";
 import userRoutes from "./routes/users.js";
 import adminRoutes from "./routes/admin.js";
 import scoresRoutes from "./routes/scores.js";
+import forumRoutes from "./routes/forum.js";
 
 // Load environment variables
 dotenv.config();
@@ -80,6 +81,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes); // Honeypot admin routes
 app.use("/api/scores", scoresRoutes);
+app.use("/api/forum", forumRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

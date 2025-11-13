@@ -38,15 +38,118 @@ async function main() {
       PII: "Does a one man show, Mike Myers inspired, of Romeo and Juliet.",
       role: "customer",
     },
+    // Elderly users with 1950s-style names
+    {
+      username: "EdwardGreenwood",
+      password: "memories1952",
+      name: "Edward Greenwood",
+      PII: "Born in 1952, retired postal worker, loves gardening and his 8 grandchildren",
+      role: "customer",
+    },
+    {
+      username: "BettyJohnson",
+      password: "knitting123",
+      name: "Betty Johnson",
+      PII: "Born in 1948, former librarian, enjoys knitting and baking cookies",
+      role: "customer",
+    },
+    {
+      username: "HaroldSmith",
+      password: "fishing1955",
+      name: "Harold Smith",
+      PII: "Born in 1955, retired mechanic, spends weekends fishing at the lake",
+      role: "customer",
+    },
+    {
+      username: "DorothyWilliams",
+      password: "quilting456",
+      name: "Dorothy Williams",
+      PII: "Born in 1951, former nurse, president of the local quilting club",
+      role: "customer",
+    },
+    {
+      username: "WalterBrown",
+      password: "woodwork789",
+      name: "Walter Brown",
+      PII: "Born in 1949, retired carpenter, builds birdhouses in his spare time",
+      role: "customer",
+    },
+    {
+      username: "EleanorDavis",
+      password: "bridge1953",
+      name: "Eleanor Davis",
+      PII: "Born in 1953, former teacher, plays bridge every Tuesday",
+      role: "customer",
+    },
+    {
+      username: "FrankMiller",
+      password: "trains1954",
+      name: "Frank Miller",
+      PII: "Born in 1954, retired engineer, has an elaborate model train collection",
+      role: "customer",
+    },
+    {
+      username: "MildredWilson",
+      password: "church1950",
+      name: "Mildred Wilson",
+      PII: "Born in 1950, organizes church socials and volunteers at the food bank",
+      role: "customer",
+    },
+    {
+      username: "ArthurMoore",
+      password: "baseball1956",
+      name: "Arthur Moore",
+      PII: "Born in 1956, former factory worker, still follows baseball religiously",
+      role: "customer",
+    },
+    {
+      username: "RuthTaylor",
+      password: "cooking1949",
+      name: "Ruth Taylor",
+      PII: "Born in 1949, famous in the neighborhood for her apple pies and Sunday dinners",
+      role: "customer",
+    },
   ];
 
   // Check if users already exist
-  const existingUsers = await prisma.user.count();
+  const existingUsersCount = await prisma.user.count();
+  const elderlyUsersCount = await prisma.user.count({
+    where: {
+      username: {
+        in: [
+          "EdwardGreenwood",
+          "BettyJohnson",
+          "HaroldSmith",
+          "DorothyWilliams",
+          "WalterBrown",
+          "EleanorDavis",
+          "FrankMiller",
+          "MildredWilson",
+          "ArthurMoore",
+          "RuthTaylor",
+        ],
+      },
+    },
+  });
 
-  if (existingUsers > 0) {
-    console.log("Users already exist, skipping user creation...");
-  } else {
-    console.log("Creating sample users...");
+  if (existingUsersCount > 0 && elderlyUsersCount === 0) {
+    console.log("Creating elderly users...");
+    // Only create the elderly users
+    const elderlyUsers = users.slice(5); // Get the elderly users (from index 5 onwards)
+
+    for (const user of elderlyUsers) {
+      const hashedPassword = await bcrypt.hash(user.password, 10);
+      await prisma.user.create({
+        data: {
+          ...user,
+          password: hashedPassword,
+        },
+      });
+    }
+
+    console.log(`✅ Created ${elderlyUsers.length} elderly users!`);
+  } else if (existingUsersCount === 0) {
+    console.log("Creating all sample users...");
 
     for (const user of users) {
       // Hash the password before storing
@@ -61,6 +164,8 @@ async function main() {
     }
 
     console.log(`✅ Created ${users.length} sample users!`);
+  } else {
+    console.log("All users already exist, skipping user creation...");
   }
 
   // Create some sample products
@@ -162,6 +267,65 @@ async function main() {
     }
 
     console.log(`✅ Created ${products.length} sample products!`);
+  }
+
+  // Create sample forum messages
+  const forumMessages = [
+    {
+      title: "Wonderful community here!",
+      body: "Good day, what a lovely store and lovely community. This is a great place to find gifts for my grandson. I'm happy to be a part of this.",
+      authorId: 7, // EdwardGreenwood
+    },
+    {
+      title: "I seem to be lost",
+      body: "Where am I?",
+      authorId: 8, // BettyJohnson
+    },
+    {
+      title: "Shopping troubles without glasses",
+      body: "Without my reading glasses I can't see what I'm trying to buy, so I just click the links in here from time to time. Can anybody recommend a gift for my granddaughter?",
+      authorId: 9, // HaroldSmith
+    },
+  ];
+
+  // Check if forum messages already exist
+  const existingMessages = await prisma.forumMessage.count();
+  const specificMessages = await prisma.forumMessage.count({
+    where: {
+      title: {
+        in: [
+          "Wonderful community here!",
+          "I seem to be lost",
+          "Shopping troubles without glasses",
+        ],
+      },
+    },
+  });
+
+  if (existingMessages > 0 && specificMessages === 0) {
+    console.log("Creating additional forum messages...");
+
+    for (const message of forumMessages) {
+      await prisma.forumMessage.create({
+        data: message,
+      });
+    }
+
+    console.log(`✅ Created ${forumMessages.length} sample forum messages!`);
+  } else if (existingMessages === 0) {
+    console.log("Creating sample forum messages...");
+
+    for (const message of forumMessages) {
+      await prisma.forumMessage.create({
+        data: message,
+      });
+    }
+
+    console.log(`✅ Created ${forumMessages.length} sample forum messages!`);
+  } else {
+    console.log(
+      "Forum messages already exist, skipping forum message creation..."
+    );
   }
 
   console.log("✅ Database seeded successfully!");
