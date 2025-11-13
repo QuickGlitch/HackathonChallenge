@@ -5,6 +5,14 @@
       <p>Live team scores to get the people going</p>
     </div>
 
+    <!-- Fishing GIF Overlay -->
+    <div v-if="showGif" class="gif-overlay" @click="hideGif">
+      <div class="gif-container">
+        <img :src="currentGif" alt="Fishing GIF" class="fishing-gif" />
+        <div class="gif-close">Click to close or wait...</div>
+      </div>
+    </div>
+
     <div class="scoreboard-card">
       <div v-if="loading" class="loading">Loading scores...</div>
 
@@ -27,6 +35,24 @@
         </div>
       </div>
     </div>
+
+    <!-- Fishing GIF Overlay -->
+    <div v-if="showGif" class="gif-overlay" @click="hideGif">
+      <div class="gif-container">
+        <img :src="currentGif" alt="Fishing GIF" class="fishing-gif" />
+        <p class="gif-caption">🎣</p>
+      </div>
+    </div>
+
+    <!-- News Ticker -->
+    <div v-if="showGif" class="news-ticker">
+      <div class="news-content">
+        <span class="breaking-label">BREAKING NEWS:</span>
+        <span class="news-text"
+          >It's fishing season - boomer bots are clicking links</span
+        >
+      </div>
+    </div>
   </div>
 </template>
 
@@ -41,13 +67,69 @@ const loading = ref(true);
 const error = ref(null);
 const lastUpdated = ref(new Date());
 const currentQuote = ref("");
+const showGif = ref(false);
+const currentGif = ref("");
 let intervalId = null;
+let gifIntervalId = null;
 let hasInitialLoad = ref(false);
 
 const API_BASE_URL = "http://localhost:3001";
+const GIPHY_API_KEY = "GlVGYHkr3WSBnllca54iNt0yFbjz7L65"; // Public demo key
 
 const getNewQuote = () => {
   currentQuote.value = sunTzu();
+};
+
+const fetchRandomFishingGif = async () => {
+  try {
+    const response = await axios.get(`https://api.giphy.com/v1/gifs/search`, {
+      params: {
+        api_key: GIPHY_API_KEY,
+        q: "fishing",
+        limit: 50,
+        rating: "g",
+        lang: "en",
+      },
+    });
+
+    if (response.data.data && response.data.data.length > 0) {
+      const randomIndex = Math.floor(Math.random() * response.data.data.length);
+      const gif = response.data.data[randomIndex];
+      currentGif.value = gif.images.original.url;
+      showFishingGif();
+    }
+  } catch (err) {
+    console.error("Failed to fetch fishing GIF:", err);
+  }
+};
+
+const showFishingGif = () => {
+  showGif.value = true;
+  // Auto-hide after 3 seconds
+  setTimeout(() => {
+    showGif.value = false;
+  }, 30000);
+};
+
+const hideGif = () => {
+  showGif.value = false;
+};
+
+const startGifInterval = () => {
+  // Show first gif after 10 seconds
+  setTimeout(() => {
+    fetchRandomFishingGif();
+  }, 10000);
+
+  // Then show a gif every 10 seconds
+  gifIntervalId = setInterval(fetchRandomFishingGif, 60000);
+};
+
+const stopGifInterval = () => {
+  if (gifIntervalId) {
+    clearInterval(gifIntervalId);
+    gifIntervalId = null;
+  }
 };
 
 const fetchScores = async () => {
@@ -105,10 +187,12 @@ onMounted(() => {
   // Initialize with a quote
   getNewQuote();
   startPolling();
+  startGifInterval();
 });
 
 onUnmounted(() => {
   stopPolling();
+  stopGifInterval();
 });
 </script>
 
@@ -199,5 +283,130 @@ onUnmounted(() => {
   margin-top: 1.5rem;
   padding-top: 1rem;
   border-top: 1px solid #eee;
+}
+
+.gif-overlay {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  cursor: pointer;
+  animation: slideInCorner 0.3s ease-out;
+}
+
+.gif-container {
+  background: white;
+  border-radius: 15px;
+  padding: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  max-width: 300px;
+  max-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 3px solid #667eea;
+}
+
+.fishing-gif {
+  max-width: 280px;
+  max-height: 160px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.gif-close {
+  margin-top: 0.5rem;
+  color: #666;
+  font-size: 0.8rem;
+  text-align: center;
+  opacity: 0.8;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInCorner {
+  from {
+    transform: translateX(100%) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: scale(0.8) translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.news-ticker {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(90deg, #c41e3a 0%, #e53e3e 100%);
+  color: white;
+  overflow: hidden;
+  z-index: 999;
+  border-top: 2px solid #fff;
+  animation: slideUp 0.3s ease-out;
+}
+
+.news-content {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  white-space: nowrap;
+  animation: scroll 15s linear infinite;
+  padding-left: 100%;
+}
+
+.breaking-label {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.2rem 0.8rem;
+  margin-right: 1rem;
+  font-weight: bold;
+  font-size: 0.9rem;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.news-text {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 </style>
