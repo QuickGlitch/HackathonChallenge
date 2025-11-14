@@ -286,6 +286,11 @@ async function main() {
       body: "Without my reading glasses I can't see what I'm trying to buy, so I just click the links in here from time to time. Can anybody recommend a gift for my granddaughter?",
       authorId: 9, // HaroldSmith
     },
+    {
+      title: "Quilting supplies",
+      body: 'Every young person can use a <a href="http://localhost:3000/products/8">desk lamp</a>, how about that?',
+      authorId: 8, // DorothyWilliams
+    },
   ];
 
   // Check if forum messages already exist

@@ -1,0 +1,22 @@
+{
+  "name": "@store-hackathon/boomer-bots",
+  "version": "1.0.0",
+  "description": "simulate older users clicking on random links in the forums",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test-bot.js",
+    "start": "node dorothy-bot.js",
+    "dorothy": "node dorothy-bot.js",
+    "add-test-messages": "node add-test-messages.js"
+  },
+  "keywords": [
+    "boomer",
+    "bot",
+    "bots"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^24.30.0"
+  }
+}
