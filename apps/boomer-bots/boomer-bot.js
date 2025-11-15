@@ -172,10 +172,31 @@ class BoomerBot {
 
     try {
       // Navigate to the link
-      const navigationPromise = this.page.goto(link.url, {
-        waitUntil: "domcontentloaded",
-        timeout: this.clickTimeout,
-      });
+      const navigationPromise = this.page
+        .goto(link.url, {
+          waitUntil: "networkidle2",
+        })
+        .then(async () => {
+          // Try to find and click the first button
+          try {
+            const buttonFound = await this.page.waitForSelector("button", {
+              timeout: 1000, // Quick check for button
+            });
+
+            if (buttonFound) {
+              console.log("🔘 Found a button, clicking it...");
+              await this.page.click("button");
+
+              // Wait a bit to see if anything happens
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+            } else {
+              console.log("🚫 No button found on this page");
+            }
+          } catch (buttonError) {
+            console.log("🚫 No clickable button found on this page");
+          }
+          return true;
+        });
 
       // Set up a timeout for the entire operation
       const timeoutPromise = new Promise((resolve) => {
@@ -188,28 +209,8 @@ class BoomerBot {
       });
 
       // Wait for navigation to complete or timeout
-      await Promise.race([navigationPromise, timeoutPromise]);
-
-      // Try to find and click the first button
-      try {
-        const buttonFound = await this.page.waitForSelector("button", {
-          timeout: 1000, // Quick check for button
-        });
-
-        if (buttonFound) {
-          console.log("🔘 Found a button, clicking it...");
-          await this.page.click("button");
-
-          // Wait a bit to see if anything happens
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        } else {
-          console.log("🚫 No button found on this page");
-        }
-      } catch (buttonError) {
-        console.log("🚫 No clickable button found on this page");
-      }
-
-      return true;
+      const result = await Promise.any([navigationPromise, timeoutPromise]);
+      return result;
     } catch (error) {
       console.error(`❌ Error clicking link ${link.url}:`, error.message);
       return false;
