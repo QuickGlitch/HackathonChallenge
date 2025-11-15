@@ -4,8 +4,8 @@
  * Uses the backend API instead of direct database access
  */
 
-const https = require("https");
-const http = require("http");
+import https from "https";
+import http from "http";
 
 // First, we need to get auth cookies by logging in as different users
 const users = [

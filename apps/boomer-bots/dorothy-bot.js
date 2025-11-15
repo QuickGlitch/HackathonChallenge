@@ -4,7 +4,7 @@
  * Simulates DorothyWilliams browsing the forum and clicking on links in forum message bodies
  */
 
-const puppeteer = require("puppeteer");
+import puppeteer from "puppeteer";
 
 class DorothyBot {
   constructor() {
@@ -320,9 +320,9 @@ process.on("SIGTERM", async () => {
 });
 
 // Run the bot if this file is executed directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   const dorothyBot = new DorothyBot();
   dorothyBot.run();
 }
 
-module.exports = DorothyBot;
+export default DorothyBot;

@@ -4,28 +4,43 @@
  * Tests basic functionality before running the full simulation
  */
 
-const DorothyBot = require("./dorothy-bot");
+import DorothyBot from "./dorothy-bot.js";
+
+// Check for verbose flag
+const args = process.argv.slice(2);
+const isVerbose = args.includes("--verbose") || args.includes("-v");
+
+// Helper function for verbose logging
+function logVerbose(...args) {
+  if (isVerbose) {
+    console.log(...args);
+  }
+}
 
 async function testBot() {
-  console.log("🧪 Testing DorothyWilliams Bot...\n");
+  console.log("🧪 Testing DorothyWilliams Bot...");
+
+  if (!isVerbose) {
+    console.log("Use --verbose or -v flag for detailed output\n");
+  }
 
   const bot = new DorothyBot();
 
   try {
     // Test browser initialization
-    console.log("1. Testing browser initialization...");
+    logVerbose("1. Testing browser initialization...");
     await bot.init();
-    console.log("✅ Browser initialization successful\n");
+    logVerbose("✅ Browser initialization successful\n");
 
     // Test navigation to homepage
-    console.log("2. Testing homepage navigation...");
+    logVerbose("2. Testing homepage navigation...");
     await bot.page.goto(bot.baseUrl, { waitUntil: "networkidle2" });
 
     const title = await bot.page.title();
-    console.log(`✅ Homepage loaded successfully. Title: ${title}\n`);
+    logVerbose(`✅ Homepage loaded successfully. Title: ${title}\n`);
 
     // Test navigation to login page
-    console.log("3. Testing login page navigation...");
+    logVerbose("3. Testing login page navigation...");
     await bot.page.goto(`${bot.baseUrl}/login`, { waitUntil: "networkidle2" });
 
     const loginElements = await bot.page.evaluate(() => {
@@ -41,13 +56,13 @@ async function testBot() {
       loginElements.hasPasswordField &&
       loginElements.hasSubmitButton
     ) {
-      console.log("✅ Login form elements found\n");
+      logVerbose("✅ Login form elements found\n");
     } else {
-      console.log("❌ Missing login form elements:", loginElements);
+      logVerbose("❌ Missing login form elements:", loginElements);
     }
 
     // Test forum page accessibility
-    console.log("4. Testing forum page navigation...");
+    logVerbose("4. Testing forum page navigation...");
     await bot.page.goto(`${bot.baseUrl}/forum`, { waitUntil: "networkidle2" });
 
     const forumElements = await bot.page.evaluate(() => {
@@ -60,9 +75,9 @@ async function testBot() {
       };
     });
 
-    console.log("✅ Forum page accessible. Elements found:", forumElements);
+    logVerbose("✅ Forum page accessible. Elements found:", forumElements);
 
-    console.log("\n🎉 All tests passed! Bot is ready to run.");
+    console.log("🎉 All tests passed! Bot is ready to run.");
   } catch (error) {
     console.error("❌ Test failed:", error.message);
   } finally {
@@ -71,8 +86,8 @@ async function testBot() {
 }
 
 // Run tests if this file is executed directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   testBot();
 }
 
-module.exports = testBot;
+export default testBot;

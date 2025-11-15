@@ -4,7 +4,7 @@
  * This simulates posting messages through the UI instead of the API
  */
 
-const puppeteer = require("puppeteer");
+import puppeteer from "puppeteer";
 
 const users = [
   { username: "EdwardGreenwood", password: "memories1952" },

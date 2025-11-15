@@ -2,6 +2,7 @@
   "name": "@store-hackathon/boomer-bots",
   "version": "1.0.0",
   "description": "simulate older users clicking on random links in the forums",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "node test-bot.js",
