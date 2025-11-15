@@ -165,6 +165,7 @@
 <script>
 import { ref, onMounted } from "vue";
 import { useAuthStore } from "../stores/auth.js";
+import { apiFetch } from "@/utils/api";
 
 export default {
   name: "Forum",
@@ -187,8 +188,8 @@ export default {
       error.value = null;
 
       try {
-        const response = await fetch("/api/forum", {
-          credentials: "include",
+        const response = await apiFetch("/api/forum", {
+          method: "GET",
         });
 
         if (!response.ok) {
@@ -213,12 +214,11 @@ export default {
       isSubmitting.value = true;
 
       try {
-        const response = await fetch("/api/forum", {
+        const response = await apiFetch("/api/forum", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include",
           body: JSON.stringify({
             title: newMessage.value.title,
             body: newMessage.value.body,
@@ -262,17 +262,19 @@ export default {
       isSubmitting.value = true;
 
       try {
-        const response = await fetch(`/api/forum/${editingMessage.value.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            title: editingMessage.value.title,
-            body: editingMessage.value.body,
-          }),
-        });
+        const response = await apiFetch(
+          `/api/forum/${editingMessage.value.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              title: editingMessage.value.title,
+              body: editingMessage.value.body,
+            }),
+          }
+        );
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -301,9 +303,8 @@ export default {
       }
 
       try {
-        const response = await fetch(`/api/forum/${messageId}`, {
+        const response = await apiFetch(`/api/forum/${messageId}`, {
           method: "DELETE",
-          credentials: "include",
         });
 
         if (!response.ok) {

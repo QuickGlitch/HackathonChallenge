@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
+import { apiFetch } from "@/utils/api";
 
 export const useAuthStore = defineStore("auth", () => {
   const user = ref(null);
@@ -14,9 +15,8 @@ export const useAuthStore = defineStore("auth", () => {
   // Check authentication status by calling the backend
   async function checkAuthStatus() {
     try {
-      const response = await fetch("/api/users/me", {
+      const response = await apiFetch("/api/users/me", {
         method: "GET",
-        credentials: "include",
       });
 
       if (response.ok) {
@@ -84,12 +84,11 @@ export const useAuthStore = defineStore("auth", () => {
     error.value = null;
 
     try {
-      const response = await fetch("/api/users/login", {
+      const response = await apiFetch("/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
         body: JSON.stringify(credentials),
       });
 
@@ -118,9 +117,8 @@ export const useAuthStore = defineStore("auth", () => {
     error.value = null;
 
     try {
-      const response = await fetch("/api/users/logout", {
+      const response = await apiFetch("/api/users/logout", {
         method: "POST",
-        credentials: "include",
       });
 
       // Always clear client state regardless of server response

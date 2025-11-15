@@ -112,6 +112,7 @@
 <script setup>
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
+import { apiFetch } from "@/utils/api";
 
 const router = useRouter();
 
@@ -188,12 +189,11 @@ const handleRegister = async () => {
   successMessage.value = "";
 
   try {
-    const response = await fetch("http://localhost:3001/api/users", {
+    const response = await apiFetch("/api/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", // Include cookies
       body: JSON.stringify({
         username: form.username,
         name: form.name || undefined,

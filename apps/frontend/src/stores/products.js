@@ -1,22 +1,21 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import axios from "axios";
+import { apiFetch } from "@/utils/api";
 
 export const useProductStore = defineStore("products", () => {
   const products = ref([]);
   const loading = ref(false);
   const error = ref(null);
 
-  const api = axios.create({
-    baseURL: "/api",
-  });
-
   async function fetchProducts() {
     try {
       loading.value = true;
       error.value = null;
-      const response = await api.get("/products");
-      products.value = response.data;
+      const response = await apiFetch("/api/products");
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
+      }
+      products.value = await response.json();
     } catch (err) {
       error.value = "Failed to fetch products";
       console.error("Error fetching products:", err);
@@ -29,8 +28,11 @@ export const useProductStore = defineStore("products", () => {
     try {
       loading.value = true;
       error.value = null;
-      const response = await api.get(`/products/${id}`);
-      return response.data;
+      const response = await apiFetch(`/api/products/${id}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch product");
+      }
+      return await response.json();
     } catch (err) {
       error.value = "Failed to fetch product";
       console.error("Error fetching product:", err);
@@ -44,10 +46,13 @@ export const useProductStore = defineStore("products", () => {
     try {
       loading.value = true;
       error.value = null;
-      const response = await api.get(`/products/search`, {
-        params: { q: searchTerm },
-      });
-      products.value = response.data;
+      const response = await apiFetch(
+        `/api/products/search?q=${encodeURIComponent(searchTerm)}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to search products");
+      }
+      products.value = await response.json();
     } catch (err) {
       error.value = "Failed to search products";
       console.error("Error searching products:", err);

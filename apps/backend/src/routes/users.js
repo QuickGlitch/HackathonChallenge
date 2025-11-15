@@ -8,6 +8,14 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
+// Token expiration times
+const ACCESS_TOKEN_EXPIRY = "1m";
+const REFRESH_TOKEN_EXPIRY = "24h";
+
+// Cookie maxAge in milliseconds
+const ACCESS_TOKEN_MAX_AGE = 1 * 60 * 1000; // 1 minute
+const REFRESH_TOKEN_MAX_AGE = 24 * 60 * 60 * 1000; // 24 hours
+
 // POST /api/users - Create a new user
 router.post("/", async (req, res) => {
   try {
@@ -91,24 +99,25 @@ router.post("/login", async (req, res) => {
       role: user.role,
     };
     const accessToken = jwt.sign(tokenPayload, JWT_SECRET, {
-      expiresIn: "15m",
+      expiresIn: ACCESS_TOKEN_EXPIRY,
     });
     const refreshToken = jwt.sign(tokenPayload, JWT_REFRESH_SECRET, {
-      expiresIn: "5m",
+      expiresIn: REFRESH_TOKEN_EXPIRY,
     });
 
     // Set cookies
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-      maxAge: 15 * 60 * 1000, // 15 minutes
+      maxAge: ACCESS_TOKEN_MAX_AGE,
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 5 * 60 * 1000, // 5 minutes
+      maxAge: REFRESH_TOKEN_MAX_AGE,
+      path: "/api/users/refresh",
     });
 
     res.json({
@@ -141,9 +150,13 @@ router.post("/refresh", (req, res) => {
         .json({ error: "Invalid or expired refresh token" });
     }
 
-    const tokenPayload = { username: user.username, role: user.role };
+    const tokenPayload = {
+      userId: user.userId,
+      username: user.username,
+      role: user.role,
+    };
     const accessToken = jwt.sign(tokenPayload, JWT_SECRET, {
-      expiresIn: "15m",
+      expiresIn: ACCESS_TOKEN_EXPIRY,
     });
 
     // Set new access token as cookie
@@ -151,7 +164,7 @@ router.post("/refresh", (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 15 * 60 * 1000, // 15 minutes
+      maxAge: ACCESS_TOKEN_MAX_AGE,
     });
 
     res.json({ message: "Token refreshed successfully" });

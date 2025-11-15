@@ -56,7 +56,7 @@
 import { ref, onMounted } from "vue";
 import { useCartStore } from "../stores/cart";
 import { useAuthStore } from "../stores/auth";
-import axios from "axios";
+import { apiFetch } from "@/utils/api";
 
 const cartStore = useCartStore();
 const authStore = useAuthStore();
@@ -102,21 +102,25 @@ async function submitOrder() {
       },
     };
 
-    const response = await axios.post("/api/orders", orderData, {
-      withCredentials: true, // Include cookies for authentication
+    const response = await apiFetch("/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(orderData),
     });
-    orderId.value = response.data.id;
+
+    if (!response.ok) {
+      throw new Error("Failed to place order");
+    }
+
+    const data = await response.json();
+    orderId.value = data.id;
     orderComplete.value = true;
     cartStore.clearCart();
   } catch (error) {
     console.error("Order submission failed:", error);
-    if (error.response?.status === 401) {
-      alert(
-        "You must be logged in to place an order. Please login and try again."
-      );
-    } else {
-      alert("Failed to place order. Please try again.");
-    }
+    alert("Failed to place order. Please try again.");
   } finally {
     processing.value = false;
   }

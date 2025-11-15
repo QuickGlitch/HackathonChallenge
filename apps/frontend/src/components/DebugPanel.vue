@@ -48,6 +48,7 @@
 <script setup>
 import { ref, reactive, onMounted } from "vue";
 import { useProductStore } from "../stores/products.js";
+import { apiFetch } from "@/utils/api";
 
 // Reactive state
 const showDebugPanel = ref(false);
@@ -76,7 +77,7 @@ const attemptAdminLogin = () => {
   )}; path=/; max-age=86400; secure; samesite=strict`;
 
   // Make fake API call that will be logged on backend
-  fetch("/api/admin/login", {
+  apiFetch("/api/admin/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(debugCredentials),
@@ -100,7 +101,7 @@ const fetchHiddenProducts = async () => {
     console.log("[HONEYPOT] Attempting to fetch hidden products");
 
     // First, fetch real products from the API
-    const response = await fetch("/api/products");
+    const response = await apiFetch("/api/products");
     const realProducts = await response.json();
 
     // Create fake honey-themed products to append

@@ -147,6 +147,7 @@
 <script setup>
 import { ref, reactive } from "vue";
 import { useAuthStore } from "../stores/auth";
+import { apiFetch } from "@/utils/api";
 
 const authStore = useAuthStore();
 
@@ -200,9 +201,8 @@ async function submitProduct() {
       formData.append("image", selectedFile.value);
     }
 
-    const response = await fetch("/api/products/register", {
+    const response = await apiFetch("/api/products/register", {
       method: "POST",
-      credentials: "include", // Include cookies for authentication
       body: formData,
     });
 
