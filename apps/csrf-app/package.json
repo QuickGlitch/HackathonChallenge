@@ -1,0 +1,14 @@
+{
+  "name": "@store-hackathon/csrf-app",
+  "version": "1.0.0",
+  "description": "CSRF Attack Demonstration for Webshop Forum",
+  "scripts": {
+    "dev": "python3 -m http.server 8080",
+    "start": "python3 -m http.server 8080"
+  },
+  "keywords": [
+    "csrf",
+    "security",
+    "demonstration"
+  ]
+}
