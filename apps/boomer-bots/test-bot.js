@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
- * Test script for the DorothyWilliams Forum Bot
+ * Test script for the BoomerBot Forum Bot
  * Tests basic functionality before running the full simulation
  */
 
-import BoomerBot from "../boomer-bot.js";
+import BoomerBot from "./boomer-bot.js";
 
 // Check for verbose flag
 const args = process.argv.slice(2);
@@ -24,7 +24,7 @@ async function testBot() {
     console.log("Use --verbose or -v flag for detailed output\n");
   }
 
-  const bot = new BoomerBot();
+  const bot = new DorothyBot();
 
   try {
     // Test browser initialization

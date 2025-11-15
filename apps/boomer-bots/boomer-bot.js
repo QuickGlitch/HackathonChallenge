@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * DorothyWilliams Forum Bot
- * Simulates DorothyWilliams browsing the forum and clicking on links in forum message bodies
+ * BoomerBot Forum Bot
+ * Simulates boomer users browsing the forum and clicking on links in forum message bodies
  */
 
 import puppeteer from "puppeteer";
 
-class DorothyBot {
+class BoomerBot {
   constructor() {
     this.credentials = {
       username: "DorothyWilliams",
@@ -19,7 +19,7 @@ class DorothyBot {
   }
 
   async init() {
-    console.log("🤖 Starting DorothyWilliams Bot...");
+    console.log("🤖 Starting BoomerBot...");
 
     this.browser = await puppeteer.launch({
       headless: false, // Set to true for headless mode
@@ -33,16 +33,11 @@ class DorothyBot {
 
     this.page = await this.browser.newPage();
 
-    // Set user agent to look like an elderly user's browser
-    await this.page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
-    );
-
     console.log("✅ Browser launched successfully");
   }
 
   async login() {
-    console.log("🔐 Attempting to log in as DorothyWilliams...");
+    console.log("🔐 Attempting to log in as boomer user...");
 
     try {
       // Navigate to the login page
@@ -55,39 +50,47 @@ class DorothyBot {
 
       // Fill in the login form
       await this.page.waitForSelector("#username", { timeout: 5000 });
-      await this.page.type("#username", this.credentials.username, {
-        delay: 100,
-      });
+      await this.page.type("#username", this.credentials.username);
 
       await this.page.waitForSelector("#password", { timeout: 5000 });
-      await this.page.type("#password", this.credentials.password, {
-        delay: 100,
-      });
+      await this.page.type("#password", this.credentials.password);
 
       // Submit the form
       console.log("🚀 Submitting login form...");
+
+      // Set up response listener before clicking
+      const responsePromise = this.page.waitForResponse(
+        (response) =>
+          response.url().includes("/api/users/login") &&
+          response.request().method() === "POST"
+      );
+
+      // Click the submit button
       await this.page.click('button[type="submit"]');
 
-      // Wait for successful login redirect
-      await this.page.waitForNavigation({
-        waitUntil: "networkidle2",
-        timeout: 10000,
-      });
+      // Wait for the login response
+      const response = await responsePromise;
 
-      // Verify we're logged in by checking for user-specific elements
-      const isLoggedIn = await this.page.evaluate(() => {
-        return (
-          !window.location.href.includes("/login") &&
-          !document.querySelector(".error-message")
+      if (response.status() === 200) {
+        // Verify we're logged in by checking cookies
+        const cookies = await this.page.cookies();
+        const hasAccessToken = cookies.some(
+          (cookie) => cookie.name === "accessToken"
         );
-      });
 
-      if (isLoggedIn) {
-        console.log("✅ Successfully logged in as DorothyWilliams");
-        return true;
+        if (hasAccessToken) {
+          console.log("✅ Successfully logged in as boomer user");
+          return true;
+        } else {
+          console.error(
+            "❌ Login response was OK but no access token cookie found"
+          );
+          return false;
+        }
       } else {
+        const responseText = await response.text();
         console.error(
-          "❌ Login failed - still on login page or error detected"
+          `❌ Login failed with status ${response.status()}: ${responseText}`
         );
         return false;
       }
@@ -134,6 +137,7 @@ class DorothyBot {
             const href = link.getAttribute("href");
             const text = link.textContent.trim();
 
+            // TODO: add JS vulnerability here later as part of the course
             if (
               href &&
               !href.startsWith("javascript:") &&
@@ -233,7 +237,7 @@ class DorothyBot {
   }
 
   async simulateForumBrowsing() {
-    console.log("👵 DorothyWilliams is starting to browse the forum...");
+    console.log("👴 Boomer user is starting to browse the forum...");
 
     try {
       // Navigate to forum
@@ -270,9 +274,7 @@ class DorothyBot {
         }
       }
 
-      console.log(
-        "\n🎉 DorothyWilliams has finished browsing all forum links!"
-      );
+      console.log("\n🎉 Boomer user has finished browsing all forum links!");
     } catch (error) {
       console.error(
         "❌ Error during forum browsing simulation:",
@@ -321,8 +323,8 @@ process.on("SIGTERM", async () => {
 
 // Run the bot if this file is executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const dorothyBot = new DorothyBot();
-  dorothyBot.run();
+  const boomerBot = new BoomerBot();
+  boomerBot.run();
 }
 
-export default DorothyBot;
+export default BoomerBot;

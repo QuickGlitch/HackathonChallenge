@@ -32,7 +32,7 @@ npm start
 # or
 npm run dorothy
 # or
-node dorothy-bot.js
+node boomer-bot.js
 ```
 
 ### Test bot functionality
@@ -58,7 +58,7 @@ node test-bot.js
 
 ## Configuration
 
-You can modify the bot behavior by editing `dorothy-bot.js`:
+You can modify the bot behavior by editing `boomer-bot.js`:
 
 - **Headless Mode**: Change `headless: false` to `headless: true` in the browser launch options
 - **Timeout Duration**: Modify `this.clickTimeout = 5000` (time in milliseconds)

@@ -198,7 +198,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=200&fit=crop",
       category: "Home & Kitchen",
-      sellerId: 2,
+      sellerId: 1,
     },
     {
       name: "Running Shoes",
@@ -208,7 +208,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=200&fit=crop",
       category: "Sports & Outdoors",
-      sellerId: 2,
+      sellerId: 1,
     },
     {
       name: "Laptop Backpack",
@@ -218,7 +218,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=200&fit=crop",
       category: "Accessories",
-      sellerId: 3,
+      sellerId: 1,
     },
     {
       name: "Bluetooth Speaker",
@@ -228,7 +228,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&h=200&fit=crop",
       category: "Electronics",
-      sellerId: 3,
+      sellerId: 2,
     },
     {
       name: "Yoga Mat",
