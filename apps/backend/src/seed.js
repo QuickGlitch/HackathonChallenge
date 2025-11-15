@@ -274,22 +274,47 @@ async function main() {
     {
       title: "Wonderful community here!",
       body: "Good day, what a lovely store and lovely community. This is a great place to find gifts for my grandson. I'm happy to be a part of this.",
-      authorId: 7, // EdwardGreenwood
+      authorId: 7,
     },
     {
       title: "I seem to be lost",
       body: "Where am I?",
-      authorId: 8, // BettyJohnson
+      authorId: 8,
     },
     {
       title: "Shopping troubles without glasses",
       body: "Without my reading glasses I can't see what I'm trying to buy, so I just click the links in here from time to time. Can anybody recommend a gift for my granddaughter?",
-      authorId: 9, // HaroldSmith
+      authorId: 9,
     },
     {
-      title: "Quilting supplies",
-      body: 'Every young person can use a <a href="http://localhost:3000/products/8">desk lamp</a>, how about that?',
-      authorId: 8, // DorothyWilliams
+      title: "RE: Shopping troubles without glasses",
+      body: "Every young person can use this a lamp, how about that?",
+      authorId: 8,
+    },
+    {
+      title: "RE:RE: Shopping troubles without glasses",
+      body: "Could you please send a link? Thank you so much!",
+      authorId: 9,
+    },
+    {
+      title: "Link",
+      body: "What is a link?",
+      authorId: 8,
+    },
+    {
+      title: "RE: Link",
+      body: "I used the computer and it appears to be one of these <img src='https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fvignette4.wikia.nocookie.net%2Fp__%2Fimages%2F9%2F9d%2FLink_Artwork_1_(Twilight_Princess).png%2Frevision%2Flatest%3Fcb%3D20160705025744%26path-prefix%3Dprotagonist&f=1&nofb=1&ipt=20f01ab4249d34aa2357903230c491659af8d18ba6da83de32e757593d35a7bd'/>",
+      authorId: 7,
+    },
+    {
+      title: "RE: RE: Link",
+      body: "I have really enjoyed using this lamp: <a href='http://localhost:3000/products/8'>desk lamp</a>.",
+      authorId: 10,
+    },
+    {
+      title: "Looking to sell my crafts",
+      body: "Looking to sell my handmade vegan yoga mats: <a href='http://localhost:3000/products/7'>yoga mat</a>.",
+      authorId: 10,
     },
   ];
 
