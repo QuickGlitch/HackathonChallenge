@@ -1,7 +1,11 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { authenticateToken, requireAdmin } from "../middleware/auth.js";
+import {
+  authenticateToken,
+  requireAdmin,
+  requireUserOrAdmin,
+} from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -226,91 +230,91 @@ router.get("/me", authenticateToken, async (req, res) => {
 });
 
 // GET /api/users/:username - Get specific user
-router.get("/:username", authenticateToken, async (req, res) => {
-  try {
-    const { username } = req.params;
+router.get(
+  "/:username",
+  authenticateToken,
+  requireUserOrAdmin(),
+  async (req, res) => {
+    try {
+      const { username } = req.params;
 
-    // Users can only view their own profile, unless they're admin
-    if (req.user.username !== username && req.user.role !== "admin") {
-      return res.status(403).json({ error: "Access denied" });
+      const user = await req.prisma.user.findUnique({
+        where: { username },
+        select: {
+          username: true,
+          name: true,
+          role: true,
+          PII: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-
-    const user = await req.prisma.user.findUnique({
-      where: { username },
-      select: {
-        username: true,
-        name: true,
-        role: true,
-        PII: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    res.json(user);
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    res.status(500).json({ error: "Internal server error" });
   }
-});
+);
 
 // PUT /api/users/:username - Update user
-router.put("/:username", authenticateToken, async (req, res) => {
-  try {
-    const { username } = req.params;
-    const { name, password, role, PII } = req.body;
+router.put(
+  "/:username",
+  authenticateToken,
+  requireUserOrAdmin(),
+  async (req, res) => {
+    try {
+      const { username } = req.params;
+      const { name, password, role, PII } = req.body;
 
-    // Users can only update their own profile, unless they're admin
-    if (req.user.username !== username && req.user.role !== "admin") {
-      return res.status(403).json({ error: "Access denied" });
+      // Only admins can change roles
+      if (role && req.user.role !== "admin") {
+        return res
+          .status(403)
+          .json({ error: "Only admins can change user roles" });
+      }
+
+      const updateData = {};
+      if (name !== undefined) updateData.name = name;
+      if (PII !== undefined) updateData.PII = PII;
+      if (role !== undefined) updateData.role = role;
+
+      // Hash password if provided
+      if (password) {
+        const saltRounds = 10;
+        updateData.password = await bcrypt.hash(password, saltRounds);
+      }
+
+      const user = await req.prisma.user.update({
+        where: { username },
+        data: updateData,
+        select: {
+          username: true,
+          name: true,
+          role: true,
+          PII: true,
+          updatedAt: true,
+        },
+      });
+
+      res.json({
+        message: "User updated successfully",
+        user,
+      });
+    } catch (error) {
+      if (error.code === "P2025") {
+        return res.status(404).json({ error: "User not found" });
+      }
+      console.error("Error updating user:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-
-    // Only admins can change roles
-    if (role && req.user.role !== "admin") {
-      return res
-        .status(403)
-        .json({ error: "Only admins can change user roles" });
-    }
-
-    const updateData = {};
-    if (name !== undefined) updateData.name = name;
-    if (PII !== undefined) updateData.PII = PII;
-    if (role !== undefined) updateData.role = role;
-
-    // Hash password if provided
-    if (password) {
-      const saltRounds = 10;
-      updateData.password = await bcrypt.hash(password, saltRounds);
-    }
-
-    const user = await req.prisma.user.update({
-      where: { username },
-      data: updateData,
-      select: {
-        username: true,
-        name: true,
-        role: true,
-        PII: true,
-        updatedAt: true,
-      },
-    });
-
-    res.json({
-      message: "User updated successfully",
-      user,
-    });
-  } catch (error) {
-    if (error.code === "P2025") {
-      return res.status(404).json({ error: "User not found" });
-    }
-    console.error("Error updating user:", error);
-    res.status(500).json({ error: "Internal server error" });
   }
-});
+);
 
 // DELETE /api/users/:username - Delete user (admin only)
 router.delete(

@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
     const teams = await prisma.user.findMany({
       where: {
         id: {
-          in: [1, 2, 3, 4, 5],
+          in: [2, 3, 4, 5],
         },
       },
       select: {

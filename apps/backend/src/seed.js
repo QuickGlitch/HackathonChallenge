@@ -9,6 +9,12 @@ async function main() {
   // Create sample users
   const users = [
     {
+      username: "admin",
+      password: "miele_hackathon",
+      PII: "has a twin, admax",
+      role: "admin",
+    },
+    {
       username: "Hackors1",
       password: "go team 1",
       PII: "fantasizes about starting a Dutch cuisine restaurant: The Hungry Herring",

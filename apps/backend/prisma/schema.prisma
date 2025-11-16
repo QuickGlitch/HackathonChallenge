@@ -7,13 +7,18 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+    customer
+    admin
+}
+
 model User {
     id        Int      @id @default(autoincrement())
     PII       String   @default("favourite color is blue")
     username  String   @unique
     password  String
     name      String?
-    role      String   @default("customer") // customer, admin
+    role      UserRole @default(customer)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 

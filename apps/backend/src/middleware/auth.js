@@ -32,3 +32,17 @@ export const requireAdmin = (req, res, next) => {
   }
   next();
 };
+
+// Middleware to check if user can access another user's resource (self or admin)
+export const requireUserOrAdmin = (userParam = "username") => {
+  return (req, res, next) => {
+    const targetUser = req.params[userParam];
+
+    // Users can only access their own resources, unless they're admin
+    if (req.user.username !== targetUser && req.user.role !== "admin") {
+      return res.status(403).json({ error: "Access denied" });
+    }
+
+    next();
+  };
+};
