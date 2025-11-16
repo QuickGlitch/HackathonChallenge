@@ -78,7 +78,7 @@ router.post("/", authenticateToken, async (req, res) => {
   try {
     const { items, total, customer, payment } = req.body;
 
-    if (!items || !items.length || !total || !customer) {
+    if (!items || !items.length || total == null || !customer) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 

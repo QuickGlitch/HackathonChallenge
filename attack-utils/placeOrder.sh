@@ -60,30 +60,33 @@ fi
 
 # Execute the curl command with data payload
 echo "Placing order as authenticated Hackors1 user..."
-curl "${CURL_ARGS[@]}" --data-raw '{
+ORDER_RESPONSE=$(curl -w "\nHTTP Status: %{http_code}\n" "${CURL_ARGS[@]}" --data-raw '{
   "items": [
     {
       "id": 8,
       "name": "Desk Lamp",
       "price": 39.99,
       "image": "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=200&fit=crop",
-      "quantity": 7
+      "quantity": 7,
+      "payableTo": 1
     }
   ],
-  "total": 0.00,
+  "total": 0.0,
   "customer": {
-    "name": "asd",
-    "email": "",
-    "address": "",
-    "city": "",
-    "zipCode": ""
+    "name": "Hackors1",
+    "email": "hackors1@example.com",
+    "address": "123 Hack Street",
+    "city": "Cyber City",
+    "zipCode": "12345"
   },
   "payment": {
-    "cardNumber": "",
-    "expiryDate": "",
-    "cvv": ""
+    "cardNumber": "4111111111111111",
+    "expiryDate": "12/25",
+    "cvv": "123"
   }
-}'
+}')
+
+echo "Order response: $ORDER_RESPONSE"
 
 # Clean up the cookie jar
 rm -f "$COOKIE_JAR"
