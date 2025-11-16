@@ -4,15 +4,37 @@
 # Example: ./placeOrder.sh 192.168.1.100
 
 SPOOFED_IP=$1
+COOKIE_JAR="/tmp/hackors1_cookies.txt"
 
-# Build curl command with proper arrays
+# First, login as Hackors1 to get authentication cookies
+echo "Logging in as Hackors1..."
+LOGIN_RESPONSE=$(curl -s -c "$COOKIE_JAR" \
+  "http://localhost:3000/api/users/login" \
+  -H "Accept: application/json, text/plain, */*" \
+  -H "Content-Type: application/json" \
+  --data-raw '{
+    "username": "Hackors1",
+    "password": "go team 1"
+  }')
+
+echo "Login response: $LOGIN_RESPONSE"
+
+# Check if login was successful
+if [[ $LOGIN_RESPONSE == *"Login successful"* ]]; then
+    echo "Successfully logged in as Hackors1"
+else
+    echo "Failed to login as Hackors1"
+    exit 1
+fi
+
+# Build curl command with proper arrays for the order request
 CURL_ARGS=(
   "http://localhost:3000/api/orders"
+  "-b" "$COOKIE_JAR"
   "-H" "Accept: application/json, text/plain, */*"
   "-H" "Accept-Language: en-US,en;q=0.9,ru;q=0.8"
   "-H" "Connection: keep-alive"
   "-H" "Content-Type: application/json"
-  "-b" "adminer_key=932442d9d9ca0b411613ada8e36dd6b0; adminer_sid=74d60747a63cfc128c0bdeff9e13f1cd; OptanonConsent=%7B%7D"
   "-H" "Origin: http://localhost:3000"
   "-H" "Referer: http://localhost:3000/checkout"
   "-H" "Sec-Fetch-Dest: empty"
@@ -37,6 +59,7 @@ else
 fi
 
 # Execute the curl command with data payload
+echo "Placing order as authenticated Hackors1 user..."
 curl "${CURL_ARGS[@]}" --data-raw '{
   "items": [
     {
@@ -61,3 +84,6 @@ curl "${CURL_ARGS[@]}" --data-raw '{
     "cvv": ""
   }
 }'
+
+# Clean up the cookie jar
+rm -f "$COOKIE_JAR"
