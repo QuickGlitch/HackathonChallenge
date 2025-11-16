@@ -47,7 +47,7 @@ curl "${CURL_ARGS[@]}" --data-raw '{
       "quantity": 7
     }
   ],
-  "total": 276786786789.93,
+  "total": 0.00,
   "customer": {
     "name": "asd",
     "email": "",

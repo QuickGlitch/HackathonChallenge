@@ -40,9 +40,18 @@ router.get("/", async (req, res) => {
         score += freeOrders.length;
 
         // X points for any order items payable to the team (X being the price)
+        // Exclude items that are payable to the buyer themselves (items sold by themselves)
         const payableItems = await prisma.orderItem.findMany({
           where: {
             payableTo: team.id,
+            order: {
+              userId: {
+                not: team.id,
+              },
+            },
+          },
+          include: {
+            order: true,
           },
         });
 
