@@ -63,7 +63,7 @@ To prevent this attack, the webshop should implement:
 2. **SameSite Cookies**: Set cookies with `SameSite=Strict` or `SameSite=Lax`
 3. **Origin Validation**: Check the `Origin` and `Referer` headers
 4. **Additional Authentication**: Require password re-entry for sensitive operations
-5. **PayableTo Validation**: Validate that `payableTo` matches the product's actual `sellerId`
+5. **PayableTo Validation**: Validate that `payableTo` matches the product's actual `payableTo`
 
 ## ⚠️ Educational Purpose Only
 

@@ -178,7 +178,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop",
       category: "Electronics",
-      sellerId: 1,
+      payableTo: 1,
     },
     {
       name: "Smart Watch",
@@ -188,7 +188,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=200&fit=crop",
       category: "Electronics",
-      sellerId: 1,
+      payableTo: 1,
     },
     {
       name: "Coffee Maker",
@@ -198,7 +198,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=200&fit=crop",
       category: "Home & Kitchen",
-      sellerId: 1,
+      payableTo: 1,
     },
     {
       name: "Running Shoes",
@@ -208,7 +208,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=200&fit=crop",
       category: "Sports & Outdoors",
-      sellerId: 1,
+      payableTo: 1,
     },
     {
       name: "Laptop Backpack",
@@ -218,7 +218,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=200&fit=crop",
       category: "Accessories",
-      sellerId: 1,
+      payableTo: 1,
     },
     {
       name: "Bluetooth Speaker",
@@ -228,7 +228,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&h=200&fit=crop",
       category: "Electronics",
-      sellerId: 2,
+      payableTo: 2,
     },
     {
       name: "Yoga Mat",
@@ -238,7 +238,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=300&h=200&fit=crop",
       category: "Sports & Outdoors",
-      sellerId: 4,
+      payableTo: 4,
     },
     {
       name: "Desk Lamp",
@@ -248,7 +248,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=200&fit=crop",
       category: "Home & Kitchen",
-      sellerId: 5,
+      payableTo: 5,
     },
   ];
 

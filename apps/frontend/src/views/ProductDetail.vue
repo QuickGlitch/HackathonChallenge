@@ -10,7 +10,7 @@
       <div class="grid grid-2">
         <div class="product-image-container">
           <!-- Reseller badge for products not from main store -->
-          <div v-if="product.sellerId !== 1" class="reseller-badge">
+          <div v-if="product.payableTo !== 1" class="reseller-badge">
             Reseller
           </div>
           <img :src="product.image" :alt="product.name" class="product-image" />

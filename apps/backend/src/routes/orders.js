@@ -112,7 +112,7 @@ router.post("/", authenticateToken, async (req, res) => {
             productId: item.id,
             quantity: item.quantity,
             price: parseFloat(item.price),
-            payableTo: item.sellerId || 1, // Use the sellerId from the cart item, fallback to 1
+            payableTo: item.payableTo || 1, // Use the payableTo from the cart item, fallback to 1
           })),
         },
       },

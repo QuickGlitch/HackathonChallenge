@@ -92,7 +92,7 @@ router.post(
           price: productPrice,
           image: imageUrl,
           category: category?.trim() || "General",
-          sellerId: userId,
+          payableTo: userId,
         },
       });
 
@@ -142,7 +142,7 @@ router.get("/search", async (req, res) => {
     // VULNERABILITY: Direct string interpolation into raw SQL query
     // This allows SQL injection attacks for training purposes
     const rawQuery = `
-      SELECT id, name, description, price, image, category, "sellerId", "createdAt", "updatedAt"
+      SELECT id, name, description, price, image, category, "payableTo", "createdAt", "updatedAt"
       FROM products 
       WHERE name ILIKE '%${q}%' 
       ORDER BY "createdAt" DESC

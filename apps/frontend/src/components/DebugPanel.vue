@@ -115,7 +115,7 @@ const fetchHiddenProducts = async () => {
         image:
           "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=300&h=200&fit=crop",
         category: "Beauty",
-        sellerId: 1,
+        payableTo: 1,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
@@ -128,7 +128,7 @@ const fetchHiddenProducts = async () => {
         image:
           "https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=300&h=200&fit=crop",
         category: "Kitchen",
-        sellerId: 1,
+        payableTo: 1,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
@@ -141,7 +141,7 @@ const fetchHiddenProducts = async () => {
         image:
           "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300&h=200&fit=crop",
         category: "Health",
-        sellerId: 1,
+        payableTo: 1,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
@@ -154,7 +154,7 @@ const fetchHiddenProducts = async () => {
         image:
           "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=200&fit=crop",
         category: "Home",
-        sellerId: 1,
+        payableTo: 1,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
