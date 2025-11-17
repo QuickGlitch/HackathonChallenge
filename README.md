@@ -41,11 +41,8 @@ store-hackathon/
    cd apps/backend
    cp .env.example .env
    
-   # Run database migrations
-   npm run db:migrate
-   
-   # Seed the database with sample data
-   npm run db:seed
+   # Run database migrations and seeding
+   npm run db:setup
    ```
 
 5. **Start the development servers**
@@ -69,8 +66,7 @@ docker-compose -f docker-compose.dev.yml up -d
 
 # Run migrations and seed data
 cd apps/backend
-npm run db:migrate
-npm run db:seed
+npm run db:setup
 ```
 
 ### Production Deployment
@@ -107,6 +103,7 @@ docker-compose exec backend npm run db:seed
 - `npm run db:migrate` - Run Prisma migrations
 - `npm run db:reset` - Reset database
 - `npm run db:seed` - Seed database with sample data
+- `npm run db:setup` - Migrate and seed database (Prisma client auto-generated on install)
 
 ## 🎯 Features
 

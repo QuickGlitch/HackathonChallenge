@@ -10,6 +10,7 @@
     "test": "turbo run test",
     "db:migrate": "turbo run db:migrate",
     "db:reset": "turbo run db:reset",
+    "db:setup": "turbo run db:setup",
     "docker:up": "docker-compose -f docker-compose.dev.yml up -d",
     "docker:up:prod": "docker-compose -f docker-compose.prod.yml up -d",
     "docker:down": "docker-compose down",

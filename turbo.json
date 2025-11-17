@@ -22,6 +22,9 @@
     },
     "db:reset": {
       "cache": false
+    },
+    "db:setup": {
+      "cache": false
     }
   }
 }
