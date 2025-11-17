@@ -31,6 +31,36 @@ router.post("/", async (req, res) => {
         .json({ error: "Username and password are required" });
     }
 
+    // If trying to create an admin user, require authentication and admin role
+    if (role === "admin") {
+      // Check if user is authenticated
+      let token = req.cookies?.accessToken;
+      if (!token) {
+        const authHeader = req.headers["authorization"];
+        token = authHeader && authHeader.split(" ")[1];
+      }
+
+      if (!token) {
+        return res.status(401).json({
+          error: "Authentication required to create admin users",
+        });
+      }
+
+      // Verify token and check if user is admin
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        if (decoded.role !== "admin") {
+          return res.status(403).json({
+            error: "Only admins can create admin users",
+          });
+        }
+      } catch (tokenError) {
+        return res.status(403).json({
+          error: "Invalid or expired token",
+        });
+      }
+    }
+
     // Check if user already exists
     const existingUser = await req.prisma.user.findUnique({
       where: { username },
