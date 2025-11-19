@@ -128,7 +128,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /api/products/search - Search products by name (VULNERABLE to SQL injection for training)
+// GET /api/products/search - Search products by name (CONTROLLED SQL injection for training)
 router.get("/search", async (req, res) => {
   try {
     const { q } = req.query;
@@ -139,8 +139,79 @@ router.get("/search", async (req, res) => {
         .json({ error: "Search query parameter 'q' is required" });
     }
 
-    // VULNERABILITY: Direct string interpolation into raw SQL query
-    // This allows SQL injection attacks for training purposes
+    // LIMITED SQL injection vulnerability for training purposes
+    // This allows reading from products table but prevents destructive operations
+    // and access to other tables
+
+    // Basic input sanitization to prevent destructive operations
+    const dangerousKeywords = [
+      // Destructive operations
+      "delete",
+      "drop",
+      "truncate",
+      "insert",
+      "update",
+      "alter",
+      "create",
+      // System functions and procedures
+      "exec",
+      "execute",
+      "sp_",
+      "xp_",
+      "dbms_",
+      "utl_",
+      "sys_eval",
+      // Schema inspection
+      "information_schema",
+      "pg_catalog",
+      "sys.",
+      "master.",
+      "msdb.",
+      "tempdb.",
+      "pg_tables",
+      "pg_class",
+      "pg_namespace",
+      "pg_proc",
+      "pg_user",
+      // Other table names
+      "users",
+      "orders",
+      "order_items",
+      "forum_messages",
+      // File operations and command execution
+      "load_file",
+      "into outfile",
+      "into dumpfile",
+      "load data",
+      // Additional dangerous functions
+      "benchmark",
+      "sleep",
+      "waitfor",
+      "pg_sleep",
+    ];
+
+    const queryLower = q.toLowerCase().replace(/\s+/g, " ").trim();
+    const containsDangerous = dangerousKeywords.some((keyword) =>
+      queryLower.includes(keyword.toLowerCase())
+    );
+
+    if (containsDangerous) {
+      return res.status(400).json({
+        error:
+          "For hackathon purposes, this query is blocked try simpler / less harmful injections.",
+      });
+    }
+
+    // Additional check for multiple statements (basic)
+    if (queryLower.includes(";") && queryLower.split(";").length > 2) {
+      return res.status(400).json({
+        error:
+          "For hackathon purposes, multi-statement queries are blocked try simpler / less harmful injections.",
+      });
+    }
+
+    // CONTROLLED VULNERABILITY: Limited SQL injection in a constrained context
+    // This allows SQL injection but limits it to the products table only
     const rawQuery = `
       SELECT id, name, description, price, image, category, "payableTo", "createdAt", "updatedAt"
       FROM products 
@@ -148,7 +219,20 @@ router.get("/search", async (req, res) => {
       ORDER BY "createdAt" DESC
     `;
 
-    const products = await req.prisma.$queryRawUnsafe(rawQuery);
+    let products;
+
+    // Execute in a transaction with read-only mode to prevent modifications
+    try {
+      products = await req.prisma.$transaction(async (prisma) => {
+        // Set transaction to read-only to prevent any modifications
+        await prisma.$executeRaw`SET TRANSACTION READ ONLY`;
+        return await prisma.$queryRawUnsafe(rawQuery);
+      });
+    } catch (dbError) {
+      // If there's a database error, don't expose details
+      console.error("Database query error:", dbError);
+      throw new Error("Search failed");
+    }
 
     // Ensure all image URLs are absolute
     const productsWithAbsoluteUrls = products.map((product) => ({
@@ -159,6 +243,8 @@ router.get("/search", async (req, res) => {
     res.json(productsWithAbsoluteUrls);
   } catch (error) {
     console.error("Error searching products:", error);
+
+    // Don't expose detailed database errors that might help attackers
     res.status(500).json({ error: "Failed to search products" });
   }
 });
