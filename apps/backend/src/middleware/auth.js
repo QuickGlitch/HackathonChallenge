@@ -46,3 +46,31 @@ export const requireUserOrAdmin = (userParam = "username") => {
     next();
   };
 };
+
+// Optional authentication middleware - extracts user info if token is present but doesn't require it
+export const optionalAuthentication = (req, res, next) => {
+  let token = req.cookies?.accessToken;
+
+  // If no token in cookies, try to get it from Authorization header
+  if (!token) {
+    const authHeader = req.headers["authorization"];
+    token = authHeader && authHeader.split(" ")[1];
+  }
+
+  if (!token) {
+    // No token provided, continue without user info
+    req.user = null;
+    return next();
+  }
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) {
+      // Invalid token, continue without user info
+      req.user = null;
+    } else {
+      // Valid token, set user info
+      req.user = user;
+    }
+    next();
+  });
+};

@@ -256,6 +256,17 @@ async function main() {
       category: "Home & Kitchen",
       payableTo: 5,
     },
+    {
+      name: "Prototype animal: beta fish",
+      description:
+        "Top secret: do not release to the public yet! WIP model of a fish like fish.",
+      price: 999.99,
+      image:
+        "https://images.unsplash.com/photo-1710382163926-76b22555b52c?w=400&h=500&fit=crop",
+      category: "Prototype",
+      released: false,
+      payableTo: 1,
+    },
   ];
 
   // Check if products already exist

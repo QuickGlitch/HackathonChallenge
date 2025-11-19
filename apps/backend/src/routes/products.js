@@ -1,7 +1,10 @@
 import express from "express";
 import multer from "multer";
 import path from "path";
-import { authenticateToken } from "../middleware/auth.js";
+import {
+  authenticateToken,
+  optionalAuthentication,
+} from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -109,9 +112,16 @@ router.post(
 );
 
 // GET /api/products - Get all products
-router.get("/", async (req, res) => {
+router.get("/", optionalAuthentication, async (req, res) => {
   try {
+    // Check if user is admin (from optional authentication)
+    const isAdmin = req.user && req.user.role === "admin";
+
+    // Build query filter - non-admins only see released products
+    const whereFilter = isAdmin ? {} : { released: true };
+
     const products = await req.prisma.product.findMany({
+      where: whereFilter,
       orderBy: { createdAt: "desc" },
     });
 
@@ -129,7 +139,7 @@ router.get("/", async (req, res) => {
 });
 
 // GET /api/products/search - Search products by name (CONTROLLED SQL injection for training)
-router.get("/search", async (req, res) => {
+router.get("/search", optionalAuthentication, async (req, res) => {
   try {
     const { q } = req.query;
 
@@ -212,10 +222,14 @@ router.get("/search", async (req, res) => {
 
     // CONTROLLED VULNERABILITY: Limited SQL injection in a constrained context
     // This allows SQL injection but limits it to the products table only
+    // Note: Admin check for released products is intentionally bypassable via SQL injection
+    const isAdmin = req.user && req.user.role === "admin";
+    const releasedFilter = isAdmin ? "" : "AND released = true";
+
     const rawQuery = `
-      SELECT id, name, description, price, image, category, "payableTo", "createdAt", "updatedAt"
+      SELECT id, name, description, price, image, category, released, "payableTo", "createdAt", "updatedAt"
       FROM products 
-      WHERE name ILIKE '%${q}%' 
+      WHERE name ILIKE '%${q}%' ${releasedFilter}
       ORDER BY "createdAt" DESC
     `;
 
@@ -250,7 +264,7 @@ router.get("/search", async (req, res) => {
 });
 
 // GET /api/products/:id - Get a single product
-router.get("/:id", async (req, res) => {
+router.get("/:id", optionalAuthentication, async (req, res) => {
   try {
     const { id } = req.params;
     const product = await req.prisma.product.findUnique({
@@ -258,6 +272,12 @@ router.get("/:id", async (req, res) => {
     });
 
     if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    // Check if user can see unreleased products
+    const isAdmin = req.user && req.user.role === "admin";
+    if (!product.released && !isAdmin) {
       return res.status(404).json({ error: "Product not found" });
     }
 
@@ -277,10 +297,17 @@ router.get("/:id", async (req, res) => {
 // POST /api/products - Create a new product
 router.post("/", authenticateToken, async (req, res) => {
   try {
-    const { name, description, price, image, category } = req.body;
+    const { name, description, price, image, category, released } = req.body;
 
     if (!name || !description || !price) {
       return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Only admins can create unreleased products
+    if (released === false && req.user.role !== "admin") {
+      return res
+        .status(403)
+        .json({ error: "Only admins can create unreleased products" });
     }
 
     const product = await req.prisma.product.create({
@@ -290,6 +317,7 @@ router.post("/", authenticateToken, async (req, res) => {
         price: parseFloat(price),
         image: image || "https://via.placeholder.com/300x200",
         category: category || "General",
+        released: released !== undefined ? released : true,
       },
     });
 
@@ -304,7 +332,14 @@ router.post("/", authenticateToken, async (req, res) => {
 router.put("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, price, image, category } = req.body;
+    const { name, description, price, image, category, released } = req.body;
+
+    // Only admins can modify the released status
+    if (released !== undefined && req.user.role !== "admin") {
+      return res
+        .status(403)
+        .json({ error: "Only admins can modify release status" });
+    }
 
     const product = await req.prisma.product.update({
       where: { id: parseInt(id) },
@@ -314,6 +349,7 @@ router.put("/:id", authenticateToken, async (req, res) => {
         ...(price && { price: parseFloat(price) }),
         ...(image && { image }),
         ...(category && { category }),
+        ...(released !== undefined && { released }),
       },
     });
 
