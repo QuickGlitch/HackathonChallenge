@@ -33,9 +33,8 @@ const storage = multer.diskStorage({
     cb(null, path.join(process.cwd(), "src", "static", "images"));
   },
   filename: (req, file, cb) => {
-    // Generate unique filename with timestamp and random number
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, "product-" + uniqueSuffix + path.extname(file.originalname));
+    // normally you would rename the file to avoid conflicts but also for obfuscate the resource name
+    cb(null, file.originalname);
   },
 });
 
