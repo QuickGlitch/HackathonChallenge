@@ -3,42 +3,68 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
+// Fixed UUIDs for users (to maintain consistency across resets)
+const USER_IDS = {
+  admin: "00000000-0000-0000-0000-000000000001",
+  hackors1: "00000000-0000-0000-0000-000000000002",
+  hackors2: "00000000-0000-0000-0000-000000000003",
+  hackors3: "00000000-0000-0000-0000-000000000004",
+  hackors4: "00000000-0000-0000-0000-000000000005",
+  hackors5: "00000000-0000-0000-0000-000000000006",
+  edwardGreenwood: "00000000-0000-0000-0000-000000000007",
+  bettyJohnson: "00000000-0000-0000-0000-000000000008",
+  haroldSmith: "00000000-0000-0000-0000-000000000009",
+  dorothyWilliams: "00000000-0000-0000-0000-000000000010",
+  walterBrown: "00000000-0000-0000-0000-000000000011",
+  eleanorDavis: "00000000-0000-0000-0000-000000000012",
+  frankMiller: "00000000-0000-0000-0000-000000000013",
+  mildredWilson: "00000000-0000-0000-0000-000000000014",
+  arthurMoore: "00000000-0000-0000-0000-000000000015",
+  ruthTaylor: "00000000-0000-0000-0000-000000000016",
+};
+
 async function main() {
   console.log("🌱 Seeding database...");
 
   // Create sample users
   const users = [
     {
+      id: USER_IDS.admin,
       username: "admin",
       password: "miele_hackathon",
       PII: "has a twin, admax",
       role: "admin",
     },
     {
+      id: USER_IDS.hackors1,
       username: "Hackors1",
       password: "go team 1",
       PII: "fantasizes about starting a Dutch cuisine restaurant: The Hungry Herring",
       role: "customer",
     },
     {
+      id: USER_IDS.hackors2,
       username: "Hackors2",
       password: "taco2",
       PII: "Things Lord of the Rings is overrated...",
       role: "customer",
     },
     {
+      id: USER_IDS.hackors3,
       username: "Hackors3",
       password: "Team3",
       PII: "Dyes their hair every color of the rainbow on a monthly basis",
       role: "customer",
     },
     {
+      id: USER_IDS.hackors4,
       username: "Hackors4",
       password: "PW4",
       PII: "Collects vintage typewriters and has a collection of over 50",
       role: "customer",
     },
     {
+      id: USER_IDS.hackors5,
       username: "Hackors5",
       password: "password123",
       PII: "Does a one man show, Mike Myers inspired, of Romeo and Juliet.",
@@ -46,6 +72,7 @@ async function main() {
     },
     // Elderly users with 1950s-style names
     {
+      id: USER_IDS.edwardGreenwood,
       username: "EdwardGreenwood",
       password: "memories1952",
       name: "Edward Greenwood",
@@ -53,6 +80,7 @@ async function main() {
       role: "customer",
     },
     {
+      id: USER_IDS.bettyJohnson,
       username: "BettyJohnson",
       password: "knitting123",
       name: "Betty Johnson",
@@ -60,6 +88,7 @@ async function main() {
       role: "customer",
     },
     {
+      id: USER_IDS.haroldSmith,
       username: "HaroldSmith",
       password: "fishing1955",
       name: "Harold Smith",
@@ -67,6 +96,7 @@ async function main() {
       role: "customer",
     },
     {
+      id: USER_IDS.dorothyWilliams,
       username: "DorothyWilliams",
       password: "quilting456",
       name: "Dorothy Williams",
@@ -74,6 +104,7 @@ async function main() {
       role: "customer",
     },
     {
+      id: USER_IDS.walterBrown,
       username: "WalterBrown",
       password: "woodwork789",
       name: "Walter Brown",
@@ -81,6 +112,7 @@ async function main() {
       role: "customer",
     },
     {
+      id: USER_IDS.eleanorDavis,
       username: "EleanorDavis",
       password: "bridge1953",
       name: "Eleanor Davis",
@@ -88,6 +120,7 @@ async function main() {
       role: "customer",
     },
     {
+      id: USER_IDS.frankMiller,
       username: "FrankMiller",
       password: "trains1954",
       name: "Frank Miller",
@@ -95,6 +128,7 @@ async function main() {
       role: "customer",
     },
     {
+      id: USER_IDS.mildredWilson,
       username: "MildredWilson",
       password: "church1950",
       name: "Mildred Wilson",
@@ -102,6 +136,7 @@ async function main() {
       role: "customer",
     },
     {
+      id: USER_IDS.arthurMoore,
       username: "ArthurMoore",
       password: "baseball1956",
       name: "Arthur Moore",
@@ -109,6 +144,7 @@ async function main() {
       role: "customer",
     },
     {
+      id: USER_IDS.ruthTaylor,
       username: "RuthTaylor",
       password: "cooking1949",
       name: "Ruth Taylor",
@@ -184,7 +220,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop",
       category: "Electronics",
-      payableTo: 1,
+      payableTo: USER_IDS.admin,
     },
     {
       name: "Smart Watch",
@@ -194,7 +230,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=200&fit=crop",
       category: "Electronics",
-      payableTo: 1,
+      payableTo: USER_IDS.admin,
     },
     {
       name: "Coffee Maker",
@@ -204,7 +240,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=200&fit=crop",
       category: "Home & Kitchen",
-      payableTo: 1,
+      payableTo: USER_IDS.admin,
     },
     {
       name: "Running Shoes",
@@ -214,7 +250,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=200&fit=crop",
       category: "Sports & Outdoors",
-      payableTo: 1,
+      payableTo: USER_IDS.admin,
     },
     {
       name: "Laptop Backpack",
@@ -224,7 +260,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=200&fit=crop",
       category: "Accessories",
-      payableTo: 1,
+      payableTo: USER_IDS.admin,
     },
     // Honeypot products - only visible when honey cookie is set
     {
@@ -236,7 +272,7 @@ async function main() {
         "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=300&h=200&fit=crop",
       category: "Beauty",
       honeypot: true,
-      payableTo: 1,
+      payableTo: USER_IDS.admin,
     },
     {
       name: "Premium Honey Receptacle",
@@ -247,7 +283,7 @@ async function main() {
         "https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=300&h=200&fit=crop",
       category: "Kitchen",
       honeypot: true,
-      payableTo: 1,
+      payableTo: USER_IDS.admin,
     },
     {
       name: "Beeswax Candle Collection",
@@ -258,7 +294,7 @@ async function main() {
         "https://images.unsplash.com/photo-1593198011850-ec9a09c68c58?w=300&h=200&fit=crop",
       category: "Home",
       honeypot: true,
-      payableTo: 1,
+      payableTo: USER_IDS.admin,
     },
     {
       name: "Honeycomb Memory Foam Pillow",
@@ -269,7 +305,7 @@ async function main() {
         "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=200&fit=crop",
       category: "Home",
       honeypot: true,
-      payableTo: 1,
+      payableTo: USER_IDS.admin,
     },
     {
       name: "Bluetooth Speaker",
@@ -279,7 +315,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&h=200&fit=crop",
       category: "Electronics",
-      payableTo: 2,
+      payableTo: USER_IDS.hackors1,
     },
     {
       name: "Yoga Mat",
@@ -289,7 +325,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=300&h=200&fit=crop",
       category: "Sports & Outdoors",
-      payableTo: 4,
+      payableTo: USER_IDS.hackors3,
     },
     {
       name: "Desk Lamp",
@@ -299,7 +335,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=200&fit=crop",
       category: "Home & Kitchen",
-      payableTo: 5,
+      payableTo: USER_IDS.hackors4,
     },
     {
       name: "Prototype animal: beta fish",
@@ -310,7 +346,7 @@ async function main() {
         "https://images.unsplash.com/photo-1710382163926-76b22555b52c?w=400&h=500&fit=crop",
       category: "Prototype",
       released: false,
-      payableTo: 1,
+      payableTo: USER_IDS.admin,
     },
   ];
 
@@ -356,52 +392,52 @@ async function main() {
     {
       title: "A message from your admin",
       body: "FYI, As an admin I will be checking every link shared here by clicking on it.",
-      authorId: 1,
+      authorId: USER_IDS.admin,
     },
     {
       title: "Wonderful community here!",
       body: "Good day, what a lovely store and lovely community. This is a great place to find gifts for my grandson. I'm happy to be a part of this.",
-      authorId: 7,
+      authorId: USER_IDS.edwardGreenwood,
     },
     {
       title: "I seem to be lost",
       body: "Where am I?",
-      authorId: 8,
+      authorId: USER_IDS.bettyJohnson,
     },
     {
       title: "Shopping troubles without glasses",
       body: "Without my reading glasses I can't see what I'm trying to buy, so I just click the links in here from time to time. Can anybody recommend a gift for my granddaughter?",
-      authorId: 9,
+      authorId: USER_IDS.haroldSmith,
     },
     {
       title: "RE: Shopping troubles without glasses",
       body: "Every young person can use this a lamp, how about that?",
-      authorId: 8,
+      authorId: USER_IDS.bettyJohnson,
     },
     {
       title: "RE:RE: Shopping troubles without glasses",
       body: "Could you please send a link? Thank you so much!",
-      authorId: 9,
+      authorId: USER_IDS.haroldSmith,
     },
     {
       title: "Link",
       body: "What is a link?",
-      authorId: 8,
+      authorId: USER_IDS.bettyJohnson,
     },
     {
       title: "RE: Link",
       body: "I used the computer and it appears to be one of these <img src='https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fvignette4.wikia.nocookie.net%2Fp__%2Fimages%2F9%2F9d%2FLink_Artwork_1_(Twilight_Princess).png%2Frevision%2Flatest%3Fcb%3D20160705025744%26path-prefix%3Dprotagonist&f=1&nofb=1&ipt=20f01ab4249d34aa2357903230c491659af8d18ba6da83de32e757593d35a7bd'/>",
-      authorId: 7,
+      authorId: USER_IDS.edwardGreenwood,
     },
     {
       title: "RE: RE: Link",
       body: "I have really enjoyed using this lamp: <a href='http://localhost:3000/products/8'>desk lamp</a>.",
-      authorId: 10,
+      authorId: USER_IDS.dorothyWilliams,
     },
     {
       title: "Looking to sell my crafts",
       body: "Looking to sell my handmade vegan yoga mats: <a href='http://localhost:3000/products/7'>yoga mat</a>.",
-      authorId: 10,
+      authorId: USER_IDS.dorothyWilliams,
     },
   ];
 

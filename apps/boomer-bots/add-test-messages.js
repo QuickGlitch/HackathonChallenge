@@ -9,10 +9,26 @@ import http from "http";
 
 // First, we need to get auth cookies by logging in as different users
 const users = [
-  { username: "EdwardGreenwood", password: "memories1952", id: 7 },
-  { username: "DorothyWilliams", password: "quilting456", id: 10 },
-  { username: "HaroldSmith", password: "fishing1955", id: 9 },
-  { username: "BettyJohnson", password: "knitting123", id: 8 },
+  {
+    username: "EdwardGreenwood",
+    password: "memories1952",
+    id: "00000000-0000-0000-0000-000000000007",
+  },
+  {
+    username: "DorothyWilliams",
+    password: "quilting456",
+    id: "00000000-0000-0000-0000-000000000010",
+  },
+  {
+    username: "HaroldSmith",
+    password: "fishing1955",
+    id: "00000000-0000-0000-0000-000000000009",
+  },
+  {
+    username: "BettyJohnson",
+    password: "knitting123",
+    id: "00000000-0000-0000-0000-000000000008",
+  },
 ];
 
 const testMessages = [

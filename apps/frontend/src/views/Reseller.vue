@@ -83,24 +83,6 @@
             </div>
 
             <div class="form-group">
-              <label for="productCategory">Category</label>
-              <select
-                id="productCategory"
-                v-model="form.category"
-                class="form-control"
-              >
-                <option value="General">General</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Home & Kitchen">Home & Kitchen</option>
-                <option value="Sports & Outdoors">Sports & Outdoors</option>
-                <option value="Accessories">Accessories</option>
-                <option value="Books">Books</option>
-                <option value="Clothing">Clothing</option>
-                <option value="Health & Beauty">Health & Beauty</option>
-              </select>
-            </div>
-
-            <div class="form-group">
               <label for="productImage">Product Image</label>
               <input
                 id="productImage"
@@ -156,7 +138,6 @@ const form = reactive({
   name: "",
   description: "",
   price: "",
-  category: "General",
 });
 
 // Component state
@@ -216,7 +197,6 @@ async function submitProduct() {
       name: form.name,
       description: form.description,
       price: form.price,
-      category: form.category,
       image: imageUrl,
     };
 

@@ -3,6 +3,9 @@ import { authenticateToken, requireAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
+// Admin user UUID (fallback for payableTo)
+const ADMIN_USER_ID = "00000000-0000-0000-0000-000000000001";
+
 // Helper function to get client IP address
 function getClientIpAddress(req) {
   return (
@@ -126,7 +129,7 @@ router.post("/", authenticateToken, async (req, res) => {
             productId: item.id,
             quantity: item.quantity,
             price: parseFloat(item.price),
-            payableTo: item.payableTo || 1, // Use the payableTo from the cart item, fallback to 1
+            payableTo: item.payableTo || ADMIN_USER_ID, // Use the payableTo from the cart item, fallback to admin
           })),
         },
       },

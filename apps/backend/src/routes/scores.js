@@ -2,6 +2,9 @@ import express from "express";
 
 const router = express.Router();
 
+// Admin user UUID (payable to admin for scoring purposes)
+const ADMIN_USER_ID = "00000000-0000-0000-0000-000000000001";
+
 // GET /api/scores - Get team scores
 router.get("/", async (req, res) => {
   try {
@@ -25,14 +28,14 @@ router.get("/", async (req, res) => {
       teams.map(async (team) => {
         let score = 0;
 
-        // 1 point per order placed with total value of 0 and payable to team 1
+        // 1 point per order placed with total value of 0 and payable to admin
         const freeOrders = await prisma.order.findMany({
           where: {
             total: 0,
             userId: team.id,
             items: {
               some: {
-                payableTo: 1,
+                payableTo: ADMIN_USER_ID,
               },
             },
           },
