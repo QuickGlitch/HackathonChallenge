@@ -1,0 +1,10 @@
+{
+  "name": "image-server",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Running in Docker'",
+    "build": "echo 'Building Docker image'",
+    "start": "echo 'Running in Docker'"
+  }
+}

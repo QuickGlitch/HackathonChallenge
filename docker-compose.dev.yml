@@ -15,6 +15,20 @@ services:
     networks:
       - store-network
 
+  # Image Server (PHP) for local development
+  image-server:
+    build:
+      context: ./apps/image-server
+      dockerfile: Dockerfile
+    container_name: store-hackathon-image-server-dev
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    volumes:
+      - ./apps/image-server/public/images:/var/www/html/images
+    networks:
+      - store-network
+
 volumes:
   postgres-data:
     driver: local

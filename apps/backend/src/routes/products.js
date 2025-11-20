@@ -54,61 +54,49 @@ const upload = multer({
 });
 
 // POST /api/products/register - Register a new product by a user (authenticated)
-router.post(
-  "/register",
-  authenticateToken,
-  upload.single("image"),
-  async (req, res) => {
-    try {
-      const { name, description, price, category } = req.body;
-      const userId = req.user.userId; // Get user ID from authenticated token
+router.post("/register", authenticateToken, async (req, res) => {
+  try {
+    const { name, description, price, category, image } = req.body;
+    const userId = req.user.userId; // Get user ID from authenticated token
 
-      if (!name || !description || !price) {
-        return res
-          .status(400)
-          .json({ error: "Missing required fields: name, description, price" });
-      }
-
-      // Validate price is a number
-      const productPrice = parseFloat(price);
-      if (isNaN(productPrice) || productPrice <= 0) {
-        return res
-          .status(400)
-          .json({ error: "Price must be a valid positive number" });
-      }
-
-      // Handle image file
-      let imageUrl = "https://via.placeholder.com/300x200"; // default image
-      if (req.file) {
-        // Create the full URL path for the uploaded image
-        const baseUrl =
-          process.env.BASE_URL ||
-          `http://localhost:${process.env.PORT || 3001}`;
-        imageUrl = `${baseUrl}/static/images/${req.file.filename}`;
-      }
-
-      const product = await req.prisma.product.create({
-        data: {
-          name: name.trim(),
-          description: description.trim(),
-          price: productPrice,
-          image: imageUrl,
-          category: category?.trim() || "General",
-          payableTo: userId,
-        },
-      });
-
-      res.status(201).json({
-        success: true,
-        message: "Product registered successfully",
-        product,
-      });
-    } catch (error) {
-      console.error("Error registering product:", error);
-      res.status(500).json({ error: "Failed to register product" });
+    if (!name || !description || !price) {
+      return res
+        .status(400)
+        .json({ error: "Missing required fields: name, description, price" });
     }
+
+    // Validate price is a number
+    const productPrice = parseFloat(price);
+    if (isNaN(productPrice) || productPrice <= 0) {
+      return res
+        .status(400)
+        .json({ error: "Price must be a valid positive number" });
+    }
+
+    // Handle image URL
+    let imageUrl = image || "https://via.placeholder.com/300x200"; // default image
+
+    const product = await req.prisma.product.create({
+      data: {
+        name: name.trim(),
+        description: description.trim(),
+        price: productPrice,
+        image: imageUrl,
+        category: category?.trim() || "General",
+        payableTo: userId,
+      },
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Product registered successfully",
+      product,
+    });
+  } catch (error) {
+    console.error("Error registering product:", error);
+    res.status(500).json({ error: "Failed to register product" });
   }
-);
+});
 
 // GET /api/products - Get all products
 router.get("/", optionalAuthentication, async (req, res) => {

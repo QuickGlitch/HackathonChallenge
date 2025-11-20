@@ -190,20 +190,42 @@ async function submitProduct() {
   error.value = "";
 
   try {
-    // Create FormData for multipart/form-data
-    const formData = new FormData();
-    formData.append("name", form.name);
-    formData.append("description", form.description);
-    formData.append("price", form.price);
-    formData.append("category", form.category);
+    let imageUrl = "";
 
+    // Upload image first if selected
     if (selectedFile.value) {
-      formData.append("image", selectedFile.value);
+      const imageFormData = new FormData();
+      imageFormData.append("image", selectedFile.value);
+
+      const uploadResponse = await apiFetch("/api/upload-image", {
+        method: "POST",
+        body: imageFormData,
+      });
+
+      const uploadData = await uploadResponse.json();
+
+      if (!uploadResponse.ok) {
+        throw new Error(uploadData.error || "Failed to upload image");
+      }
+
+      imageUrl = uploadData.url;
     }
+
+    // Create product with image URL
+    const productData = {
+      name: form.name,
+      description: form.description,
+      price: form.price,
+      category: form.category,
+      image: imageUrl,
+    };
 
     const response = await apiFetch("/api/products/register", {
       method: "POST",
-      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(productData),
     });
 
     const data = await response.json();
