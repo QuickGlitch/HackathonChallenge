@@ -289,6 +289,11 @@ async function main() {
   // Create sample forum messages
   const forumMessages = [
     {
+      title: "A message from your admin",
+      body: "FYI, As an admin I will be checking every link shared here by clicking on it.",
+      authorId: 1,
+    },
+    {
       title: "Wonderful community here!",
       body: "Good day, what a lovely store and lovely community. This is a great place to find gifts for my grandson. I'm happy to be a part of this.",
       authorId: 7,
