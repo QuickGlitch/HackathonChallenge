@@ -1,5 +1,5 @@
 import express from "express";
-import { authenticateToken } from "../middleware/auth.js";
+import { authenticateToken, requireAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -27,10 +27,17 @@ async function checkOrderLimits(prisma, customerName, ipAddress) {
   return orderCount >= 50; // Return true if limit exceeded (based on number of orders)
 }
 
-// GET /api/orders - Get all orders (admin endpoint)
-router.get("/", async (req, res) => {
+// GET /api/orders - Get orders (all for admins, own orders for users)
+router.get("/", authenticateToken, async (req, res) => {
   try {
+    // Build query filter based on user role
+    const whereFilter =
+      req.user.role === "admin"
+        ? {} // Admins can see all orders
+        : { userId: req.user.userId }; // Regular users only see their own orders
+
     const orders = await req.prisma.order.findMany({
+      where: whereFilter,
       include: {
         items: {
           include: {
@@ -47,8 +54,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /api/orders/:id - Get a single order
-router.get("/:id", async (req, res) => {
+// GET /api/orders/:id - Get a single order (with ownership check)
+router.get("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const order = await req.prisma.order.findUnique({
@@ -64,6 +71,13 @@ router.get("/:id", async (req, res) => {
 
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
+    }
+
+    // Check if user has permission to view this order
+    if (req.user.role !== "admin" && order.userId !== req.user.userId) {
+      return res
+        .status(403)
+        .json({ error: "Access denied: You can only view your own orders" });
     }
 
     res.json(order);
@@ -135,8 +149,8 @@ router.post("/", authenticateToken, async (req, res) => {
   }
 });
 
-// PUT /api/orders/:id/status - Update order status
-router.put("/:id/status", async (req, res) => {
+// PUT /api/orders/:id/status - Update order status (admin only)
+router.put("/:id/status", authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
