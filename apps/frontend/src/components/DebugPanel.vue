@@ -100,78 +100,26 @@ const fetchHiddenProducts = async () => {
     // Log the honeypot activity
     console.log("[HONEYPOT] Attempting to fetch hidden products");
 
-    // First, fetch real products from the API
+    // Set the honey cookie to enable honeypot products
+    document.cookie = "honey=pot; path=/; max-age=86400; samesite=strict";
+    console.log("Admin cookie set successfully");
+
+    // Fetch products from the API - now it will include honeypot products
     const response = await apiFetch("/api/products");
-    const realProducts = await response.json();
+    const allProducts = await response.json();
 
-    // Create fake honey-themed products to append
-    const fakeProducts = [
-      {
-        id: 99991,
-        name: "Honey-Based Skin Cream",
-        description:
-          "Premium organic honey facial moisturizer with anti-aging properties. Made from rare Manuka honey.",
-        price: 89.99,
-        image:
-          "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=300&h=200&fit=crop",
-        category: "Beauty",
-        payableTo: 1,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: 99992,
-        name: "Premium Honey Receptacle",
-        description:
-          "Hand-crafted wooden honey jar with traditional bee motifs. Perfect for storing artisanal honey.",
-        price: 45.5,
-        image:
-          "https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=300&h=200&fit=crop",
-        category: "Kitchen",
-        payableTo: 1,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: 99993,
-        name: "Royal Honey Elixir",
-        description:
-          "Concentrated honey supplement with royal jelly and propolis. Boost your immunity naturally.",
-        price: 124.99,
-        image:
-          "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300&h=200&fit=crop",
-        category: "Health",
-        payableTo: 1,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: 99994,
-        name: "Honeycomb Memory Foam Pillow",
-        description:
-          "Ergonomic pillow with honeycomb ventilation design. Infused with honey-scented aromatherapy.",
-        price: 67.75,
-        image:
-          "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=200&fit=crop",
-        category: "Home",
-        payableTo: 1,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    ];
-
-    // Combine real and fake products
-    const allProducts = [...realProducts, ...fakeProducts];
-
-    // Update the products store properly
+    // Update the products store
     const productsStore = useProductStore();
     productsStore.setProducts(allProducts);
 
+    const honeypotCount = allProducts.filter((p) => p.honeypot).length;
+    const regularCount = allProducts.length - honeypotCount;
+
     console.log(
-      `[HONEYPOT] Loaded ${realProducts.length} real products + ${fakeProducts.length} hidden honey products`
+      `[HONEYPOT] Loaded ${regularCount} regular products + ${honeypotCount} honeypot products`
     );
     alert(
-      `Successfully fetched ${allProducts.length} products including ${fakeProducts.length} premium tier`
+      `Successfully fetched ${allProducts.length} products including ${honeypotCount} premium tier`
     );
   } catch (error) {
     console.error("[HONEYPOT] Error fetching hidden products:", error);

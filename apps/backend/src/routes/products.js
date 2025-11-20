@@ -77,8 +77,15 @@ router.get("/", optionalAuthentication, async (req, res) => {
     // Check if user is admin (from optional authentication)
     const isAdmin = req.user && req.user.role === "admin";
 
+    // Check for honeypot cookie
+    const hasHoneyCookie = req.cookies && req.cookies.honey === "pot";
+
     // Build query filter - non-admins only see released products
-    const whereFilter = isAdmin ? {} : { released: true };
+    // Also filter out honeypot products unless the honey cookie is present
+    const whereFilter = {
+      ...(isAdmin ? {} : { released: true }),
+      ...(hasHoneyCookie ? {} : { honeypot: false }),
+    };
 
     const products = await req.prisma.product.findMany({
       where: whereFilter,

@@ -226,6 +226,51 @@ async function main() {
       category: "Accessories",
       payableTo: 1,
     },
+    // Honeypot products - only visible when honey cookie is set
+    {
+      name: "Honey-Based Skin Cream",
+      description:
+        "Premium organic honey facial moisturizer with anti-aging properties. Made from rare Manuka honey.",
+      price: 89.99,
+      image:
+        "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=300&h=200&fit=crop",
+      category: "Beauty",
+      honeypot: true,
+      payableTo: 1,
+    },
+    {
+      name: "Premium Honey Receptacle",
+      description:
+        "Hand-crafted wooden honey jar with traditional bee motifs. Perfect for storing artisanal honey.",
+      price: 45.5,
+      image:
+        "https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=300&h=200&fit=crop",
+      category: "Kitchen",
+      honeypot: true,
+      payableTo: 1,
+    },
+    {
+      name: "Beeswax Candle Collection",
+      description:
+        "Set of 6 handmade beeswax candles. Natural air purifying and long-lasting burn time.",
+      price: 52.0,
+      image:
+        "https://images.unsplash.com/photo-1593198011850-ec9a09c68c58?w=300&h=200&fit=crop",
+      category: "Home",
+      honeypot: true,
+      payableTo: 1,
+    },
+    {
+      name: "Honeycomb Memory Foam Pillow",
+      description:
+        "Ergonomic pillow with honeycomb ventilation design. Infused with honey-scented aromatherapy.",
+      price: 67.75,
+      image:
+        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=200&fit=crop",
+      category: "Home",
+      honeypot: true,
+      payableTo: 1,
+    },
     {
       name: "Bluetooth Speaker",
       description:
@@ -274,6 +319,26 @@ async function main() {
 
   if (existingProducts > 0) {
     console.log("Products already exist, skipping seed...");
+
+    // Check if honeypot products exist
+    const existingHoneypotProducts = await prisma.product.count({
+      where: { honeypot: true },
+    });
+
+    if (existingHoneypotProducts === 0) {
+      console.log("Adding honeypot products...");
+      const honeypotProducts = products.filter((p) => p.honeypot === true);
+
+      for (const product of honeypotProducts) {
+        await prisma.product.create({
+          data: product,
+        });
+      }
+
+      console.log(`✅ Created ${honeypotProducts.length} honeypot products!`);
+    } else {
+      console.log("Honeypot products already exist, skipping...");
+    }
   } else {
     console.log("Creating sample products...");
 

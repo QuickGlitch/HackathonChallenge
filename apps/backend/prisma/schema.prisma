@@ -39,6 +39,7 @@ model Product {
     image       String?
     category    String   @default("General")
     released    Boolean  @default(true)
+    honeypot    Boolean  @default(false)
     payableTo   Int      @default(1)
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
