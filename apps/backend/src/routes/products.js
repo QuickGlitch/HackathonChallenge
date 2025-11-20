@@ -26,33 +26,6 @@ function ensureAbsoluteImageUrl(imageUrl) {
 
   return imageUrl;
 }
-
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(process.cwd(), "src", "static", "images"));
-  },
-  filename: (req, file, cb) => {
-    // normally you would rename the file to avoid conflicts but also for obfuscate the resource name
-    cb(null, file.originalname);
-  },
-});
-
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
-  },
-  fileFilter: (req, file, cb) => {
-    // Accept only image files
-    if (file.mimetype.startsWith("image/")) {
-      cb(null, true);
-    } else {
-      cb(new Error("Oh mime! Only image files are allowed 🤔 "), false);
-    }
-  },
-});
-
 // POST /api/products/register - Register a new product by a user (authenticated)
 router.post("/register", authenticateToken, async (req, res) => {
   try {
