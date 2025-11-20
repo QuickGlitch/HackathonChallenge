@@ -6,15 +6,21 @@
 This example is very much gamified - a real webshop would (heopfully) never put the total price in the client side code, but rather calculate it on the server side. However for the hackathon this is an intentional vulnerability that serves as an easy entry point for scoring points.
 This exploit is repeatable - meaning an attacker can place multiple free orders and build up points quickly until they hit a defence mechanism: rate limiting. This serves as a good example of how rate limiting can be used to slow down attackers but also means a hacker team can try to find ways around rate limiting (e.g. rotating proxies, distributed attacks etc) in order to keep scoring points.
 
-## Tricking users into paying the attacker
+## Tricking users into paying the attacker (CSRF)
 
 For gamification's sake the payable account (`payableTo`) is sent from the client side when placing an order. This means an attacker can modify this field to point to their own account and trick users into paying them instead of the webshop. A smiliar mehcanism that is more realistic is having users tricking into paying for a product but having it shipped to the attacker instead of themselves.
+An example of this implementation is done in `apps/csrf-demo`.
 
 ## PII
 
-A user can only access their own information via the API. However, either by using admin privelages or by exploiting SQL in the searchbar they can access other users PII.
+A user can only access their own information via the API. Obtaining admin privelages they can access other users PII.
 
-## Explotiing Admin Privelages
+## Obtaining unreleased products
+
+Some products in the database are not yet released to the general public. An attacker can obtain admin privelages and access these unreleased products - leaking the data.
+The attacker may achieve this by exploiting SQL injection in the search endpoint, or by gaining admin privelages.
+
+## Obtaining Admin Privelages
 
 Several endpoints are protected behind admin access. So how can an attacker get their hands on admin privelages?
 As mentioned in the forum the admin will be clicking any links posted - which means an attacker can post links that snoop on admin sessions or perform actions on behalf of the admin.
@@ -37,8 +43,8 @@ As mentioned in the forum the admin will be clicking any links posted - which me
 
 8. **Delete any user account** - The `/api/users/:username` DELETE endpoint is restricted to admin access only.
 
-9. **Access all order data** - The `/api/orders` GET endpoint returns all orders from all users without authentication checks (vulnerability - should require admin auth but doesn't).
+9. **Access all order data** - The `/api/orders` GET endpoint returns all orders from all users without authentication checks
 
 ## File Upload Vulnerability
 
-Users can upload files to the server and create a web shell.
+As part of the reseller functionality, users can upload images for the products they want to resell. However, the image upload endpoint does not properly validate the uploaded files, allowing attackers to upload malicious files disguised as images. In this case a PHP web shell can be uploaded, enabling remote command execution on the server. See the [file upload exploit documentation](attack-utils/file-upload/file-upload.md) for more details.
