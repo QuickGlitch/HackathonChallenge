@@ -9,7 +9,8 @@
     "start": "node boomer-bot.js",
     "pm2:start:boomer-bots": "pm2 start ecosystem.config.json",
     "pm2:logs:boomer-bots": "pm2 logs --lines 20",
-    "pm2:stop:boomer-bots": "pm2 stop apps boomer-bot-dorothy boomer-bot-admin"
+    "pm2:stop:boomer-bots": "pm2 stop boomer-bots",
+    "pm2:delete:boomer-bots": "pm2 delete boomer-bots"
   },
   "keywords": [
     "boomer",

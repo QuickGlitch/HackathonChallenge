@@ -1,6 +1,7 @@
 {
   "apps": [
     {
+      "namespace": "boomer-bots",
       "name": "boomer-bot-dorothy",
       "script": "./boomer-bot.js",
       "env": {
@@ -11,6 +12,7 @@
       "restart_delay": 6000
     },
     {
+      "namespace": "boomer-bots",
       "name": "boomer-bot-admin",
       "script": "./boomer-bot.js",
       "env": {
