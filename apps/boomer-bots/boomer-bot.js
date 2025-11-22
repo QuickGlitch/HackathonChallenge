@@ -301,6 +301,8 @@ class BoomerBot {
         console.log("🔚 Closing browser...");
         await this.browser.close();
       }
+      console.log("👋 Bot finished successfully");
+      process.exit(0);
     }
   }
 
