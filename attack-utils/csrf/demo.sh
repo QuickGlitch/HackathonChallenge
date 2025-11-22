@@ -72,7 +72,7 @@ fi
 lsof -ti:8080 | xargs kill -9 2>/dev/null || true
 
 # Start the CSRF app in the background
-npm run dev > /dev/null 2>&1 &
+npm run dev &
 CSRF_PID=$!
 
 # Wait for the server to start

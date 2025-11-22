@@ -2,15 +2,19 @@
   "name": "@store-hackathon/csrf-app",
   "version": "1.0.0",
   "description": "CSRF Attack Demonstration for Webshop Forum",
+  "type": "module",
   "scripts": {
-    "dev": "serve -p 8080",
-    "start": "serve -p 8080"
+    "dev": "node server.js",
+    "start": "node server.js"
   },
   "keywords": [
     "csrf",
     "security",
     "demonstration"
   ],
+  "dependencies": {
+    "express": "^4.18.2"
+  },
   "devDependencies": {
     "serve": "^14.2.0"
   }
