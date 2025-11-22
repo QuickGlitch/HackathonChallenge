@@ -1,0 +1,24 @@
+{
+  "apps": [
+    {
+      "name": "boomer-bot-dorothy",
+      "script": "./boomer-bot.js",
+      "env": {
+        "BOT_USERNAME": "DorothyWilliams",
+        "BOT_PASSWORD": "quilting456"
+      },
+      "autorestart": true,
+      "restart_delay": 6000
+    },
+    {
+      "name": "boomer-bot-admin",
+      "script": "./boomer-bot.js",
+      "env": {
+        "BOT_USERNAME": "admin",
+        "BOT_PASSWORD": "miele_hackathon"
+      },
+      "autorestart": true,
+      "restart_delay": 6000
+    }
+  ]
+}
