@@ -96,7 +96,7 @@ const handleLogout = async () => {
 
 .loading-message {
   padding: 1rem;
-  color: #667eea;
+  color: #60a5fa;
   font-size: 1.1rem;
   font-weight: 500;
 }

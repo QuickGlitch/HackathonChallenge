@@ -116,7 +116,7 @@ onMounted(async () => {
 .product-price {
   font-size: 2rem;
   font-weight: bold;
-  color: #667eea;
+  color: #60a5fa;
   margin-bottom: 2rem;
 }
 

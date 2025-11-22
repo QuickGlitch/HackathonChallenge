@@ -142,7 +142,7 @@ function clearCart() {
 .item-total {
   font-weight: bold;
   font-size: 1.1rem;
-  color: #667eea;
+  color: #60a5fa;
   min-width: 100px;
   text-align: right;
 }

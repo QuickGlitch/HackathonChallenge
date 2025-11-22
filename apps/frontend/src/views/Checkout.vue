@@ -135,7 +135,7 @@ async function submitOrder() {
 
 .checkout-form h3 {
   margin: 2rem 0 1rem 0;
-  color: #667eea;
+  color: #60a5fa;
 }
 
 .summary-item {
@@ -149,7 +149,7 @@ async function submitOrder() {
 .summary-total {
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 2px solid #667eea;
+  border-top: 2px solid #60a5fa;
   font-size: 1.2rem;
 }
 

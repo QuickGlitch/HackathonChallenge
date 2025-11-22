@@ -319,7 +319,7 @@ label {
 
 .form-control:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #60a5fa;
   box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
 }
 
@@ -363,7 +363,7 @@ textarea.form-control {
 }
 
 .btn-primary {
-  background-color: #667eea;
+  background-color: #60a5fa;
   color: white;
 }
 

@@ -282,7 +282,7 @@ const handleRegister = async () => {
 
 .input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #60a5fa;
 }
 
 .input-error {
@@ -309,7 +309,7 @@ const handleRegister = async () => {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1e3a8a 0%, #60a5fa 100%);
   color: white;
 }
 
@@ -353,7 +353,7 @@ const handleRegister = async () => {
 }
 
 .link {
-  color: #667eea;
+  color: #60a5fa;
   text-decoration: none;
   font-weight: 500;
 }
