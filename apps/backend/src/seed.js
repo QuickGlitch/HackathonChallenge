@@ -23,6 +23,37 @@ const USER_IDS = {
   ruthTaylor: "00000000-0000-0000-0000-000000000016",
 };
 
+// Fixed IDs for products (to maintain consistency across resets)
+const PRODUCT_IDS = {
+  wirelessHeadphones: 1,
+  smartWatch: 2,
+  coffeeMaker: 3,
+  runningShoes: 4,
+  laptopBackpack: 5,
+  honeySkinCream: 6,
+  honeyReceptacle: 7,
+  beeswaxCandles: 8,
+  honeycombPillow: 9,
+  bluetoothSpeaker: 10,
+  yogaMat: 11,
+  deskLamp: 12,
+  prototypeFish: 13,
+};
+
+// Fixed IDs for forum messages (to maintain consistency across resets)
+const FORUM_MESSAGE_IDS = {
+  adminMessage: 1,
+  wonderfulCommunity: 2,
+  seemLost: 3,
+  shoppingTroubles: 4,
+  reShoppingTroubles1: 5,
+  reShoppingTroubles2: 6,
+  linkQuestion: 7,
+  reLinkQuestion1: 8,
+  reLinkQuestion2: 9,
+  sellingCrafts: 10,
+};
+
 async function main() {
   console.log("🌱 Seeding database...");
 
@@ -153,33 +184,13 @@ async function main() {
     },
   ];
 
-  // Check if users already exist
-  const existingUsersCount = await prisma.user.count();
-  const elderlyUsersCount = await prisma.user.count({
-    where: {
-      username: {
-        in: [
-          "EdwardGreenwood",
-          "BettyJohnson",
-          "HaroldSmith",
-          "DorothyWilliams",
-          "WalterBrown",
-          "EleanorDavis",
-          "FrankMiller",
-          "MildredWilson",
-          "ArthurMoore",
-          "RuthTaylor",
-        ],
-      },
-    },
-  });
+  // Create all users
+  console.log("Creating sample users...");
+  let createdUsers = 0;
+  let skippedUsers = 0;
 
-  if (existingUsersCount > 0 && elderlyUsersCount === 0) {
-    console.log("Creating elderly users...");
-    // Only create the elderly users
-    const elderlyUsers = users.slice(5); // Get the elderly users (from index 5 onwards)
-
-    for (const user of elderlyUsers) {
+  for (const user of users) {
+    try {
       const hashedPassword = await bcrypt.hash(user.password, 10);
       await prisma.user.create({
         data: {
@@ -187,32 +198,25 @@ async function main() {
           password: hashedPassword,
         },
       });
+      createdUsers++;
+    } catch (error) {
+      if (error.code === "P2002") {
+        console.warn(`⚠️  User ${user.username} already exists, skipping...`);
+        skippedUsers++;
+      } else {
+        throw error;
+      }
     }
-
-    console.log(`✅ Created ${elderlyUsers.length} elderly users!`);
-  } else if (existingUsersCount === 0) {
-    console.log("Creating all sample users...");
-
-    for (const user of users) {
-      // Hash the password before storing
-      const hashedPassword = await bcrypt.hash(user.password, 10);
-
-      await prisma.user.create({
-        data: {
-          ...user,
-          password: hashedPassword,
-        },
-      });
-    }
-
-    console.log(`✅ Created ${users.length} sample users!`);
-  } else {
-    console.log("All users already exist, skipping user creation...");
   }
+
+  console.log(
+    `✅ Created ${createdUsers} users, skipped ${skippedUsers} existing users`
+  );
 
   // Create some sample products
   const products = [
     {
+      id: PRODUCT_IDS.wirelessHeadphones,
       name: "Wireless Headphones",
       description:
         "High-quality wireless headphones with noise cancellation and 30-hour battery life.",
@@ -223,6 +227,7 @@ async function main() {
       payableTo: USER_IDS.admin,
     },
     {
+      id: PRODUCT_IDS.smartWatch,
       name: "Smart Watch",
       description:
         "Advanced smartwatch with health monitoring, GPS, and water resistance.",
@@ -233,6 +238,7 @@ async function main() {
       payableTo: USER_IDS.admin,
     },
     {
+      id: PRODUCT_IDS.coffeeMaker,
       name: "Coffee Maker",
       description:
         "Premium coffee maker with programmable settings and thermal carafe.",
@@ -243,6 +249,7 @@ async function main() {
       payableTo: USER_IDS.admin,
     },
     {
+      id: PRODUCT_IDS.runningShoes,
       name: "Running Shoes",
       description:
         "Comfortable running shoes with advanced cushioning and breathable material.",
@@ -253,6 +260,7 @@ async function main() {
       payableTo: USER_IDS.admin,
     },
     {
+      id: PRODUCT_IDS.laptopBackpack,
       name: "Laptop Backpack",
       description:
         "Durable laptop backpack with multiple compartments and USB charging port.",
@@ -264,6 +272,7 @@ async function main() {
     },
     // Honeypot products - only visible when honey cookie is set
     {
+      id: PRODUCT_IDS.honeySkinCream,
       name: "Honey-Based Skin Cream",
       description:
         "Premium organic honey facial moisturizer with anti-aging properties. Made from rare Manuka honey.",
@@ -275,6 +284,7 @@ async function main() {
       payableTo: USER_IDS.admin,
     },
     {
+      id: PRODUCT_IDS.honeyReceptacle,
       name: "Premium Honey Receptacle",
       description:
         "Hand-crafted wooden honey jar with traditional bee motifs. Perfect for storing artisanal honey.",
@@ -286,6 +296,7 @@ async function main() {
       payableTo: USER_IDS.admin,
     },
     {
+      id: PRODUCT_IDS.beeswaxCandles,
       name: "Beeswax Candle Collection",
       description:
         "Set of 6 handmade beeswax candles. Natural air purifying and long-lasting burn time.",
@@ -297,6 +308,7 @@ async function main() {
       payableTo: USER_IDS.admin,
     },
     {
+      id: PRODUCT_IDS.honeycombPillow,
       name: "Honeycomb Memory Foam Pillow",
       description:
         "Ergonomic pillow with honeycomb ventilation design. Infused with honey-scented aromatherapy.",
@@ -308,6 +320,7 @@ async function main() {
       payableTo: USER_IDS.admin,
     },
     {
+      id: PRODUCT_IDS.bluetoothSpeaker,
       name: "Bluetooth Speaker",
       description:
         "Portable Bluetooth speaker with 360-degree sound and waterproof design.",
@@ -318,6 +331,7 @@ async function main() {
       payableTo: USER_IDS.hackors1,
     },
     {
+      id: PRODUCT_IDS.yogaMat,
       name: "Yoga Mat",
       description:
         "Non-slip yoga mat made from eco-friendly materials with carrying strap.",
@@ -328,6 +342,7 @@ async function main() {
       payableTo: USER_IDS.hackors3,
     },
     {
+      id: PRODUCT_IDS.deskLamp,
       name: "Desk Lamp",
       description:
         "LED desk lamp with adjustable brightness and USB charging port.",
@@ -338,6 +353,7 @@ async function main() {
       payableTo: USER_IDS.hackors4,
     },
     {
+      id: PRODUCT_IDS.prototypeFish,
       name: "Prototype animal: beta fish",
       description:
         "Top secret: do not release to the public yet! WIP model of a fish like fish.",
@@ -350,136 +366,121 @@ async function main() {
     },
   ];
 
-  // Check if products already exist
-  const existingProducts = await prisma.product.count();
+  // Create all products
+  console.log("Creating sample products...");
+  let createdProducts = 0;
+  let skippedProducts = 0;
 
-  if (existingProducts > 0) {
-    console.log("Products already exist, skipping seed...");
-
-    // Check if honeypot products exist
-    const existingHoneypotProducts = await prisma.product.count({
-      where: { honeypot: true },
-    });
-
-    if (existingHoneypotProducts === 0) {
-      console.log("Adding honeypot products...");
-      const honeypotProducts = products.filter((p) => p.honeypot === true);
-
-      for (const product of honeypotProducts) {
-        await prisma.product.create({
-          data: product,
-        });
-      }
-
-      console.log(`✅ Created ${honeypotProducts.length} honeypot products!`);
-    } else {
-      console.log("Honeypot products already exist, skipping...");
-    }
-  } else {
-    console.log("Creating sample products...");
-
-    for (const product of products) {
+  for (const product of products) {
+    try {
       await prisma.product.create({
         data: product,
       });
+      createdProducts++;
+    } catch (error) {
+      if (error.code === "P2002") {
+        console.warn(`⚠️  Product ${product.name} already exists, skipping...`);
+        skippedProducts++;
+      } else {
+        throw error;
+      }
     }
-
-    console.log(`✅ Created ${products.length} sample products!`);
   }
+
+  console.log(
+    `✅ Created ${createdProducts} products, skipped ${skippedProducts} existing products`
+  );
 
   // Create sample forum messages
   const forumMessages = [
     {
+      id: FORUM_MESSAGE_IDS.adminMessage,
       title: "A message from your admin",
-      body: "FYI, As an admin I will be checking every link shared here by clicking on it.",
+      body: "FYI, As an admin I will be checking every <b>link</b> shared here by clicking on it.",
       authorId: USER_IDS.admin,
     },
     {
+      id: FORUM_MESSAGE_IDS.wonderfulCommunity,
       title: "Wonderful community here!",
       body: "Good day, what a lovely store and lovely community. This is a great place to find gifts for my grandson. I'm happy to be a part of this.",
       authorId: USER_IDS.edwardGreenwood,
     },
     {
+      id: FORUM_MESSAGE_IDS.seemLost,
       title: "I seem to be lost",
       body: "Where am I?",
       authorId: USER_IDS.bettyJohnson,
     },
     {
+      id: FORUM_MESSAGE_IDS.shoppingTroubles,
       title: "Shopping troubles without glasses",
       body: "Without my reading glasses I can't see what I'm trying to buy, so I just click the links in here from time to time. Can anybody recommend a gift for my granddaughter?",
       authorId: USER_IDS.haroldSmith,
     },
     {
+      id: FORUM_MESSAGE_IDS.reShoppingTroubles1,
       title: "RE: Shopping troubles without glasses",
       body: "Every young person can use this a lamp, how about that?",
       authorId: USER_IDS.bettyJohnson,
     },
     {
+      id: FORUM_MESSAGE_IDS.reShoppingTroubles2,
       title: "RE:RE: Shopping troubles without glasses",
       body: "Could you please send a link? Thank you so much!",
       authorId: USER_IDS.haroldSmith,
     },
     {
+      id: FORUM_MESSAGE_IDS.linkQuestion,
       title: "Link",
       body: "What is a link?",
       authorId: USER_IDS.bettyJohnson,
     },
     {
+      id: FORUM_MESSAGE_IDS.reLinkQuestion1,
       title: "RE: Link",
-      body: "I used the computer and it appears to be one of these <img src='https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fvignette4.wikia.nocookie.net%2Fp__%2Fimages%2F9%2F9d%2FLink_Artwork_1_(Twilight_Princess).png%2Frevision%2Flatest%3Fcb%3D20160705025744%26path-prefix%3Dprotagonist&f=1&nofb=1&ipt=20f01ab4249d34aa2357903230c491659af8d18ba6da83de32e757593d35a7bd'/>",
+      body: "I used the computer and it appears to be one of these <img src='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fzelda.nintendo.com%2Flinks-awakening%2Fassets%2Fimg%2Fcharacters%2Fchar-link.png&f=1&nofb=1&ipt=d19f50afcc6dad65b2014be2b060f7e54c03de9e92fe82667b9cfa46ea067b0a'/>",
       authorId: USER_IDS.edwardGreenwood,
     },
     {
+      id: FORUM_MESSAGE_IDS.reLinkQuestion2,
       title: "RE: RE: Link",
-      body: "I have really enjoyed using this lamp: <a href='http://localhost:3000/products/8'>desk lamp</a>.",
+      body: "I have really enjoyed using this lamp: <a href='http://localhost:3000/products/12'>desk lamp</a>.",
       authorId: USER_IDS.dorothyWilliams,
     },
     {
+      id: FORUM_MESSAGE_IDS.sellingCrafts,
       title: "Looking to sell my crafts",
-      body: "Looking to sell my handmade vegan yoga mats: <a href='http://localhost:3000/products/7'>yoga mat</a>.",
+      body: "Looking to sell my handmade vegan yoga mats: <a href='http://localhost:3000/products/11'>yoga mat</a>.",
       authorId: USER_IDS.dorothyWilliams,
     },
   ];
 
-  // Check if forum messages already exist
-  const existingMessages = await prisma.forumMessage.count();
-  const specificMessages = await prisma.forumMessage.count({
-    where: {
-      title: {
-        in: [
-          "Wonderful community here!",
-          "I seem to be lost",
-          "Shopping troubles without glasses",
-        ],
-      },
-    },
-  });
+  // Create all forum messages
+  console.log("Creating sample forum messages...");
+  let createdMessages = 0;
+  let skippedMessages = 0;
 
-  if (existingMessages > 0 && specificMessages === 0) {
-    console.log("Creating additional forum messages...");
-
-    for (const message of forumMessages) {
+  for (const message of forumMessages) {
+    try {
       await prisma.forumMessage.create({
         data: message,
       });
+      createdMessages++;
+    } catch (error) {
+      if (error.code === "P2002") {
+        console.warn(
+          `⚠️  Forum message "${message.title}" already exists, skipping...`
+        );
+        skippedMessages++;
+      } else {
+        throw error;
+      }
     }
-
-    console.log(`✅ Created ${forumMessages.length} sample forum messages!`);
-  } else if (existingMessages === 0) {
-    console.log("Creating sample forum messages...");
-
-    for (const message of forumMessages) {
-      await prisma.forumMessage.create({
-        data: message,
-      });
-    }
-
-    console.log(`✅ Created ${forumMessages.length} sample forum messages!`);
-  } else {
-    console.log(
-      "Forum messages already exist, skipping forum message creation..."
-    );
   }
+
+  console.log(
+    `✅ Created ${createdMessages} forum messages, skipped ${skippedMessages} existing messages`
+  );
 
   console.log("✅ Database seeded successfully!");
 }
