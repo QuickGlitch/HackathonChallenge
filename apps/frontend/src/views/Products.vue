@@ -34,7 +34,11 @@
           class="card product-card"
         >
           <!-- Reseller badge for products not from main store -->
-          <div v-if="product.payableTo !== 1" class="reseller-badge">
+          <!-- TODO: replace hardcoded uuid with env variable -->
+          <div
+            v-if="product.payableTo !== '00000000-0000-0000-0000-000000000001'"
+            class="reseller-badge"
+          >
             Reseller
           </div>
           <img :src="product.image" :alt="product.name" class="product-image" />
