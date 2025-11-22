@@ -115,12 +115,14 @@ onMounted(() => {
 
 .main {
   min-height: calc(100vh - 120px);
-  padding: 2rem 0;
+  padding-bottom: 2rem;
 }
 
 .footer {
   background-color: #333;
   color: white;
+  display: flex;
+  justify-content: center;
   text-align: center;
   padding: 1rem 0;
 }
