@@ -13,6 +13,7 @@ class BoomerBot {
       password: process.env.BOT_PASSWORD || "quilting456",
     };
     this.baseUrl = "http://localhost:3000";
+    this.apiBaseUrl = "http://localhost:3001";
     this.browser = null;
     this.page = null;
     this.clickTimeout = 5000; // 5 seconds timeout
@@ -34,6 +35,32 @@ class BoomerBot {
     this.page = await this.browser.newPage();
 
     console.log("✅ Browser launched successfully");
+  }
+
+  async notifyBotStatus(isActive) {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/api/bot-activity`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          isActive,
+          startedAt: isActive ? new Date().toISOString() : null,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(
+          `📡 Bot status updated (isActive: ${isActive}). Broadcasting to ${data.activeClients} clients.`
+        );
+      } else {
+        console.error(
+          `❌ Failed to update bot status: ${response.status} ${response.statusText}`
+        );
+      }
+    } catch (error) {
+      console.error("❌ Error notifying bot status:", error.message);
+    }
   }
 
   async login() {
@@ -241,6 +268,9 @@ class BoomerBot {
     console.log("👴 Boomer user is starting to browse the forum...");
 
     try {
+      // Notify that bot is starting activity
+      await this.notifyBotStatus(true);
+
       // Navigate to forum
       const forumNavSuccess = await this.navigateToForum();
       if (!forumNavSuccess) {
@@ -271,7 +301,7 @@ class BoomerBot {
           await this.returnToForum();
 
           // Small delay between clicks to simulate human behavior
-          await new Promise((resolve) => setTimeout(resolve, 2000));
+          await new Promise((resolve) => setTimeout(resolve, 1000));
         }
       }
 
@@ -281,6 +311,9 @@ class BoomerBot {
         "❌ Error during forum browsing simulation:",
         error.message
       );
+    } finally {
+      // Notify that bot has stopped activity
+      await this.notifyBotStatus(false);
     }
   }
 
@@ -304,8 +337,8 @@ class BoomerBot {
       console.log("👋 Bot finished successfully");
 
       if (process.env.DEV_MODE === "true") {
-        console.log("[DEV MODE] Waiting 2 minutes before next run");
-        setTimeout(() => this.run(), 120000);
+        console.log("[DEV MODE] Waiting 20 seconds before next run");
+        setTimeout(() => this.run(), 20000);
       } else {
         process.exit(0);
       }

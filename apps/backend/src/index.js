@@ -37,6 +37,16 @@ const port = process.env.PORT || 3001;
 // Initialize Prisma
 const prisma = new PrismaClient();
 
+// Bot activity tracking
+let botActivityState = {
+  isActive: false,
+  startedAt: null,
+  lastUpdated: null,
+};
+
+// SSE clients for bot activity
+const botActivityClients = new Set();
+
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
@@ -82,6 +92,64 @@ app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes); // Honeypot admin routes
 app.use("/api/scores", scoresRoutes);
 app.use("/api/forum", forumRoutes);
+
+// SSE endpoint for bot activity stream
+app.get("/api/bot-activity/stream", (req, res) => {
+  // Set SSE headers
+  res.writeHead(200, {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    "Connection": "keep-alive",
+    "Access-Control-Allow-Origin": "*",
+  });
+
+  // Send current state immediately
+  res.write(`data: ${JSON.stringify(botActivityState)}\n\n`);
+
+  // Add client to the set
+  botActivityClients.add(res);
+
+  // Send heartbeat every 30 seconds to keep connection alive
+  const heartbeatInterval = setInterval(() => {
+    res.write(": heartbeat\n\n");
+  }, 30000);
+
+  // Remove client on disconnect
+  req.on("close", () => {
+    clearInterval(heartbeatInterval);
+    botActivityClients.delete(res);
+    console.log(`SSE client disconnected. Active clients: ${botActivityClients.size}`);
+  });
+
+  console.log(`New SSE client connected. Active clients: ${botActivityClients.size}`);
+});
+
+// Bot activity update endpoint
+app.post("/api/bot-activity", express.json(), (req, res) => {
+  const { isActive, startedAt } = req.body;
+
+  // Update bot activity state
+  botActivityState = {
+    isActive: isActive || false,
+    startedAt: startedAt || null,
+    lastUpdated: new Date().toISOString(),
+  };
+
+  console.log(`Bot activity updated:`, botActivityState);
+
+  // Broadcast to all connected SSE clients
+  const message = `data: ${JSON.stringify(botActivityState)}\n\n`;
+  botActivityClients.forEach((client) => {
+    try {
+      client.write(message);
+    } catch (error) {
+      console.error("Error writing to SSE client:", error);
+      botActivityClients.delete(client);
+    }
+  });
+
+  res.json({ success: true, activeClients: botActivityClients.size });
+});
 
 // Health check
 app.get("/api/health", (req, res) => {

@@ -70,7 +70,7 @@ const currentQuote = ref("");
 const showGif = ref(false);
 const currentGif = ref("");
 let intervalId = null;
-let gifIntervalId = null;
+let eventSource = null;
 let hasInitialLoad = ref(false);
 
 const API_BASE_URL = "http://localhost:3001";
@@ -96,39 +96,60 @@ const fetchRandomFishingGif = async () => {
       const randomIndex = Math.floor(Math.random() * response.data.data.length);
       const gif = response.data.data[randomIndex];
       currentGif.value = gif.images.original.url;
-      showFishingGif();
+      showGif.value = true;
     }
   } catch (err) {
     console.error("Failed to fetch fishing GIF:", err);
   }
 };
 
-const showFishingGif = () => {
-  showGif.value = true;
-  // Auto-hide after 3 seconds
-  setTimeout(() => {
-    showGif.value = false;
-  }, 30000);
-};
-
 const hideGif = () => {
   showGif.value = false;
 };
 
-const startGifInterval = () => {
-  // Show first gif after 10 seconds
-  setTimeout(() => {
-    fetchRandomFishingGif();
-  }, 10000);
+const setupBotActivityStream = () => {
+  console.log("🔌 Connecting to bot activity stream...");
 
-  // Then show a gif every 10 seconds
-  gifIntervalId = setInterval(fetchRandomFishingGif, 60000);
+  eventSource = new EventSource(`${API_BASE_URL}/api/bot-activity/stream`);
+
+  eventSource.onopen = () => {
+    console.log("✅ Connected to bot activity stream");
+  };
+
+  eventSource.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      console.log("📡 Bot activity update:", data);
+
+      if (data.isActive && !showGif.value) {
+        // Bot just started - fetch a fishing GIF and show it
+        fetchRandomFishingGif();
+      } else if (!data.isActive && showGif.value) {
+        // Bot stopped - hide the GIF
+        showGif.value = false;
+      }
+    } catch (error) {
+      console.error("Error parsing bot activity data:", error);
+    }
+  };
+
+  eventSource.onerror = (error) => {
+    console.error("❌ SSE connection error:", error);
+    // Attempt to reconnect after 5 seconds
+    setTimeout(() => {
+      if (eventSource.readyState === EventSource.CLOSED) {
+        console.log("🔄 Attempting to reconnect...");
+        setupBotActivityStream();
+      }
+    }, 5000);
+  };
 };
 
-const stopGifInterval = () => {
-  if (gifIntervalId) {
-    clearInterval(gifIntervalId);
-    gifIntervalId = null;
+const closeEventSource = () => {
+  if (eventSource) {
+    eventSource.close();
+    eventSource = null;
+    console.log("🔌 Closed bot activity stream");
   }
 };
 
@@ -187,12 +208,12 @@ onMounted(() => {
   // Initialize with a quote
   getNewQuote();
   startPolling();
-  startGifInterval();
+  setupBotActivityStream();
 });
 
 onUnmounted(() => {
   stopPolling();
-  stopGifInterval();
+  closeEventSource();
 });
 </script>
 
