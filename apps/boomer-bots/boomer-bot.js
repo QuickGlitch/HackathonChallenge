@@ -302,7 +302,13 @@ class BoomerBot {
         await this.browser.close();
       }
       console.log("👋 Bot finished successfully");
-      process.exit(0);
+
+      if (process.env.DEV_MODE === "true") {
+        console.log("[DEV MODE] Waiting 2 minutes before next run");
+        setTimeout(() => this.run(), 120000);
+      } else {
+        process.exit(0);
+      }
     }
   }
 
