@@ -99,7 +99,7 @@ app.get("/api/bot-activity/stream", (req, res) => {
   res.writeHead(200, {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
-    "Connection": "keep-alive",
+    Connection: "keep-alive",
     "Access-Control-Allow-Origin": "*",
   });
 
@@ -118,10 +118,14 @@ app.get("/api/bot-activity/stream", (req, res) => {
   req.on("close", () => {
     clearInterval(heartbeatInterval);
     botActivityClients.delete(res);
-    console.log(`SSE client disconnected. Active clients: ${botActivityClients.size}`);
+    console.log(
+      `SSE client disconnected. Active clients: ${botActivityClients.size}`
+    );
   });
 
-  console.log(`New SSE client connected. Active clients: ${botActivityClients.size}`);
+  console.log(
+    `New SSE client connected. Active clients: ${botActivityClients.size}`
+  );
 });
 
 // Bot activity update endpoint

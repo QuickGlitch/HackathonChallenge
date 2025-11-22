@@ -6,7 +6,7 @@
     </div>
 
     <!-- Fishing GIF Overlay -->
-    <div v-if="showGif" class="gif-overlay" @click="hideGif">
+    <div v-if="showBotActivity" class="gif-overlay" @click="hideGif">
       <div class="gif-container">
         <img :src="currentGif" alt="Fishing GIF" class="fishing-gif" />
         <div class="gif-close">Click to close or wait...</div>
@@ -37,7 +37,7 @@
     </div>
 
     <!-- Fishing GIF Overlay -->
-    <div v-if="showGif" class="gif-overlay" @click="hideGif">
+    <div v-if="showBotActivity" class="gif-overlay" @click="hideGif">
       <div class="gif-container">
         <img :src="currentGif" alt="Fishing GIF" class="fishing-gif" />
         <p class="gif-caption">🎣</p>
@@ -45,7 +45,7 @@
     </div>
 
     <!-- News Ticker -->
-    <div v-if="showGif" class="news-ticker">
+    <div v-if="showBotActivity" class="news-ticker">
       <div class="news-content">
         <span class="breaking-label">BREAKING NEWS:</span>
         <span class="news-text"
@@ -67,7 +67,7 @@ const loading = ref(true);
 const error = ref(null);
 const lastUpdated = ref(new Date());
 const currentQuote = ref("");
-const showGif = ref(false);
+const showBotActivity = ref(false);
 const currentGif = ref("");
 let intervalId = null;
 let eventSource = null;
@@ -96,7 +96,7 @@ const fetchRandomFishingGif = async () => {
       const randomIndex = Math.floor(Math.random() * response.data.data.length);
       const gif = response.data.data[randomIndex];
       currentGif.value = gif.images.original.url;
-      showGif.value = true;
+      showBotActivity.value = true;
     }
   } catch (err) {
     console.error("Failed to fetch fishing GIF:", err);
@@ -104,7 +104,7 @@ const fetchRandomFishingGif = async () => {
 };
 
 const hideGif = () => {
-  showGif.value = false;
+  showBotActivity.value = false;
 };
 
 const setupBotActivityStream = () => {
@@ -121,12 +121,12 @@ const setupBotActivityStream = () => {
       const data = JSON.parse(event.data);
       console.log("📡 Bot activity update:", data);
 
-      if (data.isActive && !showGif.value) {
+      if (data.isActive && !showBotActivity.value) {
         // Bot just started - fetch a fishing GIF and show it
         fetchRandomFishingGif();
-      } else if (!data.isActive && showGif.value) {
-        // Bot stopped - hide the GIF
-        showGif.value = false;
+      } else if (!data.isActive && showBotActivity.value) {
+        // Bot stopped - hide the GIF after a brief delay for a better UX
+        setTimeout(() => (showBotActivity.value = false), 10000);
       }
     } catch (error) {
       console.error("Error parsing bot activity data:", error);
@@ -205,7 +205,6 @@ const stopPolling = () => {
 };
 
 onMounted(() => {
-  // Initialize with a quote
   getNewQuote();
   startPolling();
   setupBotActivityStream();
