@@ -1,63 +1,68 @@
 <template>
   <div class="container">
-    <h1>Shopping Cart</h1>
-
-    <div v-if="cartStore.items.length === 0" class="empty-cart">
-      <p>Your cart is empty</p>
-      <router-link to="/products" class="btn">Continue Shopping</router-link>
-    </div>
-
-    <div v-else>
-      <div class="cart-items">
-        <div
-          v-for="item in cartStore.items"
-          :key="item.id"
-          class="cart-item card"
-        >
-          <img :src="item.image" :alt="item.name" class="item-image" />
-          <div class="item-details">
-            <h3>{{ item.name }}</h3>
-            <p class="item-price">${{ item.price.toFixed(2) }} each</p>
-          </div>
-          <div class="item-quantity">
-            <button
-              @click="updateQuantity(item.id, item.quantity - 1)"
-              class="btn btn-secondary"
-            >
-              -
-            </button>
-            <span class="quantity">{{ item.quantity }}</span>
-            <button
-              @click="updateQuantity(item.id, item.quantity + 1)"
-              class="btn btn-secondary"
-            >
-              +
-            </button>
-          </div>
-          <div class="item-total">
-            ${{ (item.price * item.quantity).toFixed(2) }}
-          </div>
-          <button @click="removeItem(item.id)" class="btn-remove">×</button>
-        </div>
-      </div>
-
-      <div class="cart-summary card">
-        <h3>Order Summary</h3>
-        <div class="summary-row">
-          <span>Total Items:</span>
-          <span>{{ cartStore.itemCount }}</span>
-        </div>
-        <div class="summary-row total">
-          <span>Total Price:</span>
-          <span>${{ cartStore.totalPrice.toFixed(2) }}</span>
-        </div>
-        <div class="cart-actions">
-          <button @click="clearCart" class="btn btn-secondary">
-            Clear Cart
-          </button>
-          <router-link to="/checkout" class="btn"
-            >Proceed to Checkout</router-link
+    <div class="cart-view">
+      <h1 class="header">Shopping Cart</h1>
+      <div>
+        <div v-if="cartStore.items.length === 0" class="empty-cart">
+          <p>Your cart is empty</p>
+          <router-link to="/products" class="btn"
+            >Continue Shopping</router-link
           >
+        </div>
+
+        <div class="cart-goodies" v-else>
+          <div class="cart-items">
+            <div
+              v-for="item in cartStore.items"
+              :key="item.id"
+              class="cart-item card"
+            >
+              <img :src="item.image" :alt="item.name" class="item-image" />
+              <div class="item-details">
+                <h3>{{ item.name }}</h3>
+                <p class="item-price">${{ item.price.toFixed(2) }} each</p>
+              </div>
+              <div class="item-quantity">
+                <button
+                  @click="updateQuantity(item.id, item.quantity - 1)"
+                  class="btn btn-secondary"
+                >
+                  -
+                </button>
+                <span class="quantity">{{ item.quantity }}</span>
+                <button
+                  @click="updateQuantity(item.id, item.quantity + 1)"
+                  class="btn btn-secondary"
+                >
+                  +
+                </button>
+              </div>
+              <div class="item-total">
+                ${{ (item.price * item.quantity).toFixed(2) }}
+              </div>
+              <button @click="removeItem(item.id)" class="btn-remove">×</button>
+            </div>
+          </div>
+
+          <div class="cart-summary card">
+            <h3>Order Summary</h3>
+            <div class="summary-row">
+              <span>Total Items:</span>
+              <span>{{ cartStore.itemCount }}</span>
+            </div>
+            <div class="summary-row total">
+              <span>Total Price:</span>
+              <span>${{ cartStore.totalPrice.toFixed(2) }}</span>
+            </div>
+            <div class="cart-actions">
+              <button @click="clearCart" class="btn btn-secondary">
+                Clear Cart
+              </button>
+              <router-link to="/checkout" class="btn"
+                >Proceed to Checkout</router-link
+              >
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -83,6 +88,24 @@ function clearCart() {
 </script>
 
 <style scoped>
+.cart-view {
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.cart-goodies {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+.header {
+  display: block;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: #1e3a8a;
+}
 .empty-cart {
   text-align: center;
   padding: 3rem;
@@ -95,6 +118,7 @@ function clearCart() {
 }
 
 .cart-items {
+  flex-grow: 1;
   margin-bottom: 2rem;
 }
 
