@@ -468,7 +468,7 @@ export default {
 }
 
 .message-card {
-  background: white;
+  background: rgb(232, 232, 244);
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
