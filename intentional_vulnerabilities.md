@@ -19,7 +19,11 @@ A user can only access their own information via the API. Obtaining admin privel
 ## Obtaining unreleased products
 
 Some products in the database are not yet released to the general public. An attacker can obtain admin privelages and access these unreleased products - leaking the data.
-The attacker may achieve this by exploiting SQL injection in the search endpoint, or by gaining admin privelages.
+The attacker may achieve this by exploiting SQL injection in the search endpoint, by gaining admin privelages or IDOR (see below).
+
+## Obtaining unreleased products via IDOR
+
+The product details endpoint `/api/products/:id` does not check if a product is released or not when accessed by a regular user. This means an attacker can simply iterate over product IDs (they are autoincremented integers) and access unreleased products that way.
 
 ## Obtaining Admin Privelages
 
@@ -46,6 +50,6 @@ As mentioned in the forum the admin will be clicking any links posted - which me
 
 9. **Access all order data** - The `/api/orders` GET endpoint returns all orders from all users without authentication checks
 
-## File Upload Vulnerability
+## File Upload Vulnerability / Web Shell Upload
 
 As part of the reseller functionality, users can upload images for the products they want to resell. However, the image upload endpoint does not properly validate the uploaded files, allowing attackers to upload malicious files disguised as images. In this example a PHP web shell can be uploaded, enabling remote command execution on the server. See the [file upload exploit documentation](attack-utils/file-upload/file-upload.md) for more details.
