@@ -19,17 +19,6 @@ function getClientIpAddress(req) {
   );
 }
 
-// Helper function to check order limits
-async function checkOrderLimits(prisma, customerName, ipAddress) {
-  const orderCount = await prisma.order.count({
-    where: {
-      clientIpAddress: ipAddress,
-    },
-  });
-
-  return orderCount >= 50; // Return true if limit exceeded (based on number of orders)
-}
-
 // GET /api/orders - Get orders (all for admins, own orders for users)
 router.get("/", authenticateToken, async (req, res) => {
   try {
@@ -101,20 +90,6 @@ router.post("/", authenticateToken, async (req, res) => {
 
     // Get client IP address
     const clientIpAddress = getClientIpAddress(req);
-
-    // Check order limits (1 million orders per username or IP address)
-    const isLimitExceeded = await checkOrderLimits(
-      req.prisma,
-      customer.name,
-      clientIpAddress
-    );
-
-    if (isLimitExceeded) {
-      return res.status(405).json({
-        error:
-          "Order limit exceeded for this IP address 🤔. Please contact support 🤡",
-      });
-    }
 
     // Create the order with items
     const order = await req.prisma.order.create({
