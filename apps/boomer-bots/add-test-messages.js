@@ -4,7 +4,6 @@
  * Uses the backend API instead of direct database access
  */
 
-import https from "https";
 import http from "http";
 
 // First, we need to get auth cookies by logging in as different users

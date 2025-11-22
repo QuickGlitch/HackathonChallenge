@@ -6,7 +6,10 @@
   "main": "index.js",
   "scripts": {
     "test": "node ./tests/test-bot.js",
-    "start": "node boomer-bot.js"
+    "start": "node boomer-bot.js",
+    "pm2:start:boomer-bots": "pm2 start ecosystem.config.json",
+    "pm2:logs:boomer-bots": "pm2 logs --lines 20",
+    "pm2:stop:boomer-bots": "pm2 stop apps boomer-bot-dorothy boomer-bot-admin"
   },
   "keywords": [
     "boomer",
@@ -16,6 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "pm2": "^6.0.13",
     "puppeteer": "^24.30.0"
   }
 }

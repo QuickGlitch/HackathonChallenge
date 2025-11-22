@@ -9,8 +9,8 @@ import puppeteer from "puppeteer";
 class BoomerBot {
   constructor() {
     this.credentials = {
-      username: "DorothyWilliams",
-      password: "quilting456",
+      username: process.env.BOT_USERNAME || "DorothyWilliams",
+      password: process.env.BOT_PASSWORD || "quilting456",
     };
     this.baseUrl = "http://localhost:3000";
     this.browser = null;
@@ -22,7 +22,7 @@ class BoomerBot {
     console.log("🤖 Starting BoomerBot...");
 
     this.browser = await puppeteer.launch({
-      headless: false, // Set to true for headless mode
+      headless: true,
       defaultViewport: { width: 1280, height: 720 },
       args: [
         "--no-sandbox",
@@ -322,8 +322,8 @@ process.on("SIGTERM", async () => {
   process.exit(0);
 });
 
-// Run the bot if this file is executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Run the bot if this file is executed directly or via PM2
+if (import.meta.url === `file://${process.argv[1]}` || process.env.pm_id) {
   const boomerBot = new BoomerBot();
   boomerBot.run();
 }
