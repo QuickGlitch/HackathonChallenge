@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "description": "CSRF Attack Demonstration for Webshop Forum",
   "scripts": {
-    "dev": "python3 -m http.server 8080",
-    "start": "python3 -m http.server 8080"
+    "dev": "serve -p 8080",
+    "start": "serve -p 8080"
   },
   "keywords": [
     "csrf",
     "security",
     "demonstration"
-  ]
+  ],
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
 }

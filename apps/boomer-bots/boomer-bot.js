@@ -7,7 +7,7 @@
 import puppeteer from "puppeteer";
 
 class BoomerBot {
-  constructor() {
+  constructor(options = {}) {
     this.credentials = {
       username: process.env.BOT_USERNAME || "DorothyWilliams",
       password: process.env.BOT_PASSWORD || "quilting456",
@@ -17,13 +17,15 @@ class BoomerBot {
     this.browser = null;
     this.page = null;
     this.clickTimeout = 5000; // 5 seconds timeout
+    this.headless = options.headless !== undefined ? options.headless : true;
   }
 
   async init() {
     console.log("🤖 Starting BoomerBot...");
+    console.log(`🎭 Headless mode: ${this.headless}`);
 
     this.browser = await puppeteer.launch({
-      headless: true,
+      headless: this.headless,
       defaultViewport: { width: 1280, height: 720 },
       args: [
         "--no-sandbox",
@@ -365,7 +367,18 @@ process.on("SIGTERM", async () => {
 
 // Run the bot if this file is executed directly or via PM2
 if (import.meta.url === `file://${process.argv[1]}` || process.env.pm_id) {
-  const boomerBot = new BoomerBot();
+  // Parse command line arguments
+  const args = process.argv.slice(2);
+  const options = {};
+
+  args.forEach((arg) => {
+    if (arg.startsWith("--headless=")) {
+      const value = arg.split("=")[1];
+      options.headless = value === "true";
+    }
+  });
+
+  const boomerBot = new BoomerBot(options);
   boomerBot.run();
 }
 

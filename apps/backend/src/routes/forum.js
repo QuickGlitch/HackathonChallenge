@@ -62,7 +62,7 @@ router.get("/:id", async (req, res) => {
 router.post("/", authenticateToken, async (req, res) => {
   try {
     const { title, body } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     if (!title || !body) {
       return res.status(400).json({ error: "Title and body are required" });
@@ -100,7 +100,7 @@ router.put("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { title, body } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     const existingMessage = await req.prisma.forumMessage.findUnique({
       where: { id: parseInt(id) },
@@ -147,7 +147,7 @@ router.put("/:id", authenticateToken, async (req, res) => {
 router.delete("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
     const existingMessage = await req.prisma.forumMessage.findUnique({
       where: { id: parseInt(id) },
