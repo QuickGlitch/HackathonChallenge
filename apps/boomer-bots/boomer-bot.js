@@ -5,6 +5,20 @@
  */
 
 import puppeteer from "puppeteer";
+import pino from "pino";
+
+// Create pino logger
+const logger = pino({
+  level: process.env.LOG_LEVEL || "info",
+  transport: {
+    target: "pino-pretty",
+    options: {
+      colorize: true,
+      translateTime: "SYS:standard",
+      ignore: "pid,hostname",
+    },
+  },
+});
 
 class BoomerBot {
   constructor(options = {}) {
@@ -21,8 +35,8 @@ class BoomerBot {
   }
 
   async init() {
-    console.log("🤖 Starting BoomerBot...");
-    console.log(`🎭 Headless mode: ${this.headless}`);
+    logger.info("🤖 Starting BoomerBot...");
+    logger.info(`🎭 Headless mode: ${this.headless}`);
 
     this.browser = await puppeteer.launch({
       headless: this.headless,
@@ -36,7 +50,7 @@ class BoomerBot {
 
     this.page = await this.browser.newPage();
 
-    console.log("✅ Browser launched successfully");
+    logger.info("✅ Browser launched successfully");
   }
 
   async notifyBotStatus(isActive) {
@@ -52,21 +66,21 @@ class BoomerBot {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(
+        logger.info(
           `📡 Bot status updated (isActive: ${isActive}). Broadcasting to ${data.activeClients} clients.`
         );
       } else {
-        console.error(
+        logger.error(
           `❌ Failed to update bot status: ${response.status} ${response.statusText}`
         );
       }
     } catch (error) {
-      console.error("❌ Error notifying bot status:", error.message);
+      logger.error("❌ Error notifying bot status:", error.message);
     }
   }
 
   async login() {
-    console.log("🔐 Attempting to log in as boomer user...");
+    logger.info("🔐 Attempting to log in as boomer user...");
 
     try {
       // Navigate to the login page
@@ -75,7 +89,7 @@ class BoomerBot {
         timeout: 10000,
       });
 
-      console.log("📝 Filling in login form...");
+      logger.info("📝 Filling in login form...");
 
       // Fill in the login form
       await this.page.waitForSelector("#username", { timeout: 5000 });
@@ -85,7 +99,7 @@ class BoomerBot {
       await this.page.type("#password", this.credentials.password);
 
       // Submit the form
-      console.log("🚀 Submitting login form...");
+      logger.info("🚀 Submitting login form...");
 
       // Set up response listener before clicking
       const responsePromise = this.page.waitForResponse(
@@ -108,29 +122,29 @@ class BoomerBot {
         );
 
         if (hasAccessToken) {
-          console.log("✅ Successfully logged in as boomer user");
+          logger.info("✅ Successfully logged in as boomer user");
           return true;
         } else {
-          console.error(
+          logger.error(
             "❌ Login response was OK but no access token cookie found"
           );
           return false;
         }
       } else {
         const responseText = await response.text();
-        console.error(
-          `❌ Login failed with status ${response.status()}: ${responseText}`
+        logger.error(
+          `❌ Login failed with status ${response.status}: ${responseText}`
         );
         return false;
       }
     } catch (error) {
-      console.error("❌ Login failed:", error.message);
+      logger.error("❌ Login failed:", error.message);
       return false;
     }
   }
 
   async navigateToForum() {
-    console.log("🏛️  Navigating to forum...");
+    logger.info("🏛️  Navigating to forum...");
 
     try {
       await this.page.goto(`${this.baseUrl}/forum`, {
@@ -143,10 +157,10 @@ class BoomerBot {
         timeout: 5000,
       });
 
-      console.log("✅ Successfully navigated to forum");
+      logger.info("✅ Successfully navigated to forum");
       return true;
     } catch (error) {
-      console.error("❌ Failed to navigate to forum:", error.message);
+      logger.error("❌ Failed to navigate to forum:", error.message);
       return false;
     }
   }
@@ -184,20 +198,20 @@ class BoomerBot {
         return foundLinks;
       });
 
-      console.log(`📋 Found ${links.length} links in forum messages:`);
+      logger.info(`📋 Found ${links.length} links in forum messages:`);
       links.forEach((link, index) => {
-        console.log(`   ${index + 1}. "${link.text}" -> ${link.url}`);
+        logger.info(`   ${index + 1}. "${link.text}" -> ${link.url}`);
       });
 
       return links;
     } catch (error) {
-      console.error("❌ Failed to extract forum links:", error.message);
+      logger.error("❌ Failed to extract forum links:", error.message);
       return [];
     }
   }
 
   async clickLinkWithTimeout(link) {
-    console.log(`🖱️  Clicking link: "${link.text}" (${link.url})`);
+    logger.info(`🖱️  Clicking link: "${link.text}" (${link.url})`);
 
     try {
       // Navigate to the link
@@ -213,16 +227,16 @@ class BoomerBot {
             });
 
             if (buttonFound) {
-              console.log("🔘 Found a button, clicking it...");
+              logger.info("🔘 Found a button, clicking it...");
               await this.page.click("button");
 
               // Wait a bit to see if anything happens
               await new Promise((resolve) => setTimeout(resolve, 1000));
             } else {
-              console.log("🚫 No button found on this page");
+              logger.info("🚫 No button found on this page");
             }
           } catch (buttonError) {
-            console.log("🚫 No clickable button found on this page");
+            logger.info("🚫 No clickable button found on this page");
           }
           return true;
         });
@@ -230,7 +244,7 @@ class BoomerBot {
       // Set up a timeout for the entire operation
       const timeoutPromise = new Promise((resolve) => {
         setTimeout(() => {
-          console.log(
+          logger.info(
             `⏰ ${this.clickTimeout / 1000}s timeout reached for ${link.url}`
           );
           resolve(false);
@@ -241,13 +255,13 @@ class BoomerBot {
       const result = await Promise.any([navigationPromise, timeoutPromise]);
       return result;
     } catch (error) {
-      console.error(`❌ Error clicking link ${link.url}:`, error.message);
+      logger.error(`❌ Error clicking link ${link.url}:`, error.message);
       return false;
     }
   }
 
   async returnToForum() {
-    console.log("🔙 Returning to forum...");
+    logger.info("🔙 Returning to forum...");
 
     try {
       await this.page.goto(`${this.baseUrl}/forum`, {
@@ -258,16 +272,16 @@ class BoomerBot {
       // Wait a moment for the page to settle using setTimeout wrapped in Promise
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      console.log("✅ Successfully returned to forum");
+      logger.info("✅ Successfully returned to forum");
       return true;
     } catch (error) {
-      console.error("❌ Failed to return to forum:", error.message);
+      logger.error("❌ Failed to return to forum:", error.message);
       return false;
     }
   }
 
   async simulateForumBrowsing() {
-    console.log("👴 Boomer user is starting to browse the forum...");
+    logger.info("👴 Boomer user is starting to browse the forum...");
 
     try {
       // Notify that bot is starting activity
@@ -283,7 +297,7 @@ class BoomerBot {
       const forumLinks = await this.extractForumLinks();
 
       if (forumLinks.length === 0) {
-        console.log(
+        logger.info(
           "📭 No links found in forum messages. Dorothy has nothing to click!"
         );
         return;
@@ -292,7 +306,7 @@ class BoomerBot {
       // Click on each link with timeout and return to forum
       for (let i = 0; i < forumLinks.length; i++) {
         const link = forumLinks[i];
-        console.log(`\n--- Processing link ${i + 1}/${forumLinks.length} ---`);
+        logger.info(`\n--- Processing link ${i + 1}/${forumLinks.length} ---`);
 
         // Click the link and wait for timeout
         await this.clickLinkWithTimeout(link);
@@ -307,12 +321,9 @@ class BoomerBot {
         }
       }
 
-      console.log("\n🎉 Boomer user has finished browsing all forum links!");
+      logger.info("\n🎉 Boomer user has finished browsing all forum links!");
     } catch (error) {
-      console.error(
-        "❌ Error during forum browsing simulation:",
-        error.message
-      );
+      logger.error("❌ Error during forum browsing simulation:", error.message);
     } finally {
       // Notify that bot has stopped activity
       await this.notifyBotStatus(false);
@@ -331,10 +342,10 @@ class BoomerBot {
 
         await this.simulateForumBrowsing();
       } catch (error) {
-        console.error("💥 Bot execution failed:", error.message);
+        logger.error("💥 Bot execution failed:", error.message);
       } finally {
         if (this.browser) {
-          console.log("🔚 Closing browser...");
+          logger.info("🔚 Closing browser...");
           await this.browser.close();
         }
       }
@@ -342,7 +353,7 @@ class BoomerBot {
       // Wait before next run (configurable via BOT_DELAY_MINUTES env variable)
       const delayMinutes = parseInt(process.env.BOT_DELAY_MINUTES || "10", 10);
       const delayMs = delayMinutes * 60 * 1000;
-      console.log(`⏰ Waiting ${delayMinutes} minutes before next run...`);
+      logger.info(`⏰ Waiting ${delayMinutes} minutes before next run...`);
       await new Promise((resolve) => setTimeout(resolve, delayMs));
     }
   }
@@ -359,7 +370,7 @@ let isShuttingDown = false;
 
 process.on("SIGINT", async () => {
   if (!isShuttingDown) {
-    console.log("\n🛑 Received SIGINT, shutting down gracefully...");
+    logger.info("\n🛑 Received SIGINT, shutting down gracefully...");
     isShuttingDown = true;
     process.exit(0);
   }
@@ -367,7 +378,7 @@ process.on("SIGINT", async () => {
 
 process.on("SIGTERM", async () => {
   if (!isShuttingDown) {
-    console.log("\n🛑 Received SIGTERM, shutting down gracefully...");
+    logger.info("\n🛑 Received SIGTERM, shutting down gracefully...");
     isShuttingDown = true;
     process.exit(0);
   }
@@ -388,7 +399,7 @@ if (import.meta.url === `file://${process.argv[1]}` || process.env.pm_id) {
 
   const boomerBot = new BoomerBot(options);
   boomerBot.run().catch((error) => {
-    console.error("💥 Fatal error:", error);
+    logger.error("💥 Fatal error:", error);
     process.exit(1);
   });
 }

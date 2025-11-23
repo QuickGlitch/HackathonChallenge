@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import helmet from "helmet";
-import morgan from "morgan";
+import pino from "pino";
+import pinoHttp from "pino-http";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import fs from "fs";
@@ -22,10 +22,34 @@ if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir, { recursive: true });
 }
 
-// Create a write stream for morgan logs
-const accessLogStream = fs.createWriteStream(path.join(logsDir, "access.log"), {
-  flags: "a",
+// Create pino logger
+const logger = pino({
+  level: process.env.LOG_LEVEL || "info",
+  transport: {
+    targets: [
+      {
+        target: "pino-pretty",
+        level: "info",
+        options: {
+          colorize: true,
+          translateTime: "SYS:standard",
+          ignore: "pid,hostname",
+        },
+      },
+      {
+        target: "pino/file",
+        level: "info",
+        options: {
+          destination: path.join(logsDir, "access.log"),
+          mkdir: true,
+        },
+      },
+    ],
+  },
 });
+
+// Create HTTP logger middleware
+const httpLogger = pinoHttp({ logger });
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -64,10 +88,7 @@ app.use(
     credentials: true, // Allow cookies to be sent
   })
 );
-// // Log to console
-app.use(morgan("combined"));
-// Log to file
-app.use(morgan("combined", { stream: accessLogStream }));
+app.use(httpLogger); // Pino HTTP logger
 app.use(cookieParser());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
@@ -115,12 +136,12 @@ app.get("/api/bot-activity/stream", (req, res) => {
   req.on("close", () => {
     clearInterval(heartbeatInterval);
     botActivityClients.delete(res);
-    console.log(
+    logger.info(
       `SSE client disconnected. Active clients: ${botActivityClients.size}`
     );
   });
 
-  console.log(
+  logger.info(
     `New SSE client connected. Active clients: ${botActivityClients.size}`
   );
 });
@@ -136,7 +157,7 @@ app.post("/api/bot-activity", express.json(), (req, res) => {
     lastUpdated: new Date().toISOString(),
   };
 
-  console.log(`Bot activity updated:`, botActivityState);
+  logger.info(`Bot activity updated:`, botActivityState);
 
   // Broadcast to all connected SSE clients
   const message = `data: ${JSON.stringify(botActivityState)}\n\n`;
@@ -144,7 +165,7 @@ app.post("/api/bot-activity", express.json(), (req, res) => {
     try {
       client.write(message);
     } catch (error) {
-      console.error("Error writing to SSE client:", error);
+      logger.error("Error writing to SSE client:", error);
       botActivityClients.delete(client);
     }
   });
@@ -164,18 +185,18 @@ app.use("*", (req, res) => {
 
 // Error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  logger.error(err.stack);
   res.status(500).json({ error: "Something went wrong!" });
 });
 
 // Graceful shutdown
 process.on("SIGINT", async () => {
-  console.log("Shutting down gracefully...");
+  logger.info("Shutting down gracefully...");
   await prisma.$disconnect();
   process.exit(0);
 });
 
 app.listen(port, () => {
-  console.log(`🚀 Server running on port ${port}`);
-  console.log(`API documentation available at http://localhost:${port}/api`);
+  logger.info(`🚀 Server running on port ${port}`);
+  logger.info(`API documentation available at http://localhost:${port}/api`);
 });
