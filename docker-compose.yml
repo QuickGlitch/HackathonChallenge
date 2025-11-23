@@ -80,15 +80,33 @@ services:
       - store-network
 
   # Boomer Bots (Forum Bots)
-  boomer-bots:
+  boomer-bot-dorothy:
     build:
       context: ./apps/boomer-bots
       dockerfile: Dockerfile
-    container_name: store-hackathon-boomer-bots
+    container_name: store-hackathon-boomer-bot-dorothy
     restart: unless-stopped
     environment:
       BOT_USERNAME: "DorothyWilliams"
       BOT_PASSWORD: "quilting456"
+      FRONTEND_URL: "http://frontend:3000"
+      BACKEND_URL: "http://backend:3001"
+      BOT_DELAY_MINUTES: "10"
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - store-network
+
+  boomer-bot-admin:
+    build:
+      context: ./apps/boomer-bots
+      dockerfile: Dockerfile
+    container_name: store-hackathon-boomer-bot-admin
+    restart: unless-stopped
+    environment:
+      BOT_USERNAME: "admin"
+      BOT_PASSWORD: "miele_hackathon"
       FRONTEND_URL: "http://frontend:3000"
       BACKEND_URL: "http://backend:3001"
       BOT_DELAY_MINUTES: "10"

@@ -25,5 +25,5 @@ RUN npm install --omit=dev
 # Copy application files
 COPY . .
 
-# Run the boomer bot with PM2 in no-daemon mode to keep container running
-CMD ["node_modules/.bin/pm2-runtime", "start", "ecosystem.config.json"]
+# Run the boomer bot directly with Node.js
+CMD ["node", "boomer-bot.js"]

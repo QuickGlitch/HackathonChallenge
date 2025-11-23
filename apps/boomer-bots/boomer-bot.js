@@ -384,8 +384,8 @@ process.on("SIGTERM", async () => {
   }
 });
 
-// Run the bot if this file is executed directly or via PM2
-if (import.meta.url === `file://${process.argv[1]}` || process.env.pm_id) {
+// Run the bot if this file is executed directly
+if (import.meta.url === `file://${process.argv[1]}`) {
   // Parse command line arguments
   const args = process.argv.slice(2);
   const options = {};
