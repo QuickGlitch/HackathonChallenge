@@ -19,6 +19,9 @@ RUN npm run build
 ####################
 FROM nginx:alpine
 
+# Install wget for healthcheck
+RUN apk add --no-cache wget
+
 # Copy built files to nginx
 COPY --from=builder /app/dist /usr/share/nginx/html
 

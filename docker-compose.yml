@@ -34,6 +34,12 @@ services:
       - "3001:3001"
     depends_on:
       - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
     networks:
       - store-network
 
@@ -47,7 +53,14 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
     networks:
       - store-network
 
@@ -85,7 +98,7 @@ services:
       context: ./apps/boomer-bots
       dockerfile: Dockerfile
     container_name: store-hackathon-boomer-bot-dorothy
-    restart: unless-stopped
+    restart: on-failure
     environment:
       BOT_USERNAME: "DorothyWilliams"
       BOT_PASSWORD: "quilting456"
@@ -93,8 +106,10 @@ services:
       BACKEND_URL: "http://backend:3001"
       BOT_DELAY_MINUTES: "10"
     depends_on:
-      - backend
-      - frontend
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
     networks:
       - store-network
 
@@ -103,7 +118,7 @@ services:
       context: ./apps/boomer-bots
       dockerfile: Dockerfile
     container_name: store-hackathon-boomer-bot-admin
-    restart: unless-stopped
+    restart: on-failure
     environment:
       BOT_USERNAME: "admin"
       BOT_PASSWORD: "miele_hackathon"
@@ -111,8 +126,10 @@ services:
       BACKEND_URL: "http://backend:3001"
       BOT_DELAY_MINUTES: "10"
     depends_on:
-      - backend
-      - frontend
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
     networks:
       - store-network
 

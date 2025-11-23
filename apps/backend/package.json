@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "nodemon --env-file-if-exists=.env.development src/index.js",
-    "start": "node --env-file-if-exists=.env src/index.js",
+    "start": "node src/index.js",
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset --force",
