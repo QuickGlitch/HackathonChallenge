@@ -23,7 +23,7 @@ services:
     container_name: store-hackathon-image-server-dev
     restart: unless-stopped
     ports:
-      - "8081:80"
+      - "8080:80"
     volumes:
       - ./apps/image-server/public/images:/var/www/html/images
     networks:

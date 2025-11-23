@@ -3,8 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "echo 'Running in Docker'",
-    "build": "echo 'Building Docker image'",
-    "start": "echo 'Running in Docker'"
+    "dev": "php -S 0.0.0.0:8080 -t public"
   }
 }

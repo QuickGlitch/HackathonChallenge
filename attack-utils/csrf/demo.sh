@@ -12,7 +12,7 @@ BOOMER_BOTS_DIR="${PROJECT_ROOT}/apps/boomer-bots"
 
 FRONTEND_URL="http://localhost:3000"
 BACKEND_URL="http://localhost:3001"
-CSRF_APP_URL="http://localhost:8080"
+CSRF_APP_URL="http://localhost:8081"
 
 # Colors for output
 RED='\033[0;31m'
@@ -68,8 +68,8 @@ if [ ! -d "node_modules" ]; then
     echo -e "${GREEN}✓${NC} Dependencies installed"
 fi
 
-# Kill any existing process on port 8080
-lsof -ti:8080 | xargs kill -9 2>/dev/null || true
+# Kill any existing process on port 8081
+lsof -ti:8081 | xargs kill -9 2>/dev/null || true
 
 # Start the CSRF app in the background
 npm run dev &

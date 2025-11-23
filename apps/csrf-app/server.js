@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 8080;
+const PORT = 8081;
 
 // Store stolen tokens (in production, this would go to a database)
 const stolenTokens = [];

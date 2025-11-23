@@ -14,12 +14,12 @@ export default defineConfig({
     host: true,
     proxy: {
       "/api/upload-image": {
-        target: "http://localhost:8081",
+        target: "http://localhost:8080",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/upload-image/, "/upload.php"),
       },
       "/images": {
-        target: "http://localhost:8081",
+        target: "http://localhost:8080",
         changeOrigin: true,
       },
       "/api": {

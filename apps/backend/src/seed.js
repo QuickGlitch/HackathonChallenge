@@ -482,6 +482,21 @@ async function main() {
     `✅ Created ${createdMessages} forum messages, skipped ${skippedMessages} existing messages`
   );
 
+  // Reset sequences for tables with explicit IDs
+  console.log("Resetting auto-increment sequences...");
+
+  // Reset products sequence
+  await prisma.$executeRawUnsafe(
+    `SELECT setval(pg_get_serial_sequence('products', 'id'), COALESCE(MAX(id), 1)) FROM products;`
+  );
+
+  // Reset forum_messages sequence
+  await prisma.$executeRawUnsafe(
+    `SELECT setval(pg_get_serial_sequence('forum_messages', 'id'), COALESCE(MAX(id), 1)) FROM forum_messages;`
+  );
+
+  console.log("✅ Sequences reset successfully!");
+
   console.log("✅ Database seeded successfully!");
 }
 
