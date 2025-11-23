@@ -320,30 +320,30 @@ class BoomerBot {
   }
 
   async run() {
-    try {
-      await this.init();
+    while (true) {
+      try {
+        await this.init();
 
-      const loginSuccess = await this.login();
-      if (!loginSuccess) {
-        throw new Error("Failed to login");
+        const loginSuccess = await this.login();
+        if (!loginSuccess) {
+          throw new Error("Failed to login");
+        }
+
+        await this.simulateForumBrowsing();
+      } catch (error) {
+        console.error("💥 Bot execution failed:", error.message);
+      } finally {
+        if (this.browser) {
+          console.log("🔚 Closing browser...");
+          await this.browser.close();
+        }
       }
 
-      await this.simulateForumBrowsing();
-    } catch (error) {
-      console.error("💥 Bot execution failed:", error.message);
-    } finally {
-      if (this.browser) {
-        console.log("🔚 Closing browser...");
-        await this.browser.close();
-      }
-      console.log("👋 Bot finished successfully");
-
-      if (process.env.DEV_MODE === "true") {
-        console.log("[DEV MODE] Waiting 20 seconds before next run");
-        setTimeout(() => this.run(), 20000);
-      } else {
-        process.exit(0);
-      }
+      // Wait before next run (configurable via BOT_DELAY_MINUTES env variable)
+      const delayMinutes = parseInt(process.env.BOT_DELAY_MINUTES || "10", 10);
+      const delayMs = delayMinutes * 60 * 1000;
+      console.log(`⏰ Waiting ${delayMinutes} minutes before next run...`);
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
     }
   }
 
@@ -354,15 +354,23 @@ class BoomerBot {
   }
 }
 
-// Handle graceful shutdown
+// Handle graceful shutdown - only exit if explicitly requested
+let isShuttingDown = false;
+
 process.on("SIGINT", async () => {
-  console.log("\n🛑 Received SIGINT, shutting down gracefully...");
-  process.exit(0);
+  if (!isShuttingDown) {
+    console.log("\n🛑 Received SIGINT, shutting down gracefully...");
+    isShuttingDown = true;
+    process.exit(0);
+  }
 });
 
 process.on("SIGTERM", async () => {
-  console.log("\n🛑 Received SIGTERM, shutting down gracefully...");
-  process.exit(0);
+  if (!isShuttingDown) {
+    console.log("\n🛑 Received SIGTERM, shutting down gracefully...");
+    isShuttingDown = true;
+    process.exit(0);
+  }
 });
 
 // Run the bot if this file is executed directly or via PM2
@@ -379,7 +387,10 @@ if (import.meta.url === `file://${process.argv[1]}` || process.env.pm_id) {
   });
 
   const boomerBot = new BoomerBot(options);
-  boomerBot.run();
+  boomerBot.run().catch((error) => {
+    console.error("💥 Fatal error:", error);
+    process.exit(1);
+  });
 }
 
 export default BoomerBot;
