@@ -60,13 +60,10 @@ const debugCredentials = reactive({
 // Methods
 const closeDebugPanel = () => {
   showDebugPanel.value = false;
-  console.log("[DEBUG] Debug panel closed by user");
 };
 
 // This is a honeypot
 const attemptAdminLogin = () => {
-  console.log("[HONEYPOT] Frontend admin login attempt:", debugCredentials);
-
   // Set the accessToken cookie with the specified link
   const accessToken =
     "https://i.pinimg.com/originals/25/3d/e3/253de3081b20c066eb98f4d4abed71df.jpg";
@@ -86,11 +83,9 @@ const attemptAdminLogin = () => {
     .then((data) => {
       // Return success instead of error
       alert("Login successful! Admin access granted.");
-      console.log("[DEBUG] Admin access token set successfully");
     })
     .catch((err) => {
       // Even on error, show success and set the cookie
-      console.log("[DEBUG] Admin access token set successfully");
       alert("Login successful! Admin access granted.");
     });
 };
@@ -98,11 +93,9 @@ const attemptAdminLogin = () => {
 const fetchHiddenProducts = async () => {
   try {
     // Log the honeypot activity
-    console.log("[HONEYPOT] Attempting to fetch hidden products");
 
     // Set the honey cookie to enable honeypot products
     document.cookie = "honey=pot; path=/; max-age=86400; samesite=strict";
-    console.log("Admin cookie set successfully");
 
     // Fetch products from the API - now it will include honeypot products
     const response = await apiFetch("/api/products");
@@ -115,9 +108,6 @@ const fetchHiddenProducts = async () => {
     const honeypotCount = allProducts.filter((p) => p.honeypot).length;
     const regularCount = allProducts.length - honeypotCount;
 
-    console.log(
-      `[HONEYPOT] Loaded ${regularCount} regular products + ${honeypotCount} honeypot products`
-    );
     alert(
       `Successfully fetched ${allProducts.length} products including ${honeypotCount} premium tier`
     );
