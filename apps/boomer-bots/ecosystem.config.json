@@ -9,7 +9,7 @@
         "BOT_PASSWORD": "quilting456"
       },
       "autorestart": true,
-      "restart_delay": 6000
+      "restart_delay": 600000
     },
     {
       "namespace": "boomer-bots",
@@ -20,7 +20,7 @@
         "BOT_PASSWORD": "miele_hackathon"
       },
       "autorestart": true,
-      "restart_delay": 6000
+      "restart_delay": 600000
     }
   ]
 }

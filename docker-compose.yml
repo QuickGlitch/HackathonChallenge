@@ -79,6 +79,36 @@ services:
     networks:
       - store-network
 
+  # Boomer Bots (Forum Bots)
+  boomer-bots:
+    build:
+      context: ./apps/boomer-bots
+      dockerfile: Dockerfile
+    container_name: store-hackathon-boomer-bots
+    restart: unless-stopped
+    environment:
+      BOT_USERNAME: "DorothyWilliams"
+      BOT_PASSWORD: "quilting456"
+      FRONTEND_URL: "http://frontend:3000"
+      BACKEND_URL: "http://backend:3001"
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - store-network
+
+  # CSRF App (Attack Demonstration)
+  csrf-app:
+    build:
+      context: ./apps/csrf-app
+      dockerfile: Dockerfile
+    container_name: store-hackathon-csrf-app
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    networks:
+      - store-network
+
 volumes:
   postgres-data:
     driver: local

@@ -12,8 +12,8 @@ class BoomerBot {
       username: process.env.BOT_USERNAME || "DorothyWilliams",
       password: process.env.BOT_PASSWORD || "quilting456",
     };
-    this.baseUrl = "http://localhost:3000";
-    this.apiBaseUrl = "http://localhost:3001";
+    this.baseUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+    this.apiBaseUrl = process.env.BACKEND_URL || "http://localhost:3001";
     this.browser = null;
     this.page = null;
     this.clickTimeout = 5000; // 5 seconds timeout
