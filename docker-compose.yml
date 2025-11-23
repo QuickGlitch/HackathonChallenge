@@ -26,8 +26,11 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3001
+      BASE_URL: "http://localhost:3001"
       DATABASE_URL: "postgresql://storeuser:storepass@postgres:5432/storedb?schema=public"
       JWT_SECRET: "your-secret-key-here-change-in-production"
+      JWT_REFRESH_SECRET: "your-refresh-secret-key-here-change-in-production"
+      USE_SECURE_COOKIES: "false" # Set to true only when using HTTPS
     ports:
       - "3001:3001"
     depends_on:
@@ -70,6 +73,8 @@ services:
       dockerfile: Dockerfile
     container_name: store-hackathon-image-server
     restart: unless-stopped
+    ports:
+      - "8080:80"
     volumes:
       - ./apps/image-server/public/images:/var/www/html/images
     networks:

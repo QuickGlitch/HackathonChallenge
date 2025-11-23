@@ -142,13 +142,13 @@ router.post("/login", async (req, res) => {
     // Set cookies
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+      secure: process.env.USE_SECURE_COOKIES === "true", // Use secure cookies when HTTPS is available
       maxAge: ACCESS_TOKEN_MAX_AGE,
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.USE_SECURE_COOKIES === "true",
       sameSite: "strict",
       maxAge: REFRESH_TOKEN_MAX_AGE,
       path: "/api/users/refresh",
@@ -196,7 +196,7 @@ router.post("/refresh", (req, res) => {
     // Set new access token as cookie
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.USE_SECURE_COOKIES === "true",
       sameSite: "strict",
       maxAge: ACCESS_TOKEN_MAX_AGE,
     });

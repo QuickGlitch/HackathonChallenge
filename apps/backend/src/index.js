@@ -4,7 +4,6 @@ import helmet from "helmet";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 import { PrismaClient } from "@prisma/client";
@@ -16,9 +15,6 @@ import userRoutes from "./routes/users.js";
 import adminRoutes from "./routes/admin.js";
 import scoresRoutes from "./routes/scores.js";
 import forumRoutes from "./routes/forum.js";
-
-// Load environment variables
-dotenv.config();
 
 // Create logs directory if it doesn't exist
 const logsDir = path.join(process.cwd(), "logs");
@@ -52,6 +48,7 @@ const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
   max: 100, // limit each IP to 10 requests per windowMs
   message: "Too many requests from this IP, please try again later.",
+  validate: { trustProxy: false }, // Disable trust proxy validation for intentional vulnerabilities
   skip: (req) => {
     // Skip rate limiting for scoreboard endpoints
     return req.path.startsWith("/api/scores");
@@ -180,5 +177,5 @@ process.on("SIGINT", async () => {
 
 app.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
-  console.log(`📚 API documentation available at http://localhost:${port}/api`);
+  console.log(`API documentation available at http://localhost:${port}/api`);
 });
