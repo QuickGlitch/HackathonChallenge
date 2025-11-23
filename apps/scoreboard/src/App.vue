@@ -108,18 +108,18 @@ const hideGif = () => {
 };
 
 const setupBotActivityStream = () => {
-  console.log("🔌 Connecting to bot activity stream...");
+  console.log("Connecting to bot activity stream...");
 
   eventSource = new EventSource(`${API_BASE_URL}/api/bot-activity/stream`);
 
   eventSource.onopen = () => {
-    console.log("✅ Connected to bot activity stream");
+    console.log("Connected to bot activity stream");
   };
 
   eventSource.onmessage = (event) => {
     try {
       const data = JSON.parse(event.data);
-      console.log("📡 Bot activity update:", data);
+      console.log("Bot activity update:", data);
 
       if (data.isActive && !showBotActivity.value) {
         // Bot just started - fetch a fishing GIF and show it
@@ -134,11 +134,11 @@ const setupBotActivityStream = () => {
   };
 
   eventSource.onerror = (error) => {
-    console.error("❌ SSE connection error:", error);
+    console.error("SSE connection error:", error);
     // Attempt to reconnect after 5 seconds
     setTimeout(() => {
       if (eventSource.readyState === EventSource.CLOSED) {
-        console.log("🔄 Attempting to reconnect...");
+        console.log("Attempting to reconnect...");
         setupBotActivityStream();
       }
     }, 5000);
@@ -149,7 +149,7 @@ const closeEventSource = () => {
   if (eventSource) {
     eventSource.close();
     eventSource = null;
-    console.log("🔌 Closed bot activity stream");
+    console.log("Closed bot activity stream");
   }
 };
 

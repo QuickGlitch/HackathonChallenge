@@ -201,7 +201,7 @@ async function main() {
       createdUsers++;
     } catch (error) {
       if (error.code === "P2002") {
-        console.warn(`⚠️  User ${user.username} already exists, skipping...`);
+        console.warn(`User ${user.username} already exists, skipping...`);
         skippedUsers++;
       } else {
         throw error;
@@ -210,7 +210,7 @@ async function main() {
   }
 
   console.log(
-    `✅ Created ${createdUsers} users, skipped ${skippedUsers} existing users`
+    `Created ${createdUsers} users, skipped ${skippedUsers} existing users`
   );
 
   // Create some sample products
@@ -379,7 +379,7 @@ async function main() {
       createdProducts++;
     } catch (error) {
       if (error.code === "P2002") {
-        console.warn(`⚠️  Product ${product.name} already exists, skipping...`);
+        console.warn(`Product ${product.name} already exists, skipping...`);
         skippedProducts++;
       } else {
         throw error;
@@ -388,7 +388,7 @@ async function main() {
   }
 
   console.log(
-    `✅ Created ${createdProducts} products, skipped ${skippedProducts} existing products`
+    `Created ${createdProducts} products, skipped ${skippedProducts} existing products`
   );
 
   // Create sample forum messages
@@ -469,7 +469,7 @@ async function main() {
     } catch (error) {
       if (error.code === "P2002") {
         console.warn(
-          `⚠️  Forum message "${message.title}" already exists, skipping...`
+          `Forum message "${message.title}" already exists, skipping...`
         );
         skippedMessages++;
       } else {
@@ -479,7 +479,7 @@ async function main() {
   }
 
   console.log(
-    `✅ Created ${createdMessages} forum messages, skipped ${skippedMessages} existing messages`
+    `Created ${createdMessages} forum messages, skipped ${skippedMessages} existing messages`
   );
 
   // Reset sequences for tables with explicit IDs
@@ -495,9 +495,9 @@ async function main() {
     `SELECT setval(pg_get_serial_sequence('forum_messages', 'id'), COALESCE(MAX(id), 1)) FROM forum_messages;`
   );
 
-  console.log("✅ Sequences reset successfully!");
+  console.log("Sequences reset successfully!");
 
-  console.log("✅ Database seeded successfully!");
+  console.log("Database seeded successfully!");
 }
 
 main()

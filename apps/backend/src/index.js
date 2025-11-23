@@ -197,6 +197,6 @@ process.on("SIGINT", async () => {
 });
 
 app.listen(port, () => {
-  logger.info(`🚀 Server running on port ${port}`);
+  logger.info(`Server running on port ${port}`);
   logger.info(`API documentation available at http://localhost:${port}/api`);
 });

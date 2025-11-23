@@ -18,7 +18,7 @@ function logVerbose(...args) {
 }
 
 async function testBot() {
-  console.log("🧪 Testing BoomerBot...");
+  console.log("Testing BoomerBot...");
 
   if (!isVerbose) {
     console.log("Use --verbose or -v flag for detailed output\n");
@@ -30,14 +30,14 @@ async function testBot() {
     // Test browser initialization
     logVerbose("1. Testing browser initialization...");
     await bot.init();
-    logVerbose("✅ Browser initialization successful\n");
+    logVerbose("Browser initialization successful\n");
 
     // Test navigation to homepage
     logVerbose("2. Testing homepage navigation...");
     await bot.page.goto(bot.baseUrl, { waitUntil: "networkidle2" });
 
     const title = await bot.page.title();
-    logVerbose(`✅ Homepage loaded successfully. Title: ${title}\n`);
+    logVerbose(`Homepage loaded successfully. Title: ${title}\n`);
 
     // Test navigation to login page
     logVerbose("3. Testing login page navigation...");
@@ -56,9 +56,9 @@ async function testBot() {
       loginElements.hasPasswordField &&
       loginElements.hasSubmitButton
     ) {
-      logVerbose("✅ Login form elements found\n");
+      logVerbose("Login form elements found\n");
     } else {
-      logVerbose("❌ Missing login form elements:", loginElements);
+      logVerbose("Missing login form elements:", loginElements);
     }
 
     // Test forum page accessibility
@@ -75,11 +75,11 @@ async function testBot() {
       };
     });
 
-    logVerbose("✅ Forum page accessible. Elements found:", forumElements);
+    logVerbose("Forum page accessible. Elements found:", forumElements);
 
-    console.log("🎉 All tests passed!");
+    console.log("All tests passed!");
   } catch (error) {
-    console.error("❌ Test failed:", error.message);
+    console.error("Test failed:", error.message);
   } finally {
     await bot.cleanup();
   }
