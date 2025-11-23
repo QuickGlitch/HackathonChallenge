@@ -38,7 +38,7 @@ const logger = pino({
       },
       {
         target: "pino/file",
-        level: "info",
+        level: process.env.NODE_ENV === "production" ? "warning" : "debug",
         options: {
           destination: path.join(logsDir, "access.log"),
           mkdir: true,
