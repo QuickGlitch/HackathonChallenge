@@ -77,7 +77,7 @@ async function main() {
       id: USER_IDS.hackors2,
       username: "Hackors2",
       password: "taco2",
-      PII: "Things Lord of the Rings is overrated...",
+      PII: "Thinks Lord of the Rings is overrated...",
       role: "customer",
     },
     {

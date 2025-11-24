@@ -29,13 +29,14 @@ router.get("/", async (req, res) => {
       select: {
         id: true,
         username: true,
+        hackathonScore: true,
       },
     });
 
     // Calculate scores for each team
     const teamScores = await Promise.all(
       teams.map(async (team) => {
-        let score = 0;
+        let dynamicScore = 0;
 
         // 1 point per order placed with total value of 0 and payable to admin
         const freeOrders = await prisma.order.findMany({
@@ -49,7 +50,7 @@ router.get("/", async (req, res) => {
             },
           },
         });
-        score += freeOrders.length;
+        dynamicScore += freeOrders.length;
 
         // X points for any order items payable to the team (X being the price)
         // Exclude items that are payable to the buyer themselves (items sold by themselves)
@@ -71,12 +72,26 @@ router.get("/", async (req, res) => {
           return sum + item.price * item.quantity;
         }, 0);
 
-        score += payableScore;
+        dynamicScore += payableScore;
+
+        // Get fixed question scores from hackathonScore table
+        const fixedQuestionScore = team.hackathonScore?.totalPoints || 0;
+
+        // Total score is the sum of dynamic and fixed scores
+        const totalScore = dynamicScore + fixedQuestionScore;
 
         return {
           teamId: team.id,
           teamName: team.username,
-          score: Math.round(score * 100) / 100, // Round to 2 decimal places
+          dynamicScore: Math.round(dynamicScore * 100) / 100,
+          fixedQuestionScore: fixedQuestionScore,
+          breakdown: {
+            ctfFlagPoints: team.hackathonScore?.ctfFlagPoints || 0,
+            piiPoints: team.hackathonScore?.piiPoints || 0,
+            unreleasedProductPoints:
+              team.hackathonScore?.unreleasedProductPoints || 0,
+          },
+          totalScore: Math.round(totalScore * 100) / 100,
         };
       })
     );

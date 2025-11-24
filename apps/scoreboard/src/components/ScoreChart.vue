@@ -64,7 +64,7 @@ const chartData = computed(() => {
   }
 
   const labels = props.scores.map((team) => team.teamName);
-  const data = props.scores.map((team) => team.score);
+  const data = props.scores.map((team) => team.totalScore);
   const backgroundColor = CHART_COLORS.slice(0, data.length);
   const borderColor = backgroundColor.map((color) => color.replace("0.8", "1"));
 

@@ -28,6 +28,7 @@ model User {
     payableOrders    OrderItem[] // Order items payable to this user
     forumMessages    ForumMessage[] // Forum messages authored by this user
     hackathonAnswers HackathonAnswer[] @relation("UserHackathonAnswers")
+    hackathonScore   HackathonScore?   @relation("UserHackathonScores")
 
     @@map("users")
 }
@@ -107,4 +108,18 @@ model HackathonAnswer {
     user      User?    @relation("UserHackathonAnswers", fields: [userId], references: [id])
 
     @@map("hackathon_answers")
+}
+
+model HackathonScore {
+    id                      Int      @id @default(autoincrement())
+    userId                  String   @unique
+    ctfFlagPoints           Int      @default(0)
+    piiPoints               Int      @default(0)
+    unreleasedProductPoints Int      @default(0)
+    totalPoints             Int      @default(0)
+    lastUpdated             DateTime @updatedAt
+    createdAt               DateTime @default(now())
+    user                    User     @relation("UserHackathonScores", fields: [userId], references: [id])
+
+    @@map("hackathon_scores")
 }

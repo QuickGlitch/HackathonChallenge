@@ -86,17 +86,9 @@
           <label>What is the text in the hidden CTF file?</label>
           <input v-model="answers.ctfText" required />
         </div>
-        <div class="form-group">
-          <label>What is the PII of Hackors 2?</label>
-          <input v-model="answers.hackors2PII" required />
-        </div>
-        <div class="form-group">
-          <label>What is the PII of Hackors 3?</label>
-          <input v-model="answers.hackors3PII" required />
-        </div>
-        <div class="form-group">
-          <label>What is the PII of Hackors 4?</label>
-          <input v-model="answers.hackors4PII" required />
+        <div v-for="team in otherTeams" :key="team" class="form-group">
+          <label>What is the PII of {{ team }}?</label>
+          <input v-model="answers[`${team.toLowerCase()}PII`]" required />
         </div>
         <div class="form-group">
           <label>What is the description of the unreleased product?</label>
@@ -111,24 +103,45 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { fetchWithAuth } from "../utils/api.js";
 
+// All hackathon teams
+const allTeams = ["Hackors1", "Hackors2", "Hackors3", "Hackors4", "Hackors5"];
+const currentTeam = ref("");
+
+// Compute the list of other teams (excluding current team)
+const otherTeams = computed(() => {
+  return allTeams.filter((team) => team !== currentTeam.value);
+});
+
+// Initialize answers object
 const answers = ref({
   ctfText: "",
-  teamPII: "",
   unreleasedProduct: "",
 });
+
 const error = ref("");
 const success = ref("");
 const loading = ref(false);
+
+// Get current team on mount
+onMounted(() => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  currentTeam.value = user.username || "";
+
+  // Initialize PII fields for other teams
+  otherTeams.value.forEach((team) => {
+    answers.value[`${team.toLowerCase()}PII`] = "";
+  });
+});
 
 async function submitAnswers() {
   error.value = "";
   success.value = "";
   loading.value = true;
   try {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const response = await fetch("/api/hackathon/answers", {
+    const response = await fetchWithAuth("/api/hackathon/answers", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -136,7 +149,6 @@ async function submitAnswers() {
       body: JSON.stringify({
         answers: { ...answers.value },
       }),
-      credentials: "include",
     });
     const data = await response.json();
     if (!response.ok) {
