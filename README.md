@@ -10,14 +10,18 @@ To get started, clone the repository and follow the setup instructions in the RE
 git clone https://github.com/QuickGlitch/HackathonChallenge.git
 cd hackathon-challenge
 npm install
-npm run docker:up
+
+### DEV SETUP
+npm run docker:up # dev docker compose for db and php image server
 npm run dev
 ```
 
 This will setup multiple applications (frontend, backend, admin panel) running on different ports with only the database running within a Docker container. For the actual hackathon, you probably want to use the production setup instead:
 
 ```sh
-npm run docker:up:prod
+npm run docker:up:prod 
+# which is equivalent to:
+docker-compose -f docker-compose.yml up
 ```
 
 ### Starting the event

@@ -12,7 +12,7 @@
     "db:reset": "turbo run db:reset",
     "db:setup": "turbo run db:setup",
     "docker:up": "docker-compose -f docker-compose.dev.yml up -d",
-    "docker:up:prod": "docker-compose -f docker-compose.prod.yml up -d",
+    "docker:up:prod": "docker-compose -f docker-compose.yml up",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f"
   },
