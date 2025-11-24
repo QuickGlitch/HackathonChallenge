@@ -78,6 +78,23 @@ services:
     networks:
       - store-network
 
+  # Team Page (Vue.js)
+  team-page:
+    build:
+      context: ./apps/team-page
+      dockerfile: Dockerfile
+    container_name: store-hackathon-team-page
+    restart: unless-stopped
+    environment:
+      VITE_FRONTEND_URL: "http://frontend:3000"
+      VITE_SCOREBOARD_URL: "http://scoreboard:5174"
+    ports:
+      - "5175:5175"
+    depends_on:
+      - backend
+    networks:
+      - store-network
+
   # Image Server (PHP)
   image-server:
     build:

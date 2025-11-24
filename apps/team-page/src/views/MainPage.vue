@@ -10,8 +10,7 @@
     </p>
     <p>
       You can find the target application at:
-      <!-- TODO: replace with actual link from env variables -->
-      <a href="http://localhost:3000">Hackathon Store</a>
+      <a :href="frontendUrl">Hackathon Store</a>
     </p>
     <h2>There can only be one</h2>
     <p>
@@ -75,12 +74,12 @@
       <li>
         Calculated damage - certain gamified vulnerabilities exist in the
         application that are intended for you to exploit repeatedly. These
-        scores can be found live on the <a href="/scoreboard">scoreboard</a>.
+        scores can be found live on the <a :href="scoreboardUrl">scoreboard</a>.
         These specific vulnerabilities will be revealed during the hackathon.
       </li>
     </ul>
     <div class="answers-form-container">
-      <h2>Submit Your Answers</h2>
+      <h2>Fixed Questions</h2>
       <form @submit.prevent="submitAnswers">
         <div class="form-group">
           <label>What is the text in the hidden CTF file?</label>
@@ -105,6 +104,12 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { fetchWithAuth } from "../utils/api.js";
+
+// Environment variables with defaults for local development
+const frontendUrl =
+  import.meta.env.VITE_FRONTEND_URL || "http://localhost:3000";
+const scoreboardUrl =
+  import.meta.env.VITE_SCOREBOARD_URL || "http://localhost:5174";
 
 // All hackathon teams
 const allTeams = ["Hackors1", "Hackors2", "Hackors3", "Hackors4", "Hackors5"];
