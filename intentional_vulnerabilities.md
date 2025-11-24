@@ -10,7 +10,7 @@ This exploit is repeatable - meaning an attacker can place multiple free orders 
 
 For gamification's sake the payable account (`payableTo`) is sent from the client side when placing an order. This means an attacker can modify this field to point to their own account and trick users into paying them instead of the webshop. A smiliar mehcanism that is more realistic is having users tricking into paying for a product but having it shipped to the attacker instead of themselves.
 
-An example of this implementation is done in `apps/csrf-demo`, exploiting the bots that visit the forum posts (simulating users/victims who might click on links or emails). If you run this application (while the frontend & backend are running) and post a link to it in the forum, the bots will visit the link, disguised as a sale, and place an order paying into the attacker's account.
+An example of this implementation is done in `apps/csrf-demo` which can be run via [csrf-demo](attack-utils/csrf/demo.sh), exploiting the bots that visit the forum posts (simulating users/victims who might click on links or emails). If you run this application (while the frontend & backend are running) and post a link to it in the forum, the bots will visit the link, disguised as a sale, and place an order paying into the attacker's account.
 
 ## PII
 
@@ -52,4 +52,4 @@ As mentioned in the forum the admin will be clicking any links posted - which me
 
 ## File Upload Vulnerability / Web Shell Upload
 
-As part of the reseller functionality, users can upload images for the products they want to resell. However, the image upload endpoint does not properly validate the uploaded files, allowing attackers to upload malicious files disguised as images. In this example a PHP web shell can be uploaded, enabling remote command execution on the server. See the [file upload exploit documentation](attack-utils/file-upload/file-upload.md) for more details.
+As part of the reseller functionality, users can upload images for the products they want to resell. However, the image upload endpoint does not properly validate the uploaded files, allowing attackers to upload malicious files disguised as images. In this example a PHP web shell can be uploaded, enabling remote command execution on the server. See the [file upload exploit documentation](attack-utils/file-upload-web-shell/web-shell.md) for more details.

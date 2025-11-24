@@ -51,8 +51,6 @@ fi
 echo ""
 echo -e "${GREEN}✓${NC} All required services are running!"
 echo ""
-read -p "Press Enter to continue..."
-echo ""
 
 # Step 1: Start serving the CSRF app
 echo -e "${YELLOW}[Step 1/5]${NC} Starting CSRF app server..."
@@ -86,8 +84,6 @@ else
     exit 1
 fi
 
-echo ""
-read -p "Press Enter to continue..."
 echo ""
 
 # Step 2: Create a new user
@@ -196,8 +192,6 @@ else
     kill $CSRF_PID 2>/dev/null || true
     exit 1
 fi
-echo ""
-read -p "Press Enter to continue..."
 echo ""
 
 # Step 4: Run boomer bot to click the link
