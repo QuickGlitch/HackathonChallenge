@@ -34,12 +34,24 @@ services:
       - "3001:3001"
     depends_on:
       - postgres
+      - lgtm
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
       interval: 10s
       timeout: 3s
       retries: 5
       start_period: 30s
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://lgtm:3100/loki/api/v1/push"
+        loki-batch-size: "400"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=backend,environment=production"
     networks:
       - store-network
 
@@ -145,8 +157,26 @@ services:
     networks:
       - store-network
 
+  # LGTM Stack (Loki, Grafana, Tempo, Mimir)
+  lgtm:
+    image: grafana/docker-otel-lgtm:latest
+    container_name: store-hackathon-lgtm
+    restart: unless-stopped
+    ports:
+      - "3003:3000"    # Grafana UI
+      - "4317:4317"    # OTLP gRPC
+      - "4318:4318"    # OTLP HTTP
+    environment:
+      - OTEL_METRIC_EXPORT_INTERVAL=1000
+    networks:
+      - store-network
+    volumes:
+      - lgtm-data:/data
+
 volumes:
   postgres-data:
+    driver: local
+  lgtm-data:
     driver: local
 
 networks:
