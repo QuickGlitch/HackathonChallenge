@@ -208,7 +208,7 @@ router.post("/refresh", (req, res) => {
 // POST /api/users/logout - Logout user by clearing cookies
 router.post("/logout", (req, res) => {
   res.clearCookie("accessToken");
-  res.clearCookie("refreshToken");
+  res.clearCookie("refreshToken", { path: "/api/users/refresh" });
   res.json({ message: "Logged out successfully" });
 });
 
