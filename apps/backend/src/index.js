@@ -25,28 +25,27 @@ if (!fs.existsSync(logsDir)) {
 // Create pino logger
 const logger = pino({
   level: process.env.LOG_LEVEL || "info",
-  formatters: {
-    level: (label) => {
-      return { level: label };
-    },
-  },
-  timestamp: pino.stdTimeFunctions.isoTime,
-  ...(process.env.NODE_ENV === "production"
-    ? {
-        // Production: JSON output for Loki
-        // No transport needed, logs go to stdout and are captured by Docker Loki driver
-      }
-    : {
-        // Development: Pretty output
-        transport: {
-          target: "pino-pretty",
-          options: {
-            colorize: true,
-            translateTime: "SYS:standard",
-            ignore: "pid,hostname",
-          },
+  transport: {
+    targets: [
+      {
+        target: "pino-pretty",
+        level: "info",
+        options: {
+          colorize: true,
+          translateTime: "SYS:standard",
+          ignore: "pid,hostname",
         },
-      }),
+      },
+      {
+        target: "pino/file",
+        level: process.env.NODE_ENV === "production" ? "warning" : "debug",
+        options: {
+          destination: path.join(logsDir, "access.log"),
+          mkdir: true,
+        },
+      },
+    ],
+  },
 });
 
 // Create HTTP logger middleware
