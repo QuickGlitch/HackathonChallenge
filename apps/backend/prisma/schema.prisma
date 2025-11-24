@@ -23,10 +23,11 @@ model User {
     updatedAt DateTime @updatedAt
 
     // Relations
-    orders        Order[]
-    products      Product[] // Products with payments going to this user
-    payableOrders OrderItem[] // Order items payable to this user
-    forumMessages ForumMessage[] // Forum messages authored by this user
+    orders           Order[]
+    products         Product[] // Products with payments going to this user
+    payableOrders    OrderItem[] // Order items payable to this user
+    forumMessages    ForumMessage[] // Forum messages authored by this user
+    hackathonAnswers HackathonAnswer[] @relation("UserHackathonAnswers")
 
     @@map("users")
 }
@@ -92,8 +93,18 @@ model ForumMessage {
     updatedAt DateTime @updatedAt
 
     // Relations
-    author   User @relation(fields: [authorId], references: [id])
+    author   User   @relation(fields: [authorId], references: [id])
     authorId String
 
     @@map("forum_messages")
+}
+
+model HackathonAnswer {
+    id        Int      @id @default(autoincrement())
+    answers   Json
+    userId    String
+    createdAt DateTime @default(now())
+    user      User?    @relation("UserHackathonAnswers", fields: [userId], references: [id])
+
+    @@map("hackathon_answers")
 }

@@ -166,7 +166,7 @@ class BoomerBot {
   }
 
   async extractForumLinks() {
-    console.log("Extracting links from forum messages...");
+    logger.info("Extracting links from forum messages...");
 
     try {
       // Extract all links from message bodies using v-html rendered content

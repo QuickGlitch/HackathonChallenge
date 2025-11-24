@@ -5,6 +5,7 @@ services:
     container_name: store-hackathon-db-dev
     restart: unless-stopped
     environment:
+      DATABASE_URL: "postgresql://storeuser:storepass@postgres:5432/storedb?schema=public"
       POSTGRES_DB: storedb
       POSTGRES_USER: storeuser
       POSTGRES_PASSWORD: storepass

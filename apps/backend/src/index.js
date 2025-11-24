@@ -15,6 +15,7 @@ import userRoutes from "./routes/users.js";
 import adminRoutes from "./routes/admin.js";
 import scoresRoutes from "./routes/scores.js";
 import forumRoutes from "./routes/forum.js";
+import hackathonRoutes from "./routes/hackathon.js";
 
 // Create logs directory if it doesn't exist
 const logsDir = path.join(process.cwd(), "logs");
@@ -110,6 +111,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes); // Honeypot admin routes
 app.use("/api/scores", scoresRoutes);
 app.use("/api/forum", forumRoutes);
+app.use("/api/hackathon", hackathonRoutes);
 
 // SSE endpoint for bot activity stream
 app.get("/api/bot-activity/stream", (req, res) => {
