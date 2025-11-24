@@ -180,6 +180,10 @@ async function submitAnswers() {
 ul {
   margin: 1rem 0;
   padding-left: 1.5rem;
+
+  li {
+    margin-bottom: 0.5rem;
+  }
 }
 .answers-form-container {
   margin-top: 2rem;

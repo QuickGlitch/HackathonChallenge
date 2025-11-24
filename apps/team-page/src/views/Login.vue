@@ -2,8 +2,14 @@
   <div class="login-container">
     <h2>Team Login</h2>
     <form @submit.prevent="handleLogin">
-      <input v-model="username" placeholder="Username" required />
       <input
+        v-model="username"
+        placeholder="Username"
+        required
+        name="username"
+      />
+      <input
+        name="password"
         v-model="password"
         type="password"
         placeholder="Password"
@@ -65,13 +71,18 @@ async function handleLogin() {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
 }
 input {
-  display: block;
   width: 100%;
+  display: block;
   margin-bottom: 1rem;
-  padding: 0.7rem;
+  padding: 0.7rem 0 0.7rem 0.5rem;
   border-radius: 4px;
   border: 1px solid #ccc;
 }
+
+input::placeholder {
+  padding-left: 0.5rem;
+}
+
 button {
   width: 100%;
   padding: 0.7rem;
