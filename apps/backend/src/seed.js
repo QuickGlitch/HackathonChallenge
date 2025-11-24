@@ -356,7 +356,7 @@ async function main() {
       id: PRODUCT_IDS.prototypeFish,
       name: "Prototype animal: beta fish",
       description:
-        "Top secret: do not release to the public yet! WIP model of a fish like fish.",
+        "Top secret: do not release to the public yet! WIP model of an underwater animal shaped like a fish.",
       price: 999.99,
       image:
         "https://images.unsplash.com/photo-1710382163926-76b22555b52c?w=400&h=500&fit=crop",

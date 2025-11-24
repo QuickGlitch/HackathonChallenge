@@ -1,13 +1,83 @@
 <template>
   <div class="main-container">
-    <h2>Hackathon Rules</h2>
+    <h1>Welcome Hackors</h1>
+    <p>
+      Welcome to our very own hackathon where you will be pitted against other
+      teams to pentest and exploit a sample web application: the
+      <b>Hackathon Store</b>. This budding new e-commerce platform is built upon
+      vibes and ductape, and it's your job as a white-fedora hacker to help this
+      dream become a reality!
+    </p>
+    <p>
+      You can find the target application at:
+      <!-- TODO: replace with actual link from env variables -->
+      <a href="http://localhost:3000">Hackathon Store</a>
+    </p>
+    <h2>There can only be one</h2>
+    <p>
+      The target application is a single live instance, so you may come across
+      <a
+        href="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.imgflip.com%2F4b3kgg.jpg&f=1&nofb=1&ipt=8f6a1d83987f4011644fc0143c646c61bb3ce0fc05cd5aa433a833a5dfe40c7e"
+        >friendly fellow hackers</a
+      >. Or perhaps they are saboteurs? Who knows.. But there can only be one
+      winner!
+    </p>
+
+    <h3>Hackathon Rules</h3>
+    Because the target application isn't bulletproof and you are playing
+    alongside other teams, please follow these rules to ensure fun experience
+    for everyone:
     <ul>
-      <li>Each team must submit answers using this page.</li>
-      <li>Do not share credentials with other teams.</li>
-      <li>Answers must be submitted before the deadline.</li>
-      <li>Each question is worth points towards your final score.</li>
-      <li>Respect other teams and do not attempt to disrupt their progress.</li>
-      <li>All answers are confidential until the end of the hackathon.</li>
+      <li>
+        <b>Don't be mean to other teams.</b> You can trip up other teams with
+        XSS and other tricks, but keep it fun.
+        <ul>
+          <li>No data deletion, or destructive attacks of other teams data.</li>
+          <li>
+            Stealing their authorization and placing fake orders payable to your
+            own account? Fair game!
+          </li>
+        </ul>
+      </li>
+      <li>
+        <b>Don't break the hackathon</b> This application isn't bulletproof and
+        everyone should have a chance to play.
+        <ul>
+          <li>
+            For example, don't DDoS the server or drop tables. If you have a
+            means to do these attacks see the following point.
+          </li>
+        </ul>
+      </li>
+      <li>
+        If you find major vulnerabilities that fall into either of the above two
+        categories - save them for your final presentation. You can still get
+        points for these, and perhaps demonstrate them live at the end of the
+        hackathon.
+      </li>
+    </ul>
+    <h3>How to score points</h3>
+    <ul>
+      <li>
+        Presentation - at the end of the hackathon we will ask each team to
+        present their findings and demonstrate any major vulnerabilities they
+        discovered / show off any of their fun scripts. This will be judged by
+        an impartial and objective arbiter appointed by the hackathon
+        organizers.
+      </li>
+      <li>
+        Fixed questions - On this page you will find a form with fixed
+        questions. These questions can be answered by exploring the application
+        and exploiting vulnerabilities. Submit your answers here to score
+        points.
+      </li>
+      <!-- TODO: add scoreboard href based on env variable -->
+      <li>
+        Calculated damage - certain gamified vulnerabilities exist in the
+        application that are intended for you to exploit repeatedly. These
+        scores can be found live on the <a href="/scoreboard">scoreboard</a>.
+        These specific vulnerabilities will be revealed during the hackathon.
+      </li>
     </ul>
     <div class="answers-form-container">
       <h2>Submit Your Answers</h2>
@@ -17,8 +87,16 @@
           <input v-model="answers.ctfText" required />
         </div>
         <div class="form-group">
-          <label>What is the PII of team X?</label>
-          <input v-model="answers.teamPII" required />
+          <label>What is the PII of Hackors 2?</label>
+          <input v-model="answers.hackors2PII" required />
+        </div>
+        <div class="form-group">
+          <label>What is the PII of Hackors 3?</label>
+          <input v-model="answers.hackors3PII" required />
+        </div>
+        <div class="form-group">
+          <label>What is the PII of Hackors 4?</label>
+          <input v-model="answers.hackors4PII" required />
         </div>
         <div class="form-group">
           <label>What is the description of the unreleased product?</label>
