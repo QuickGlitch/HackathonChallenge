@@ -24,13 +24,13 @@ if (!fs.existsSync(logsDir)) {
 }
 
 // Create pino logger
+const isDevelopment = process.env.LOG_LEVEL === "development";
 const logger = pino({
-  level: process.env.LOG_LEVEL === "production" ? "info" : "debug",
+  level: isDevelopment ? "trace" : "warn",
   transport: {
     targets: [
       {
         target: "pino-pretty",
-        level: "info",
         options: {
           colorize: true,
           translateTime: "SYS:standard",
@@ -39,6 +39,7 @@ const logger = pino({
       },
       {
         target: "pino/file",
+        level: isDevelopment ? "debug" : "info",
         options: {
           destination: path.join(logsDir, "access.log"),
           mkdir: true,
