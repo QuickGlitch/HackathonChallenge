@@ -68,7 +68,7 @@ ORDER_RESPONSE=$(curl -w "\nHTTP Status: %{http_code}\n" "${CURL_ARGS[@]}" --dat
       "price": 39.99,
       "image": "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=200&fit=crop",
       "quantity": 7,
-      "payableTo": 1
+      "payableTo": "00000000-0000-0000-0000-000000000001"
     }
   ],
   "total": 0.0,
