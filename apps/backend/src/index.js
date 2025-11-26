@@ -54,6 +54,10 @@ const httpLogger = pinoHttp({ logger });
 const app = express();
 const port = process.env.PORT || 3001;
 
+// Trust proxy headers MUST be set before rate limiter
+// Set to 1 because there is exactly 1 proxy (nginx) between user and server
+app.set("trust proxy", 1);
+
 // Initialize Prisma
 const prisma = new PrismaClient();
 
@@ -69,10 +73,9 @@ const botActivityClients = new Set();
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 100, // limit each IP to 10 requests per windowMs
+  windowMs: 20 * 1000, // 1 minute
+  max: 5, // limit each IP to 10 requests per windowMs
   message: "Too many requests from this IP, please try again later.",
-  validate: { trustProxy: false }, // Disable trust proxy validation for intentional vulnerabilities
   skip: (req) => {
     // Skip rate limiting for scoreboard endpoints
     return req.path.startsWith("/api/scores");
@@ -80,8 +83,7 @@ const limiter = rateLimit({
 });
 
 // Middleware
-app.set("trust proxy", true); // Trust proxy headers for IP address detection
-// app.use(helmet());
+// app.use(helmet()); <-- Normally you would use a library to help setting secure headers.
 app.use(
   cors({
     origin: true, // Allow all origins for development
@@ -93,9 +95,6 @@ app.use(cookieParser());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(limiter);
-
-// Serve static files
-app.use("/static", express.static(path.join(process.cwd(), "src", "static")));
 
 // Make Prisma available to all routes
 app.use((req, res, next) => {
