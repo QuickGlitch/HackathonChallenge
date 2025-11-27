@@ -17,19 +17,21 @@ RUN npm run build
 ####################
 # Production stage #
 ####################
-FROM nginx:alpine
+FROM node:22-alpine
 
-# Install wget for healthcheck
-RUN apk add --no-cache wget
+WORKDIR /app
 
-# Copy built files to nginx
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Install curl for healthcheck and serve for static files
+RUN apk add --no-cache curl && npm install -g serve
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+# Copy built files
+COPY --from=builder /app/dist ./dist
+
+# Create serve.json for proper SPA routing
+RUN echo '{"rewrites": [{"source": "**", "destination": "/index.html"}]}' > serve.json
 
 # Expose port
 EXPOSE 3000
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start serve with config
+CMD ["serve", "dist", "-l", "3000", "-c", "/app/serve.json"]

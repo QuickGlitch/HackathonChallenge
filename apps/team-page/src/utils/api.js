@@ -53,7 +53,8 @@ export async function fetchWithAuth(url, options = {}) {
     } catch (refreshError) {
       // Refresh failed, redirect to login
       localStorage.removeItem("user");
-      window.location.href = "/login";
+      const base = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
+      window.location.href = `${base}/login`;
       throw refreshError;
     }
   }

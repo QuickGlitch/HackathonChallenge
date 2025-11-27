@@ -17,16 +17,21 @@ RUN npm run build
 ####################
 # Production stage #
 ####################
-FROM nginx:alpine
+FROM node:22-alpine
 
-# Copy built files to nginx
-COPY --from=builder /app/dist /usr/share/nginx/html
+WORKDIR /app
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+# Install serve globally
+RUN npm install -g serve
+
+# Copy built files
+COPY --from=builder /app/dist ./dist
+
+# Create serve.json for proper SPA routing
+RUN echo '{"rewrites": [{"source": "**", "destination": "/index.html"}]}' > serve.json
 
 # Expose port
 EXPOSE 5174
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start serve with config
+CMD ["serve", "dist", "-l", "5174", "-c", "/app/serve.json"]

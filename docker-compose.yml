@@ -1,4 +1,25 @@
 services:
+  # Traefik Reverse Proxy
+  traefik:
+    image: traefik:v3.2
+    container_name: store-hackathon-traefik
+    restart: unless-stopped
+    command:
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=store-network"
+      - "--entrypoints.web.address=:80"
+      - "--log.level=INFO"
+    ports:
+      - "80:80"
+      - "8888:8080" # Traefik dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - store-network
+
   # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
@@ -26,23 +47,30 @@ services:
       NODE_ENV: production
       LOG_LEVEL: ${LOG_LEVEL:-production} # Override with LOG_LEVEL env var, defaults to 'production'
       PORT: 3001
-      BASE_URL: "http://localhost:3001"
+      BASE_URL: "http://hackathon.gobode.com"
       DATABASE_URL: "postgresql://storeuser:storepass@postgres:5432/storedb?schema=public"
       JWT_SECRET: "your-secret-key-here-change-in-production"
       JWT_REFRESH_SECRET: "your-refresh-secret-key-here-change-in-production"
       USE_SECURE_COOKIES: "false" # Set to true only when using HTTPS
-    ports:
-      - "3001:3001"
+    expose:
+      - "3001"
     volumes:
       - backend-logs:/app/logs
     depends_on:
       - postgres
+      - traefik
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
       interval: 60s
       timeout: 3s
       retries: 5
       start_period: 30s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=store-hackathon_store-network"
+      - "traefik.http.routers.backend.rule=Host(`hackathon.gobode.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.services.backend.loadbalancer.server.port=3001"
     networks:
       - store-network
 
@@ -53,17 +81,26 @@ services:
       dockerfile: Dockerfile
     container_name: store-hackathon-frontend
     restart: unless-stopped
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     depends_on:
       backend:
         condition: service_healthy
+      traefik:
+        condition: service_started
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 60s
       timeout: 3s
       retries: 5
       start_period: 10s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=store-hackathon_store-network"
+      - "traefik.http.routers.frontend.rule=Host(`hackathon.gobode.com`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.routers.frontend.priority=1"
+      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
     networks:
       - store-network
 
@@ -74,10 +111,21 @@ services:
       dockerfile: Dockerfile
     container_name: store-hackathon-scoreboard
     restart: unless-stopped
-    ports:
-      - "5174:5174"
+    expose:
+      - "5174"
     depends_on:
       - backend
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=store-hackathon_store-network"
+      - "traefik.http.routers.scoreboard.rule=Host(`hackathon.gobode.com`) && PathPrefix(`/scoreboard`)"
+      - "traefik.http.routers.scoreboard.entrypoints=web"
+      - "traefik.http.middlewares.scoreboard-stripprefix.stripprefix.prefixes=/scoreboard"
+      - "traefik.http.middlewares.scoreboard-spa.replacepathregex.regex=^/scoreboard(.*)"
+      - "traefik.http.middlewares.scoreboard-spa.replacepathregex.replacement=/index.html"
+      - "traefik.http.routers.scoreboard.middlewares=scoreboard-stripprefix,scoreboard-spa"
+      - "traefik.http.services.scoreboard.loadbalancer.server.port=5174"
     networks:
       - store-network
 
@@ -89,12 +137,23 @@ services:
     container_name: store-hackathon-team-page
     restart: unless-stopped
     environment:
-      VITE_FRONTEND_URL: "http://frontend:3000"
-      VITE_SCOREBOARD_URL: "http://scoreboard:5174"
-    ports:
-      - "5175:5175"
+      VITE_FRONTEND_URL: "http://hackathon.gobode.com"
+      VITE_SCOREBOARD_URL: "http://hackathon.gobode.com/scoreboard"
+    expose:
+      - "5175"
     depends_on:
       - backend
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=store-hackathon_store-network"
+      - "traefik.http.routers.team-page.rule=Host(`hackathon.gobode.com`) && PathPrefix(`/team-page`)"
+      - "traefik.http.routers.team-page.entrypoints=web"
+      - "traefik.http.middlewares.team-page-stripprefix.stripprefix.prefixes=/team-page"
+      - "traefik.http.middlewares.team-page-spa.replacepathregex.regex=^/team-page(.*)"
+      - "traefik.http.middlewares.team-page-spa.replacepathregex.replacement=/index.html"
+      - "traefik.http.routers.team-page.middlewares=team-page-stripprefix,team-page-spa"
+      - "traefik.http.services.team-page.loadbalancer.server.port=5175"
     networks:
       - store-network
 
@@ -105,10 +164,28 @@ services:
       dockerfile: Dockerfile
     container_name: store-hackathon-image-server
     restart: unless-stopped
-    ports:
-      - "8080:80"
+    expose:
+      - "80"
     volumes:
       - ./apps/image-server/public/images:/var/www/html/images
+    depends_on:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=store-hackathon_store-network"
+      # Route for image serving
+      - "traefik.http.routers.image-server.rule=Host(`hackathon.gobode.com`) && PathPrefix(`/images`)"
+      - "traefik.http.routers.image-server.entrypoints=web"
+      - "traefik.http.routers.image-server.priority=10"
+      - "traefik.http.services.image-server.loadbalancer.server.port=80"
+      # Route for image upload API
+      - "traefik.http.routers.image-upload.rule=Host(`hackathon.gobode.com`) && Path(`/api/upload-image`)"
+      - "traefik.http.routers.image-upload.entrypoints=web"
+      - "traefik.http.routers.image-upload.priority=20"
+      - "traefik.http.middlewares.image-upload-rewrite.replacepathregex.regex=^/api/upload-image"
+      - "traefik.http.middlewares.image-upload-rewrite.replacepathregex.replacement=/upload.php"
+      - "traefik.http.routers.image-upload.middlewares=image-upload-rewrite"
+      - "traefik.http.routers.image-upload.service=image-server"
     networks:
       - store-network
 

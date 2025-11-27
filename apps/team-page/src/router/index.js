@@ -4,13 +4,16 @@ import { fetchWithAuth } from "../utils/api.js";
 import Login from "../views/Login.vue";
 import MainPage from "../views/MainPage.vue";
 
+const base = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
+
 const routes = [
-  { path: "/", component: MainPage },
-  { path: "/login", component: Login },
+  { path: "/", name: "home", component: MainPage },
+  { path: "/login", name: "login", component: Login },
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  // Ensure routing works under the deployed subpath (/team-page/)
+  history: createWebHistory(base),
   routes,
 });
 
@@ -23,13 +26,14 @@ router.beforeEach(async (to, from, next) => {
       });
       const validSession = response.status === 200;
       if (!validSession) {
-        next("/login");
+        next(`${base}/login`);
       } else {
         next();
       }
     } catch (error) {
       // If fetch fails, redirect to login
-      next("/login");
+      const base = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
+      next(`${base}/login`);
     }
   } else {
     next();
