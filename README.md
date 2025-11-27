@@ -25,6 +25,7 @@ docker-compose -f docker-compose.yml up
 ```
 
 ### Starting the event
+
 Once the application is running, organizers can share the `team-page` app with the competing teams. Teams are created beforehand (see [seed.js](./apps/backend/src/seed.js)) and their credentials should be shared with the respective teams. Once logged in, teams will find the hackathon rules and are free to start exploring the application and looking for vulnerabilities.
 
 ## Application Overview
