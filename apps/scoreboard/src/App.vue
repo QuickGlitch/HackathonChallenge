@@ -73,7 +73,10 @@ let intervalId = null;
 let eventSource = null;
 let hasInitialLoad = ref(false);
 
-const API_BASE_URL = "http://localhost:3001";
+// Use relative path for production (via Traefik), fallback to localhost for dev
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  (window.location.hostname === "localhost" ? "http://localhost:3001" : "");
 const GIPHY_API_KEY = "GlVGYHkr3WSBnllca54iNt0yFbjz7L65"; // Public demo key
 
 const getNewQuote = () => {
@@ -110,7 +113,7 @@ const hideGif = () => {
 const setupBotActivityStream = () => {
   console.log("Connecting to bot activity stream...");
 
-  eventSource = new EventSource(`${API_BASE_URL}/api/bot-activity/stream`);
+  eventSource = new EventSource(`${API_BASE_URL}/bot-activity/stream`);
 
   eventSource.onopen = () => {
     console.log("Connected to bot activity stream");
@@ -169,7 +172,7 @@ const fetchScores = async () => {
 
     error.value = null;
 
-    const response = await axios.get(`${API_BASE_URL}/api/scores`);
+    const response = await axios.get(`${API_BASE_URL}/scores`);
     scores.value = response.data;
     lastUpdated.value = new Date();
     hasInitialLoad.value = true;

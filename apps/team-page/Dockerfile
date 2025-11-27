@@ -11,6 +11,16 @@ RUN npm install
 # Copy source code
 COPY . .
 
+# Accept build arguments for environment variables
+ARG VITE_API_BASE_URL
+ARG VITE_FRONTEND_URL
+ARG VITE_SCOREBOARD_URL
+
+# Set them as environment variables for the build
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ENV VITE_FRONTEND_URL=$VITE_FRONTEND_URL
+ENV VITE_SCOREBOARD_URL=$VITE_SCOREBOARD_URL
+
 # Build the application
 RUN npm run build
 
