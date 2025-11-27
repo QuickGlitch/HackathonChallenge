@@ -28,6 +28,14 @@ else
     exit 1
 fi
 
+# Loop to place orders every second
+ORDER_COUNT=0
+echo "Starting continuous order placement (every 1 second). Press Ctrl+C to stop."
+while true; do
+    ORDER_COUNT=$((ORDER_COUNT + 1))
+    echo "---"
+    echo "Placing order #$ORDER_COUNT at $(date '+%Y-%m-%d %H:%M:%S')..."
+
 # Build curl command with proper arrays for the order request
 CURL_ARGS=(
   "$BASE_URL/api/orders"
@@ -60,8 +68,7 @@ else
 fi
 
 # Execute the curl command with data payload
-echo "Placing order as authenticated Hackors1 user..."
-ORDER_RESPONSE=$(curl -w "\nHTTP Status: %{http_code}\n" "${CURL_ARGS[@]}" --data-raw '{
+ORDER_RESPONSE=$(curl -s "${CURL_ARGS[@]}" --data-raw '{
   "items": [
     {
       "id": 8,
@@ -89,5 +96,9 @@ ORDER_RESPONSE=$(curl -w "\nHTTP Status: %{http_code}\n" "${CURL_ARGS[@]}" --dat
 
 echo "Order response: $ORDER_RESPONSE"
 
-# Clean up the cookie jar
+    # Wait 1 second before next order
+    sleep 1
+done
+
+# Clean up the cookie jar (will only run if loop is interrupted)
 rm -f "$COOKIE_JAR"
