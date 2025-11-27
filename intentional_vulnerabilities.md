@@ -6,9 +6,17 @@
 This example is very much gamified - a real webshop would (heopfully) never put the total price in the client side code, but rather calculate it on the server side. However for the hackathon this is an intentional vulnerability that serves as an easy entry point for scoring points.
 This exploit is repeatable - meaning an attacker can place multiple free orders and build up points quickly until they hit a defence mechanism: rate limiting. This serves as a good example of how rate limiting can be used to slow down attackers but also means a hacker team can try to find ways around rate limiting (e.g. rotating proxies, distributed attacks etc) in order to keep scoring points.
 
-## Tricking users into paying the attacker (CSRF)
+## XSS Attack - Forum Message Data Exfiltration
+
+The forum is vulnerable to stored XSS attacks due to lack of input sanitization. An attacker can post a forum message containing malicious JavaScript code that will be executed in the browsers of users who view the message. This can be used to steal user credentials and session data.
+
+AN example can be found in [xss-example](attack-utils/xss/xss.md) with step-by-step instructions on how to perform the attack and what data can be exfiltrated.
+
+## [local host only] Tricking users into paying the attacker (CSRF) 
 
 For gamification's sake the payable account (`payableTo`) is sent from the client side when placing an order. This means an attacker can modify this field to point to their own account and trick users into paying them instead of the webshop. A smiliar mehcanism that is more realistic is having users tricking into paying for a product but having it shipped to the attacker instead of themselves.
+
+<i>This only works when the target app and csrf app are on the same domain, since modern browsers are smart about sharing cookies even if not explicitly secured</i>
 
 An example of this implementation is done in `apps/csrf-demo` which can be run via [csrf-demo](attack-utils/csrf/demo.sh), exploiting the bots that visit the forum posts (simulating users/victims who might click on links or emails). If you run this application (while the frontend & backend are running) and post a link to it in the forum, the bots will visit the link, disguised as a sale, and place an order paying into the attacker's account.
 

