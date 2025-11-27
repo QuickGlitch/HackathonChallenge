@@ -57,12 +57,12 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST /api/forum - Create a new forum message (requires authentication)
+// POST /api/forum - Create a new forum message ("forgot" to add authentication)
 // VULNERABILITY: No input sanitization - allows XSS attacks
-router.post("/", authenticateToken, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const { title, body } = req.body;
-    const userId = req.user.userId;
+    const { title, body, userId } = req.body;
+    // const userId = req.user.userId;
 
     if (!title || !body) {
       return res.status(400).json({ error: "Title and body are required" });

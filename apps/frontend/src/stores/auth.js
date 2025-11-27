@@ -20,9 +20,9 @@ export const useAuthStore = defineStore("auth", () => {
       });
 
       if (response.ok) {
-        const userData = await response.json();
-        user.value = userData;
-        localStorage.setItem("user", JSON.stringify(userData));
+        // const userData = await response.json();
+        // user.value = userData;
+        // localStorage.setItem("user", JSON.stringify(userData));
         return true;
       } else {
         // Not authenticated

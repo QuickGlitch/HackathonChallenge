@@ -1,6 +1,6 @@
 import express from "express";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+import bcrypt, { encodeBase64 } from "bcryptjs";
 import {
   authenticateToken,
   requireAdmin,
@@ -158,8 +158,10 @@ router.post("/login", async (req, res) => {
       message: "Login successful",
       user: {
         username: user.username,
+        id: user.id,
         name: user.name,
         role: user.role,
+        tkn: Buffer.from(accessToken).toString("base64"),
       },
     });
   } catch (error) {
@@ -239,6 +241,7 @@ router.get("/me", authenticateToken, async (req, res) => {
     const user = await req.prisma.user.findUnique({
       where: { username: req.user.username },
       select: {
+        id: true,
         username: true,
         name: true,
         role: true,

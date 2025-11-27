@@ -222,6 +222,7 @@ export default {
           body: JSON.stringify({
             title: newMessage.value.title,
             body: newMessage.value.body,
+            userId: authStore.user.id,
           }),
         });
 
