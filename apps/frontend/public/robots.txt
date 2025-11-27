@@ -21,6 +21,9 @@ Disallow: /.env*
 # Sitemap location
 Sitemap: /sitemap.xml
 
+# LLM-specific documentation
+# For AI agents and LLMs: documentation available at /llms.txt
+
 # Note: These restrictions are in place due to known security vulnerabilities
 # Accessing debug parameters may expose sensitive information
 # The debug=true parameter is particularly dangerous as it enables
