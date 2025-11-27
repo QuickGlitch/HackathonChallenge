@@ -1,20 +1,21 @@
 #!/bin/bash
 
-# Usage: ./placeOrder.sh [spoofed_ip]
-# Example: ./placeOrder.sh 192.168.1.100
+# Usage: ./placeOrder.sh [spoofed_ip] [base_url]
+# Example: ./placeOrder.sh 192.168.1.100 https://hackathon.gobode.com
 
 SPOOFED_IP=$1
+BASE_URL=${2:-http://localhost:3000}
 COOKIE_JAR="/tmp/hackors1_cookies.txt"
 
 # First, login as Hackors1 to get authentication cookies
-echo "Logging in as Hackors1..."
+echo "Logging in as Hackors2..."
 LOGIN_RESPONSE=$(curl -s -c "$COOKIE_JAR" \
-  "http://localhost:3000/api/users/login" \
+  "$BASE_URL/api/users/login" \
   -H "Accept: application/json, text/plain, */*" \
   -H "Content-Type: application/json" \
   --data-raw '{
-    "username": "Hackors1",
-    "password": "go team 1"
+    "username": "Hackors2",
+    "password": "taco2"
   }')
 
 echo "Login response: $LOGIN_RESPONSE"
@@ -29,14 +30,14 @@ fi
 
 # Build curl command with proper arrays for the order request
 CURL_ARGS=(
-  "http://localhost:3000/api/orders"
+  "$BASE_URL/api/orders"
   "-b" "$COOKIE_JAR"
   "-H" "Accept: application/json, text/plain, */*"
   "-H" "Accept-Language: en-US,en;q=0.9,ru;q=0.8"
   "-H" "Connection: keep-alive"
   "-H" "Content-Type: application/json"
-  "-H" "Origin: http://localhost:3000"
-  "-H" "Referer: http://localhost:3000/checkout"
+  "-H" "Origin: $BASE_URL"
+  "-H" "Referer: $BASE_URL/checkout"
   "-H" "Sec-Fetch-Dest: empty"
   "-H" "Sec-Fetch-Mode: cors"
   "-H" "Sec-Fetch-Site: same-origin"

@@ -25,11 +25,11 @@ if (!fs.existsSync(logsDir)) {
 
 // Create pino logger
 const isDevelopment = process.env.LOG_LEVEL === "development";
-const logger = pino({
-  level: isDevelopment ? "trace" : "warn",
-  transport: {
-    targets: [
-      {
+
+const logger = isDevelopment
+  ? pino({
+      level: "trace",
+      transport: {
         target: "pino-pretty",
         options: {
           colorize: true,
@@ -37,17 +37,10 @@ const logger = pino({
           ignore: "pid,hostname",
         },
       },
-      {
-        target: "pino/file",
-        level: isDevelopment ? "debug" : "info",
-        options: {
-          destination: path.join(logsDir, "access.log"),
-          mkdir: true,
-        },
-      },
-    ],
-  },
-});
+    })
+  : pino({
+      level: "info",
+    });
 
 // Create HTTP logger middleware
 const httpLogger = pinoHttp({ logger });
@@ -55,9 +48,9 @@ const httpLogger = pinoHttp({ logger });
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Trust proxy headers MUST be set before rate limiter
-// Set to 1 because there is exactly 1 proxy (nginx) between user and server
-app.set("trust proxy", 1);
+// Trust proxy headers set before rate limiter
+// Set to 2 because there are 2 proxies (CloudFront + Traefik) between user and server
+app.set("trust proxy", 2);
 
 // Initialize Prisma
 const prisma = new PrismaClient();
@@ -75,7 +68,7 @@ const botActivityClients = new Set();
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 200, // limit each IP to 10 requests per windowMs
+  max: 50, // limit each IP to 10 requests per windowMs
   message: "Too many requests from this IP, please try again later.",
   skip: (req) => {
     // Skip rate limiting for scoreboard endpoints
@@ -177,6 +170,20 @@ app.post("/api/bot-activity", express.json(), (req, res) => {
 // Health check
 app.get("/api/health", (req, res) => {
   res.json({ status: "OK", message: "Server is running" });
+});
+
+// Test endpoint to check IP address
+app.get("/api/ip", (req, res) => {
+  res.json({
+    ip: req.ip,
+    ips: req.ips,
+    headers: {
+      "x-forwarded-for": req.headers["x-forwarded-for"],
+      "x-real-ip": req.headers["x-real-ip"],
+      forwarded: req.headers.forwarded,
+    },
+    remoteAddress: req.socket.remoteAddress,
+  });
 });
 
 // 404 handler
