@@ -70,6 +70,7 @@ services:
       - "traefik.docker.network=store-hackathon_store-network"
       - "traefik.http.routers.backend.rule=Host(`hackathon.gobode.com`) && PathPrefix(`/api`)"
       - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.routers.backend.priority=10"
       - "traefik.http.services.backend.loadbalancer.server.port=3001"
     networks:
       - store-network
