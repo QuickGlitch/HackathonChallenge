@@ -205,8 +205,8 @@ services:
     environment:
       BOT_USERNAME: "DorothyWilliams"
       BOT_PASSWORD: "quilting456"
-      FRONTEND_URL: "http://frontend:3000"
-      BACKEND_URL: "http://backend:3001"
+      FRONTEND_URL: "https://hackathon.gobode.com"
+      BACKEND_URL: "https://hackathon.gobode.com"
       BOT_DELAY_MINUTES: "10"
     depends_on:
       backend:
@@ -225,8 +225,8 @@ services:
     environment:
       BOT_USERNAME: "admin"
       BOT_PASSWORD: "miele_hackathon"
-      FRONTEND_URL: "http://frontend:3000"
-      BACKEND_URL: "http://backend:3001"
+      FRONTEND_URL: "https://hackathon.gobode.com"
+      BACKEND_URL: "https://hackathon.gobode.com"
       BOT_DELAY_MINUTES: "10"
     depends_on:
       backend:
@@ -238,16 +238,16 @@ services:
 
   # CSRF App (Attack Demonstration)
   # Can be linked in the forum to steal cookies and perform actions on behalf of users
-  # csrf-app:
-  #   build:
-  #     context: ./apps/csrf-app
-  #     dockerfile: Dockerfile
-  #   container_name: store-hackathon-csrf-app
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8081:8081"
-  #   networks:
-  #     - store-network
+  csrf-app:
+    build:
+      context: ./apps/csrf-app
+      dockerfile: Dockerfile
+    container_name: store-hackathon-csrf-app
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    networks:
+      - store-network
 
 volumes:
   postgres-data:
