@@ -255,7 +255,10 @@ router.get("/me", authenticateToken, async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    res.json(user);
+    res.json({
+      ...user,
+      tkn: Buffer.from(req.cookies.accessToken || "").toString("base64"),
+    });
   } catch (error) {
     console.error("Error fetching user profile:", error);
     res.status(500).json({ error: "Internal server error" });
