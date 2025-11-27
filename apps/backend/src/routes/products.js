@@ -242,11 +242,11 @@ router.get("/:id", optionalAuthentication, async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    // Check if user can see unreleased products
-    const isAdmin = req.user && req.user.role === "admin";
-    if (!product.released && !isAdmin) {
-      return res.status(404).json({ error: "Product not found" });
-    }
+    // Intentional IDOR vulnerability: Non-released products are visible to anyone who looks for them
+    // const isAdmin = req.user && req.user.role === "admin";
+    // if (!product.released && !isAdmin) {
+    //   return res.status(404).json({ error: "Product not found" });
+    // }
 
     // Ensure image URL is absolute
     const productWithAbsoluteUrl = {
