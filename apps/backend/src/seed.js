@@ -241,7 +241,7 @@ async function main() {
       id: PRODUCT_IDS.coffeeMaker,
       name: "Coffee Maker",
       description:
-        "Premium coffee maker with programmable settings and thermal carafe.",
+        "Premium coffee maker with programmable settings and thermal carafe. Buy this for Paul he will love it.",
       price: 129.99,
       image:
         "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=200&fit=crop",
@@ -252,7 +252,7 @@ async function main() {
       id: PRODUCT_IDS.runningShoes,
       name: "Running Shoes",
       description:
-        "Comfortable running shoes with advanced cushioning and breathable material.",
+        "Comfortable running shoes with advanced cushioning and.. uh.. oh... and they're gone. Yours if you can catch them!",
       price: 89.99,
       image:
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=200&fit=crop",
@@ -323,7 +323,7 @@ async function main() {
       id: PRODUCT_IDS.bluetoothSpeaker,
       name: "Bluetooth Speaker",
       description:
-        "Portable Bluetooth speaker with 360-degree sound and waterproof design.",
+        "Bluetooth because its based on a Nordic king who had rotten teeth, hence blue. Seriously, look it up. The symbol is even a rune.",
       price: 79.99,
       image:
         "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&h=200&fit=crop",
@@ -334,7 +334,7 @@ async function main() {
       id: PRODUCT_IDS.yogaMat,
       name: "Yoga Mat",
       description:
-        "Non-slip yoga mat made from eco-friendly materials with carrying strap.",
+        "Is what his friends call him. That would be Yoga Mathew to you.",
       price: 29.99,
       image:
         "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=300&h=200&fit=crop",
@@ -345,7 +345,7 @@ async function main() {
       id: PRODUCT_IDS.deskLamp,
       name: "Desk Lamp",
       description:
-        "LED desk lamp with adjustable brightness and USB charging port.",
+        "LED desk lamp with adjustable brightness and USB charging port. No joke here. Not everything can be taken lightly.",
       price: 39.99,
       image:
         "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=200&fit=crop",
