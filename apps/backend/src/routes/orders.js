@@ -88,6 +88,17 @@ router.post("/", authenticateToken, async (req, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
+    // Validate total quantity of items does not exceed 10
+    const totalQuantity = items.reduce(
+      (sum, item) => sum + (item.quantity || 0),
+      0
+    );
+    if (totalQuantity > 10) {
+      return res.status(400).json({
+        error: "Cart limit exceeded: Maximum 10 items allowed in total",
+      });
+    }
+
     // Get client IP address
     const clientIpAddress = getClientIpAddress(req);
 

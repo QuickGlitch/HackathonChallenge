@@ -140,6 +140,15 @@ async function submitOrder() {
     });
 
     if (!response.ok) {
+      const errorData = await response.json();
+      
+      // Check if it's a cart limit error
+      if (response.status === 400 && errorData.error && errorData.error.includes("Cart limit exceeded")) {
+        alert(errorData.error);
+      } else {
+        alert("Failed to place order. Please try again.");
+      }
+      
       throw new Error("Failed to place order");
     }
 
