@@ -70,12 +70,16 @@
         and exploiting vulnerabilities. Submit your answers here to score
         points.
       </li>
-      <!-- TODO: add scoreboard href based on env variable -->
       <li>
         Calculated damage - certain gamified vulnerabilities exist in the
         application that are intended for you to exploit repeatedly. These
         scores can be found live on the <a :href="scoreboardUrl">scoreboard</a>.
-        These specific vulnerabilities will be revealed during the hackathon.
+        These are rather gamified but are a good way to score points.
+
+        <ul>
+          <li>if you order things without having to pay..</li>
+          <li>when people pay you (maybe you just sell nice products)</li>
+        </ul>
       </li>
     </ul>
     <div class="answers-form-container">

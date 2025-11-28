@@ -67,12 +67,15 @@ const botActivityClients = new Set();
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 50, // limit each IP to 10 requests per windowMs
+  windowMs: 1 * 60 * 1000,
+  max: 50,
   message: "Too many requests from this IP, please try again later.",
   skip: (req) => {
     // Skip rate limiting for scoreboard endpoints
-    return req.path.startsWith("/api/scores");
+    return (
+      req.path.startsWith("/api/scores") ||
+      req.path.startsWith("/api/bot-activity")
+    );
   },
 });
 
