@@ -46,6 +46,11 @@ router.post("/register", authenticateToken, async (req, res) => {
         .json({ error: "Price must be a valid positive number" });
     }
 
+    // Validate price does not exceed maximum limit
+    if (productPrice > 150) {
+      return res.status(400).json({ error: "Price cannot exceed 150" });
+    }
+
     // Handle image URL
     let imageUrl = image || "https://via.placeholder.com/300x200"; // default image
 

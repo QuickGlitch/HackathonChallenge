@@ -231,7 +231,7 @@ async function main() {
       name: "Smart Watch",
       description:
         "Advanced smartwatch with health monitoring, GPS, and water resistance.",
-      price: 299.99,
+      price: 99.99,
       image:
         "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=200&fit=crop",
       category: "Electronics",
@@ -276,7 +276,7 @@ async function main() {
       name: "Honey-Based Skin Cream",
       description:
         "Premium organic honey facial moisturizer with anti-aging properties. Made from rare Manuka honey.",
-      price: 89.99,
+      price: 1999.99,
       image:
         "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=300&h=200&fit=crop",
       category: "Beauty",
@@ -288,7 +288,7 @@ async function main() {
       name: "Premium Honey Receptacle",
       description:
         "Hand-crafted wooden honey jar with traditional bee motifs. Perfect for storing artisanal honey.",
-      price: 45.5,
+      price: 5000.0,
       image:
         "https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=300&h=200&fit=crop",
       category: "Kitchen",
@@ -300,7 +300,7 @@ async function main() {
       name: "Beeswax Candle Collection",
       description:
         "Set of 6 handmade beeswax candles. Natural air purifying and long-lasting burn time.",
-      price: 52.0,
+      price: 4011.2,
       image:
         "https://images.unsplash.com/photo-1593198011850-ec9a09c68c58?w=300&h=200&fit=crop",
       category: "Home",
@@ -312,7 +312,7 @@ async function main() {
       name: "Honeycomb Memory Foam Pillow",
       description:
         "Ergonomic pillow with honeycomb ventilation design. Infused with honey-scented aromatherapy.",
-      price: 67.75,
+      price: 6700.75,
       image:
         "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=200&fit=crop",
       category: "Home",
