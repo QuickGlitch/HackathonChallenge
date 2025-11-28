@@ -328,7 +328,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&h=200&fit=crop",
       category: "Electronics",
-      payableTo: USER_IDS.hackors1,
+      payableTo: USER_IDS.arthurMoore,
     },
     {
       id: PRODUCT_IDS.yogaMat,
@@ -339,7 +339,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=300&h=200&fit=crop",
       category: "Sports & Outdoors",
-      payableTo: USER_IDS.hackors3,
+      payableTo: USER_IDS.arthurMoore,
     },
     {
       id: PRODUCT_IDS.deskLamp,
@@ -350,7 +350,7 @@ async function main() {
       image:
         "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=200&fit=crop",
       category: "Home & Kitchen",
-      payableTo: USER_IDS.hackors4,
+      payableTo: USER_IDS.arthurMoore,
     },
     {
       id: PRODUCT_IDS.prototypeFish,

@@ -239,16 +239,16 @@ services:
 
   # CSRF App (Attack Demonstration)
   # Can be linked in the forum to steal cookies and perform actions on behalf of users
-  csrf-app:
-    build:
-      context: ./apps/csrf-app
-      dockerfile: Dockerfile
-    container_name: store-hackathon-csrf-app
-    restart: unless-stopped
-    ports:
-      - "8081:8081"
-    networks:
-      - store-network
+  # csrf-app:
+  #   build:
+  #     context: ./apps/csrf-app
+  #     dockerfile: Dockerfile
+  #   container_name: store-hackathon-csrf-app
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8081:8081"
+  #   networks:
+  #     - store-network
 
 volumes:
   postgres-data:
