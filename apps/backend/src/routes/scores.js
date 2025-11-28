@@ -38,19 +38,35 @@ router.get("/", async (req, res) => {
       teams.map(async (team) => {
         let dynamicScore = 0;
 
-        // 1 point per order placed with total value of 0 and payable to admin
+        // Get all orders with total = 0 for this team
         const freeOrders = await prisma.order.findMany({
           where: {
             total: 0,
             userId: team.id,
+          },
+          include: {
             items: {
-              some: {
-                payableTo: ADMIN_USER_ID,
+              include: {
+                product: true, // Include product to check honeypot
               },
             },
           },
         });
-        dynamicScore += freeOrders.length;
+
+        // For each free order, calculate points based on order items
+        for (const order of freeOrders) {
+          let orderPoints = 0;
+          for (const item of order.items) {
+            const itemPrice = item.price * item.quantity;
+            // If the product is a honeypot, count as negative
+            if (item.product.honeypot) {
+              orderPoints -= itemPrice;
+            } else {
+              orderPoints += itemPrice;
+            }
+          }
+          dynamicScore += orderPoints;
+        }
 
         // X points for any order items payable to the team (X being the price)
         // Exclude items that are payable to the buyer themselves (items sold by themselves)

@@ -47,7 +47,7 @@ router.post("/register", authenticateToken, async (req, res) => {
     }
 
     // Validate price does not exceed maximum limit
-    if (productPrice > 150) {
+    if (productPrice > 200) {
       return res.status(400).json({ error: "Price cannot exceed 150" });
     }
 

@@ -76,7 +76,7 @@ let hasInitialLoad = ref(false);
 // Use relative path for production (via Traefik), fallback to localhost for dev
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
-  (window.location.hostname === "localhost" ? "http://localhost:3001" : "");
+  (window.location.hostname === "localhost" ? "http://localhost:3001/api" : "");
 const GIPHY_API_KEY = "GlVGYHkr3WSBnllca54iNt0yFbjz7L65"; // Public demo key
 
 const getNewQuote = () => {
