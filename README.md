@@ -16,14 +16,16 @@ npm install
 ### DEV SETUP
 npm run docker:up # dev docker compose for db and php image server
 npm run dev # the rest of the aplications can be run locally assuming you have nodejs installed
-
-### default ports on dev setup:
-# Frontend: http://localhost:3000
-# Backend API: http://localhost:3001
-# Scoreboard: http://localhost:5174
-# Team Page: http://localhost:5175
-# Image Server: http://localhost:8080
 ```
+
+### default ports on dev setup
+
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:3001
+- Scoreboard: http://localhost:5174
+- Team Page: http://localhost:5175
+- Image Server: http://localhost:8080
+
 
 This will setup multiple applications (frontend, backend, admin panel) running on different ports with only the database running within a Docker container. For the actual hackathon, you probably want to use the production setup instead:
 
@@ -33,13 +35,17 @@ npm run docker:up:production
 docker-compose -f docker-compose.yml up
 
 # production setup runs the apps behind a proxy (Traefik)
-# assuming you didn't change the root env file, the applications will be available at:
-# Frontend: http://localhost
-# Backend API: http://localhost/api
-# Scoreboard: http://localhost/scoreboard
-# Team Page: http://localhost/team-page
-# Image Server: http://localhost/api/upload-image
 ```
+
+### Default ports on production setup
+
+assuming you didn't change the root env file, the applications will be available at:
+
+- Frontend: http://localhost
+- Backend API: http://localhost/api
+- Scoreboard: http://localhost/scoreboard
+- Team Page: http://localhost/team-page
+- Image Server: http://localhost/api/upload-image
 
 ### Starting the event
 
