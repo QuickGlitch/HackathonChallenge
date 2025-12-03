@@ -55,7 +55,7 @@ graph TB
     TeamPage -->|View Scores| Scoreboard
     
     %% Scoreboard communications
-    Scoreboard -->|SSE: Bot Status| Backend
+    Backend -->|SSE: Bot Status| Scoreboard
     Scoreboard -->|Poll Scores| Backend
 
     %% Backend interactions
@@ -69,8 +69,8 @@ graph TB
     %% Bot interactions
     Dorothy -->|HTTP :80| Traefik
     Admin -->|HTTP :80| Traefik
-    Dorothy -->|Forum Posts| Backend
-    Admin -->|Forum Posts| Backend
+    Dorothy -->|Browse & Post| Frontend
+    Admin -->|Browse & Post| Frontend
     Bot -.->|Status Updates| Backend
 
     %% Styling
@@ -169,86 +169,14 @@ graph LR
     I --> P
     D --> T
     A --> T
-    S -.->|SSE: Bot Status| B
+    B -.->|SSE: Bot Status| S
 ```
 
 All services communicate within the `store-network` Docker bridge network. Only Traefik exposes port 80 to the host.
 
 ## Data Flow
 
-### User Purchase Flow
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant T as Traefik
-    participant FE as Frontend
-    participant BE as Backend
-    participant DB as PostgreSQL
-    
-    U->>T: Browse products
-    T->>FE: Route to frontend
-    FE->>BE: GET /api/products
-    BE->>DB: Query products
-    DB-->>BE: Product data
-    BE-->>FE: JSON response
-    FE-->>U: Display products
-    
-    U->>FE: Add to cart & checkout
-    FE->>BE: POST /api/orders
-    BE->>DB: Create order
-    DB-->>BE: Order created
-    BE-->>FE: Order confirmation
-    FE-->>U: Success page
-```
 
-### Bot Activity Flow
-```mermaid
-sequenceDiagram
-    participant Bot as Boomer Bot
-    participant T as Traefik
-    participant BE as Backend
-    participant DB as PostgreSQL
-    participant SB as Scoreboard
-    
-    Bot->>T: Start activity
-    T->>BE: POST /api/bot-activity
-    BE->>SB: SSE: Bot active
-    
-    loop Every 10 minutes
-        Bot->>T: HTTP Request
-        T->>BE: API Call
-        BE->>DB: Store data
-        Bot->>BE: Post forum message
-    end
-    
-    Bot->>T: Stop activity
-    T->>BE: POST /api/bot-activity
-    BE->>SB: SSE: Bot inactive
-```
-
-### Score Update Flow
-```mermaid
-sequenceDiagram
-    participant T as Team
-    participant TP as Team Page
-    participant BE as Backend
-    participant DB as PostgreSQL
-    participant SB as Scoreboard
-    
-    T->>TP: Submit answer
-    TP->>BE: POST /api/hackathon/submit
-    BE->>DB: Store submission
-    BE->>DB: Update score
-    DB-->>BE: Score updated
-    BE-->>TP: Confirmation
-    
-    Note over SB,BE: Scoreboard polls for updates
-    SB->>BE: GET /api/scores
-    BE->>DB: Query scores
-    DB-->>BE: Score data
-    BE-->>SB: Updated scores
-    SB-->>T: Display refresh
-```
 
 ## Deployment Modes
 
