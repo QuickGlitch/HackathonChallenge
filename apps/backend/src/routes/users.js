@@ -17,7 +17,7 @@ const ACCESS_TOKEN_EXPIRY = '1m';
 const REFRESH_TOKEN_EXPIRY = '24h';
 
 // Cookie maxAge in milliseconds
-const ACCESS_TOKEN_MAX_AGE = 1 * 60 * 1000; // 1 minute
+const ACCESS_TOKEN_MAX_AGE = 20 * 60 * 1000; // 20 minutes
 const REFRESH_TOKEN_MAX_AGE = 24 * 60 * 60 * 1000; // 24 hours
 
 // POST /api/users - Create a new user
