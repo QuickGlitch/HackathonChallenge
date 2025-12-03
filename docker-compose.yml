@@ -45,10 +45,11 @@ services:
     container_name: store-hackathon-backend
     restart: unless-stopped
     environment:
+      BASE_URL: "${BASE_URL}"
+      DOMAIN: "${DOMAIN}"
       NODE_ENV: production
       LOG_LEVEL: ${LOG_LEVEL:-production} # Override with LOG_LEVEL env var, defaults to 'production'
       PORT: 3001
-      BASE_URL: "http://hackathon.gobode.com"
       DATABASE_URL: "postgresql://storeuser:storepass@postgres:5432/storedb?schema=public"
       JWT_SECRET: "your-secret-key-here-change-in-production"
       JWT_REFRESH_SECRET: "your-refresh-secret-key-here-change-in-production"
@@ -69,7 +70,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=store-hackathon_store-network"
-      - "traefik.http.routers.backend.rule=Host(`hackathon.gobode.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.backend.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)"
       - "traefik.http.routers.backend.entrypoints=web"
       - "traefik.http.routers.backend.priority=10"
       - "traefik.http.services.backend.loadbalancer.server.port=3001"
@@ -99,7 +100,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=store-hackathon_store-network"
-      - "traefik.http.routers.frontend.rule=Host(`hackathon.gobode.com`)"
+      - "traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)"
       - "traefik.http.routers.frontend.entrypoints=web"
       - "traefik.http.routers.frontend.priority=1"
       - "traefik.http.services.frontend.loadbalancer.server.port=3000"
@@ -112,9 +113,9 @@ services:
       context: ./apps/scoreboard
       dockerfile: Dockerfile
       args:
-        VITE_API_BASE_URL: "https://hackathon.gobode.com/api"
-        VITE_FRONTEND_URL: "https://hackathon.gobode.com"
-        VITE_SCOREBOARD_URL: "https://hackathon.gobode.com/scoreboard"
+        VITE_API_BASE_URL: "${BASE_URL}/api"
+        VITE_FRONTEND_URL: "${BASE_URL}"
+        VITE_SCOREBOARD_URL: "${BASE_URL}/scoreboard"
     container_name: store-hackathon-scoreboard
     restart: unless-stopped
     expose:
@@ -125,7 +126,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=store-hackathon_store-network"
-      - "traefik.http.routers.scoreboard.rule=Host(`hackathon.gobode.com`) && PathPrefix(`/scoreboard`)"
+      - "traefik.http.routers.scoreboard.rule=Host(`${DOMAIN}`) && PathPrefix(`/scoreboard`)"
       - "traefik.http.routers.scoreboard.entrypoints=web"
       - "traefik.http.middlewares.scoreboard-stripprefix.stripprefix.prefixes=/scoreboard"
       - "traefik.http.middlewares.scoreboard-spa.replacepathregex.regex=^/scoreboard(.*)"
@@ -141,9 +142,9 @@ services:
       context: ./apps/team-page
       dockerfile: Dockerfile
       args:
-        VITE_API_BASE_URL: "https://hackathon.gobode.com/api"
-        VITE_FRONTEND_URL: "https://hackathon.gobode.com"
-        VITE_SCOREBOARD_URL: "https://hackathon.gobode.com/scoreboard"
+        VITE_API_BASE_URL: "${BASE_URL}/api"
+        VITE_FRONTEND_URL: "${BASE_URL}"
+        VITE_SCOREBOARD_URL: "${BASE_URL}/scoreboard"
     container_name: store-hackathon-team-page
     restart: unless-stopped
     expose:
@@ -154,7 +155,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=store-hackathon_store-network"
-      - "traefik.http.routers.team-page.rule=Host(`hackathon.gobode.com`) && PathPrefix(`/team-page`)"
+      - "traefik.http.routers.team-page.rule=Host(`${DOMAIN}`) && PathPrefix(`/team-page`)"
       - "traefik.http.routers.team-page.entrypoints=web"
       - "traefik.http.middlewares.team-page-stripprefix.stripprefix.prefixes=/team-page"
       - "traefik.http.middlewares.team-page-spa.replacepathregex.regex=^/team-page(.*)"
@@ -181,12 +182,12 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=store-hackathon_store-network"
       # Route for image serving
-      - "traefik.http.routers.image-server.rule=Host(`hackathon.gobode.com`) && PathPrefix(`/images`)"
+      - "traefik.http.routers.image-server.rule=Host(`${DOMAIN}`) && PathPrefix(`/images`)"
       - "traefik.http.routers.image-server.entrypoints=web"
       - "traefik.http.routers.image-server.priority=10"
       - "traefik.http.services.image-server.loadbalancer.server.port=80"
       # Route for image upload API
-      - "traefik.http.routers.image-upload.rule=Host(`hackathon.gobode.com`) && Path(`/api/upload-image`)"
+      - "traefik.http.routers.image-upload.rule=Host(`${DOMAIN}`) && Path(`/api/upload-image`)"
       - "traefik.http.routers.image-upload.entrypoints=web"
       - "traefik.http.routers.image-upload.priority=20"
       - "traefik.http.middlewares.image-upload-rewrite.replacepathregex.regex=^/api/upload-image"
@@ -204,10 +205,12 @@ services:
     container_name: store-hackathon-boomer-bot-dorothy
     restart: on-failure
     environment:
+      BASE_URL: "${BASE_URL}"
+      DOMAIN: "${DOMAIN}"
       BOT_USERNAME: "DorothyWilliams"
       BOT_PASSWORD: "quilting456"
-      FRONTEND_URL: "https://hackathon.gobode.com"
-      BACKEND_URL: "https://hackathon.gobode.com"
+      FRONTEND_URL: "${BASE_URL}"
+      BACKEND_URL: "${BASE_URL}"
       BOT_DELAY_MINUTES: "10"
     depends_on:
       backend:
@@ -224,10 +227,12 @@ services:
     container_name: store-hackathon-boomer-bot-admin
     restart: on-failure
     environment:
+      BASE_URL: "${BASE_URL}"
+      DOMAIN: "${DOMAIN}"
       BOT_USERNAME: "admin"
       BOT_PASSWORD: "miele_hackathon"
-      FRONTEND_URL: "https://hackathon.gobode.com"
-      BACKEND_URL: "https://hackathon.gobode.com"
+      FRONTEND_URL: "${BASE_URL}"
+      BACKEND_URL: "${BASE_URL}"
       BOT_DELAY_MINUTES: "10"
     depends_on:
       backend:
