@@ -24,7 +24,10 @@ if (!fs.existsSync(logsDir)) {
 }
 
 // Create pino logger
-const isDevelopment = process.env.LOG_LEVEL === 'development';
+const isDevelopment = process.env.LOG_LEVEL != 'production';
+if (isDevelopment) {
+  console.log('Running in development mode with verbose logging');
+}
 
 const logger = isDevelopment
   ? pino({
