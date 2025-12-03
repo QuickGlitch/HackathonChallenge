@@ -98,8 +98,12 @@
           <input v-model="answers.unreleasedProduct" required />
         </div>
         <button type="submit" :disabled="loading">Submit Answers</button>
-        <p v-if="error" class="error">{{ error }}</p>
-        <p v-if="success" class="success">{{ success }}</p>
+        <p v-if="error" class="error">
+          {{ error }}
+        </p>
+        <p v-if="success" class="success">
+          {{ success }}
+        </p>
       </form>
     </div>
   </div>

@@ -6,35 +6,17 @@
     </div>
 
     <!-- Fishing GIF Overlay -->
-    <div
-v-if="showBotActivity"
-class="gif-overlay"
-@click="hideGif"
->
+    <div v-if="showBotActivity" class="gif-overlay" @click="hideGif">
       <div class="gif-container">
-        <img
-:src="currentGif"
-alt="Fishing GIF"
-class="fishing-gif"
->
-        <div class="gif-close">
-Click to close or wait...
-</div>
+        <img :src="currentGif" alt="Fishing GIF" class="fishing-gif" />
+        <div class="gif-close">Click to close or wait...</div>
       </div>
     </div>
 
     <div class="scoreboard-card">
-      <div
-v-if="loading"
-class="loading"
->
-Loading scores...
-</div>
+      <div v-if="loading" class="loading">Loading scores...</div>
 
-      <div
-v-else-if="error"
-class="error"
->
+      <div v-else-if="error" class="error">
         {{ error }}
       </div>
 
@@ -55,31 +37,20 @@ class="error"
     </div>
 
     <!-- Fishing GIF Overlay -->
-    <div
-v-if="showBotActivity"
-class="gif-overlay"
-@click="hideGif"
->
+    <div v-if="showBotActivity" class="gif-overlay" @click="hideGif">
       <div class="gif-container">
-        <img
-:src="currentGif"
-alt="Fishing GIF"
-class="fishing-gif"
->
-        <p class="gif-caption">
-🎣
-</p>
+        <img :src="currentGif" alt="Fishing GIF" class="fishing-gif" />
+        <p class="gif-caption">🎣</p>
       </div>
     </div>
 
     <!-- News Ticker -->
-    <div
-v-if="showBotActivity"
-class="news-ticker"
->
+    <div v-if="showBotActivity" class="news-ticker">
       <div class="news-content">
         <span class="breaking-label">BREAKING NEWS:</span>
-        <span class="news-text">It's fishing season - boomer bots are clicking links</span>
+        <span class="news-text"
+          >It's fishing season - boomer bots are clicking links</span
+        >
       </div>
     </div>
   </div>

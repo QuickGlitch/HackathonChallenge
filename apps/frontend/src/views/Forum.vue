@@ -4,15 +4,9 @@
       <h1>Community Forum</h1>
 
       <!-- New Message Form (only shown when logged in) -->
-      <div
-v-if="authStore.isLoggedIn"
-class="new-message-form"
->
+      <div v-if="authStore.isLoggedIn" class="new-message-form">
         <h3>Post a New Message</h3>
-        <form
-class="message-form"
-@submit.prevent="createMessage"
->
+        <form class="message-form" @submit.prevent="createMessage">
           <div class="form-group">
             <label for="title">Title:</label>
             <input
@@ -22,7 +16,7 @@ class="message-form"
               placeholder="Enter message title..."
               required
               class="form-input"
-            >
+            />
           </div>
 
           <div class="form-group">
@@ -48,18 +42,10 @@ class="message-form"
       </div>
 
       <!-- Login prompt for anonymous users -->
-      <div
-v-else
-class="login-prompt"
->
+      <div v-else class="login-prompt">
         <p>
           You must be
-          <router-link
-to="/login"
-class="link"
->
-logged in
-</router-link> to
+          <router-link to="/login" class="link"> logged in </router-link> to
           post messages.
         </p>
       </div>
@@ -68,31 +54,17 @@ logged in
       <div class="messages-section">
         <h3>Recent Messages</h3>
 
-        <div
-v-if="isLoading"
-class="loading"
->
-Loading messages...
-</div>
+        <div v-if="isLoading" class="loading">Loading messages...</div>
 
-        <div
-v-else-if="error"
-class="alert alert-error"
->
+        <div v-else-if="error" class="alert alert-error">
           {{ error }}
         </div>
 
-        <div
-v-else-if="messages.length === 0"
-class="no-messages"
->
+        <div v-else-if="messages.length === 0" class="no-messages">
           No messages yet. Be the first to post!
         </div>
 
-        <div
-v-else
-class="messages-list"
->
+        <div v-else class="messages-list">
           <div
             v-for="message in messages"
             :key="message.id"
@@ -101,10 +73,7 @@ class="messages-list"
             <div class="message-header">
               <!-- VULNERABILITY: Raw HTML rendering without sanitization -->
               <!-- This allows XSS attacks through malicious titles -->
-              <h4
-class="message-title"
-v-html="message.title"
-/>
+              <h4 class="message-title" v-html="message.title" />
               <div class="message-meta">
                 <span class="author">by {{ message.author.username }}</span>
                 <span class="date">{{ formatDate(message.createdAt) }}</span>
@@ -144,20 +113,10 @@ v-html="message.title"
       </div>
 
       <!-- Edit Message Modal -->
-      <div
-v-if="editingMessage"
-class="modal-overlay"
-@click="cancelEdit"
->
-        <div
-class="modal"
-@click.stop
->
+      <div v-if="editingMessage" class="modal-overlay" @click="cancelEdit">
+        <div class="modal" @click.stop>
           <h3>Edit Message</h3>
-          <form
-class="message-form"
-@submit.prevent="updateMessage"
->
+          <form class="message-form" @submit.prevent="updateMessage">
             <div class="form-group">
               <label for="edit-title">Title:</label>
               <input
@@ -166,7 +125,7 @@ class="message-form"
                 type="text"
                 required
                 class="form-input"
-              >
+              />
             </div>
 
             <div class="form-group">

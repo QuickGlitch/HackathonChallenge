@@ -1,43 +1,26 @@
 <template>
   <div class="container">
     <div class="cart-view">
-      <h1 class="header">
-Shopping Cart
-</h1>
+      <h1 class="header">Shopping Cart</h1>
       <div>
-        <div
-v-if="cartStore.items.length === 0"
-class="empty-cart"
->
+        <div v-if="cartStore.items.length === 0" class="empty-cart">
           <p>Your cart is empty</p>
-          <router-link
-to="/products"
-class="btn"
->
+          <router-link to="/products" class="btn">
             Continue Shopping
           </router-link>
         </div>
 
-        <div
-v-else
-class="cart-goodies"
->
+        <div v-else class="cart-goodies">
           <div class="cart-items">
             <div
               v-for="item in cartStore.items"
               :key="item.id"
               class="cart-item card"
             >
-              <img
-:src="item.image"
-:alt="item.name"
-class="item-image"
->
+              <img :src="item.image" :alt="item.name" class="item-image" />
               <div class="item-details">
                 <h3>{{ item.name }}</h3>
-                <p class="item-price">
-${{ item.price.toFixed(2) }} each
-</p>
+                <p class="item-price">${{ item.price.toFixed(2) }} each</p>
               </div>
               <div class="item-quantity">
                 <button
@@ -57,12 +40,7 @@ ${{ item.price.toFixed(2) }} each
               <div class="item-total">
                 ${{ (item.price * item.quantity).toFixed(2) }}
               </div>
-              <button
-class="btn-remove"
-@click="removeItem(item.id)"
->
-×
-</button>
+              <button class="btn-remove" @click="removeItem(item.id)">×</button>
             </div>
           </div>
 
@@ -77,16 +55,10 @@ class="btn-remove"
               <span>${{ cartStore.totalPrice.toFixed(2) }}</span>
             </div>
             <div class="cart-actions">
-              <button
-class="btn btn-secondary"
-@click="clearCart"
->
+              <button class="btn btn-secondary" @click="clearCart">
                 Clear Cart
               </button>
-              <router-link
-to="/checkout"
-class="btn"
->
+              <router-link to="/checkout" class="btn">
                 Proceed to Checkout
               </router-link>
             </div>

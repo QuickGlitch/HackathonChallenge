@@ -1,13 +1,8 @@
 <template>
   <div class="score-chart">
-    <h2 class="chart-title">
-Team Scores
-</h2>
+    <h2 class="chart-title">Team Scores</h2>
     <div class="chart-container">
-      <Bar
-:data="chartData"
-:options="chartOptions"
-/>
+      <Bar :data="chartData" :options="chartOptions" />
     </div>
   </div>
 </template>

@@ -2,19 +2,11 @@
   <div class="container">
     <div class="login-form">
       <h1>Welcome Back</h1>
-      <p class="subtitle">
-Sign in to your account
-</p>
+      <p class="subtitle">Sign in to your account</p>
 
-      <form
-class="form"
-@submit.prevent="handleLogin"
->
+      <form class="form" @submit.prevent="handleLogin">
         <div class="form-group">
-          <label
-for="username"
-class="label"
->Username</label>
+          <label for="username" class="label">Username</label>
           <input
             id="username"
             v-model="form.username"
@@ -23,20 +15,14 @@ class="label"
             :class="{ 'input-error': errors.username }"
             placeholder="Enter your username"
             required
-          >
-          <span
-v-if="errors.username"
-class="error-text"
->{{
+          />
+          <span v-if="errors.username" class="error-text">{{
             errors.username
           }}</span>
         </div>
 
         <div class="form-group">
-          <label
-for="password"
-class="label"
->Password</label>
+          <label for="password" class="label">Password</label>
           <input
             id="password"
             v-model="form.password"
@@ -45,11 +31,8 @@ class="label"
             :class="{ 'input-error': errors.password }"
             placeholder="Enter your password"
             required
-          >
-          <span
-v-if="errors.password"
-class="error-text"
->{{
+          />
+          <span v-if="errors.password" class="error-text">{{
             errors.password
           }}</span>
         </div>
@@ -64,17 +47,11 @@ class="error-text"
           <span v-else>Sign In</span>
         </button>
 
-        <div
-v-if="generalError"
-class="error-message"
->
+        <div v-if="generalError" class="error-message">
           {{ generalError }}
         </div>
 
-        <div
-v-if="successMessage"
-class="success-message"
->
+        <div v-if="successMessage" class="success-message">
           {{ successMessage }}
         </div>
       </form>
@@ -82,10 +59,7 @@ class="success-message"
       <div class="form-footer">
         <p>
           Don't have an account?
-          <router-link
-to="/register"
-class="link"
->
+          <router-link to="/register" class="link">
             Create one here
           </router-link>
         </p>

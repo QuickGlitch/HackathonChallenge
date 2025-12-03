@@ -9,14 +9,16 @@
         name="username"
       />
       <input
-        name="password"
         v-model="password"
+        name="password"
         type="password"
         placeholder="Password"
         required
       />
       <button type="submit" :disabled="loading">Login</button>
-      <p v-if="error" class="error">{{ error }}</p>
+      <p v-if="error" class="error">
+        {{ error }}
+      </p>
     </form>
   </div>
 </template>

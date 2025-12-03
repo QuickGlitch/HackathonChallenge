@@ -1,3 +1,5 @@
+import vue from "@store-hackathon/eslint-config/vue";
+
 export default {
   semi: true,
   trailingComma: "es5",

@@ -10,11 +10,8 @@
             placeholder="Search products..."
             class="search-input"
             @input="handleSearch"
-          >
-          <button
-class="btn btn-secondary"
-@click="clearSearch"
->
+          />
+          <button class="btn btn-secondary" @click="clearSearch">
             Clear Search
           </button>
         </div>
@@ -24,24 +21,13 @@ class="btn btn-secondary"
     <div class="container">
       <h1>Products</h1>
 
-      <div
-v-if="productStore.loading"
-class="loading"
->
-Loading products...
-</div>
+      <div v-if="productStore.loading" class="loading">Loading products...</div>
 
-      <div
-v-else-if="productStore.error"
-class="alert alert-error"
->
+      <div v-else-if="productStore.error" class="alert alert-error">
         {{ productStore.error }}
       </div>
 
-      <div
-v-else
-class="grid grid-3"
->
+      <div v-else class="grid grid-3">
         <div
           v-for="product in productStore.products"
           :key="product.id"
@@ -55,19 +41,13 @@ class="grid grid-3"
           >
             Reseller
           </div>
-          <img
-:src="product.image"
-:alt="product.name"
-class="product-image"
->
+          <img :src="product.image" :alt="product.name" class="product-image" />
           <div class="product-info">
             <h3>{{ product.name }}</h3>
             <p class="product-description">
               {{ product.description }}
             </p>
-            <div class="product-price">
-${{ product.price.toFixed(2) }}
-</div>
+            <div class="product-price">${{ product.price.toFixed(2) }}</div>
             <div class="product-actions">
               <router-link
                 :to="`/products/${product.id}`"
@@ -75,10 +55,7 @@ ${{ product.price.toFixed(2) }}
               >
                 View Details
               </router-link>
-              <button
-class="btn"
-@click="addToCart(product)"
->
+              <button class="btn" @click="addToCart(product)">
                 Add to Cart
               </button>
             </div>

@@ -2,21 +2,11 @@
   <div class="container">
     <div class="logout-form">
       <h1>Confirm Logout</h1>
-      <p class="subtitle">
-Are you sure you want to sign out?
-</p>
+      <p class="subtitle">Are you sure you want to sign out?</p>
 
-      <div
-v-if="isLoading"
-class="loading-message"
->
-Signing out...
-</div>
+      <div v-if="isLoading" class="loading-message">Signing out...</div>
 
-      <div
-v-else
-class="logout-actions"
->
+      <div v-else class="logout-actions">
         <button
           class="btn btn-primary"
           :disabled="isLoading"
@@ -25,25 +15,14 @@ class="logout-actions"
           Yes, Sign Out
         </button>
 
-        <router-link
-to="/"
-class="btn btn-secondary"
->
-Cancel
-</router-link>
+        <router-link to="/" class="btn btn-secondary"> Cancel </router-link>
       </div>
 
-      <div
-v-if="error"
-class="error-message"
->
+      <div v-if="error" class="error-message">
         {{ error }}
       </div>
 
-      <div
-v-if="successMessage"
-class="success-message"
->
+      <div v-if="successMessage" class="success-message">
         {{ successMessage }}
       </div>
     </div>

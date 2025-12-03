@@ -4,33 +4,20 @@
       <h1>Become a Reseller</h1>
 
       <!-- Check if user is logged in -->
-      <div
-v-if="!authStore.isLoggedIn"
-class="login-prompt"
->
+      <div v-if="!authStore.isLoggedIn" class="login-prompt">
         <div class="alert alert-info">
           <h2>Login Required</h2>
           <p>You must be logged in to sell your own products.</p>
-          <router-link
-to="/login"
-class="btn btn-primary"
->
-Login
-</router-link>
+          <router-link to="/login" class="btn btn-primary"> Login </router-link>
           <p class="mt-3">
             Don't have an account?
-            <router-link to="/register">
-Register here
-</router-link>
+            <router-link to="/register"> Register here </router-link>
           </p>
         </div>
       </div>
 
       <!-- Reseller content for logged-in users -->
-      <div
-v-else
-class="reseller-content"
->
+      <div v-else class="reseller-content">
         <div class="intro-section">
           <h2>Sell Your Products</h2>
           <p>
@@ -40,33 +27,21 @@ class="reseller-content"
         </div>
 
         <!-- Success message -->
-        <div
-v-if="showSuccess"
-class="alert alert-success"
->
+        <div v-if="showSuccess" class="alert alert-success">
           <h3>✅ Product Added Successfully!</h3>
           <p>
             Your product has been registered and is now available in the store.
           </p>
-          <button
-class="btn btn-primary"
-@click="resetForm"
->
+          <button class="btn btn-primary" @click="resetForm">
             Add Another Product
           </button>
         </div>
 
         <!-- Product registration form -->
-        <div
-v-if="!showSuccess"
-class="product-form"
->
+        <div v-if="!showSuccess" class="product-form">
           <h3>Add Your Product</h3>
 
-          <form
-class="form"
-@submit.prevent="submitProduct"
->
+          <form class="form" @submit.prevent="submitProduct">
             <div class="form-group">
               <label for="productName">Product Name *</label>
               <input
@@ -77,7 +52,7 @@ class="form"
                 maxlength="100"
                 class="form-control"
                 placeholder="Enter product name"
-              >
+              />
             </div>
 
             <div class="form-group">
@@ -104,7 +79,7 @@ class="form"
                 required
                 class="form-control"
                 placeholder="0.00"
-              >
+              />
             </div>
 
             <div class="form-group">
@@ -115,29 +90,20 @@ class="form"
                 accept="image/*"
                 class="form-control"
                 @change="handleImageChange"
-              >
+              />
               <small class="form-text">
                 Optional. Supported formats: JPG, PNG, GIF. Max size: 5MB
               </small>
             </div>
 
             <!-- Image preview -->
-            <div
-v-if="imagePreview"
-class="image-preview"
->
+            <div v-if="imagePreview" class="image-preview">
               <h4>Image Preview:</h4>
-              <img
-:src="imagePreview"
-alt="Product preview"
->
+              <img :src="imagePreview" alt="Product preview" />
             </div>
 
             <!-- Error message -->
-            <div
-v-if="error"
-class="alert alert-error"
->
+            <div v-if="error" class="alert alert-error">
               {{ error }}
             </div>
 

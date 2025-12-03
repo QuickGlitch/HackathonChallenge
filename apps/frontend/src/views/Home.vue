@@ -10,16 +10,10 @@
             secure, and reliable.
           </p>
           <div class="hero-buttons">
-            <router-link
-to="/products"
-class="btn-primary"
->
+            <router-link to="/products" class="btn-primary">
               Explore Products
             </router-link>
-            <router-link
-to="/register"
-class="btn-secondary"
->
+            <router-link to="/register" class="btn-secondary">
               Become a Seller
             </router-link>
           </div>
@@ -31,56 +25,36 @@ class="btn-secondary"
       <div class="container">
         <div class="stats-grid">
           <div class="stat-item">
-            <div class="stat-number">
-10+
-</div>
-            <div class="stat-label">
-Products
-</div>
+            <div class="stat-number">10+</div>
+            <div class="stat-label">Products</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number">
-5+
-</div>
-            <div class="stat-label">
-Happy Customers
-</div>
+            <div class="stat-number">5+</div>
+            <div class="stat-label">Happy Customers</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number">
-99.9%
-</div>
-            <div class="stat-label">
-Uptime locally
-</div>
+            <div class="stat-number">99.9%</div>
+            <div class="stat-label">Uptime locally</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number">
-24*/7**
-</div>
-            <div class="stat-label">
-Support***
-</div>
+            <div class="stat-number">24*/7**</div>
+            <div class="stat-label">Support***</div>
           </div>
         </div>
       </div>
     </section>
 
     <section class="pen-shop">
-      <h3 class="news">
-News
-</h3>
+      <h3 class="news">News</h3>
       <div class="pen-shop-content">
         <div class="pen-shop-image">
           <img
             src="https://images.unsplash.com/photo-1531087131490-07836ca4341d?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt="Pen Testing"
-          >
+          />
         </div>
         <div class="pen-shop-text">
-          <div class="pen-badge">
-Coming Soon
-</div>
+          <div class="pen-badge">Coming Soon</div>
           <h2>Not all pens are created equal</h2>
           <p>
             As part of his upcoming pop-up store, join renowned pen designer

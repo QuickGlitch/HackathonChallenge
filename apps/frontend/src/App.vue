@@ -5,32 +5,12 @@
 
     <header class="header">
       <div class="container">
-        <h1 class="logo">
-🛒 Hackathon Store
-</h1>
+        <h1 class="logo">🛒 Hackathon Store</h1>
         <nav class="nav">
-          <router-link
-to="/"
-class="nav-link"
->
-Home
-</router-link>
-          <router-link
-to="/products"
-class="nav-link"
->
-Products
-</router-link>
-          <router-link
-to="/forum"
-class="nav-link"
->
-Forum
-</router-link>
-          <router-link
-to="/cart"
-class="nav-link"
->
+          <router-link to="/" class="nav-link"> Home </router-link>
+          <router-link to="/products" class="nav-link"> Products </router-link>
+          <router-link to="/forum" class="nav-link"> Forum </router-link>
+          <router-link to="/cart" class="nav-link">
             Cart ({{ cartStore.itemCount }})
           </router-link>
           <router-link

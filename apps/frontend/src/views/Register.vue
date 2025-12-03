@@ -2,19 +2,11 @@
   <div class="container">
     <div class="register-form">
       <h1>Create Account</h1>
-      <p class="subtitle">
-Join Hackathon Store today
-</p>
+      <p class="subtitle">Join Hackathon Store today</p>
 
-      <form
-class="form"
-@submit.prevent="handleRegister"
->
+      <form class="form" @submit.prevent="handleRegister">
         <div class="form-group">
-          <label
-for="username"
-class="label"
->Username</label>
+          <label for="username" class="label">Username</label>
           <input
             id="username"
             v-model="form.username"
@@ -23,20 +15,14 @@ class="label"
             :class="{ 'input-error': errors.username }"
             placeholder="Enter your username"
             required
-          >
-          <span
-v-if="errors.username"
-class="error-text"
->{{
+          />
+          <span v-if="errors.username" class="error-text">{{
             errors.username
           }}</span>
         </div>
 
         <div class="form-group">
-          <label
-for="name"
-class="label"
->Full Name</label>
+          <label for="name" class="label">Full Name</label>
           <input
             id="name"
             v-model="form.name"
@@ -44,18 +30,12 @@ class="label"
             class="input"
             :class="{ 'input-error': errors.name }"
             placeholder="Enter your full name"
-          >
-          <span
-v-if="errors.name"
-class="error-text"
->{{ errors.name }}</span>
+          />
+          <span v-if="errors.name" class="error-text">{{ errors.name }}</span>
         </div>
 
         <div class="form-group">
-          <label
-for="password"
-class="label"
->Password</label>
+          <label for="password" class="label">Password</label>
           <input
             id="password"
             v-model="form.password"
@@ -64,20 +44,14 @@ class="label"
             :class="{ 'input-error': errors.password }"
             placeholder="Enter your password"
             required
-          >
-          <span
-v-if="errors.password"
-class="error-text"
->{{
+          />
+          <span v-if="errors.password" class="error-text">{{
             errors.password
           }}</span>
         </div>
 
         <div class="form-group">
-          <label
-for="confirmPassword"
-class="label"
->Confirm Password</label>
+          <label for="confirmPassword" class="label">Confirm Password</label>
           <input
             id="confirmPassword"
             v-model="form.confirmPassword"
@@ -86,37 +60,24 @@ class="label"
             :class="{ 'input-error': errors.confirmPassword }"
             placeholder="Confirm your password"
             required
-          >
-          <span
-v-if="errors.confirmPassword"
-class="error-text"
->{{
+          />
+          <span v-if="errors.confirmPassword" class="error-text">{{
             errors.confirmPassword
           }}</span>
         </div>
 
         <div class="form-group">
-          <label
-for="role"
-class="label"
->Account Type</label>
+          <label for="role" class="label">Account Type</label>
           <select
             id="role"
             v-model="form.role"
             class="input"
             :class="{ 'input-error': errors.role }"
           >
-            <option value="customer">
-Customer
-</option>
-            <option value="admin">
-Admin
-</option>
+            <option value="customer">Customer</option>
+            <option value="admin">Admin</option>
           </select>
-          <span
-v-if="errors.role"
-class="error-text"
->{{ errors.role }}</span>
+          <span v-if="errors.role" class="error-text">{{ errors.role }}</span>
         </div>
 
         <button
@@ -129,17 +90,11 @@ class="error-text"
           <span v-else>Create Account</span>
         </button>
 
-        <div
-v-if="generalError"
-class="error-message"
->
+        <div v-if="generalError" class="error-message">
           {{ generalError }}
         </div>
 
-        <div
-v-if="successMessage"
-class="success-message"
->
+        <div v-if="successMessage" class="success-message">
           {{ successMessage }}
         </div>
       </form>
@@ -147,12 +102,7 @@ class="success-message"
       <div class="form-footer">
         <p>
           Already have an account?
-          <router-link
-to="/login"
-class="link"
->
-Sign in here
-</router-link>
+          <router-link to="/login" class="link"> Sign in here </router-link>
         </p>
       </div>
     </div>

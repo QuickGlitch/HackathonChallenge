@@ -6,23 +6,13 @@
 -->
 
 <template>
-  <div
-v-if="showDebugPanel"
-class="admin-debug"
->
+  <div v-if="showDebugPanel" class="admin-debug">
     <div class="debug-panel">
       <div class="debug-header">
         <h3>🔧 Development Debug Panel</h3>
-        <button
-class="close-btn"
-@click="closeDebugPanel"
->
-&times;
-</button>
+        <button class="close-btn" @click="closeDebugPanel">&times;</button>
       </div>
-      <p class="warning">
-⚠️ For internal use only
-</p>
+      <p class="warning">⚠️ For internal use only</p>
 
       <!-- Fake admin login that logs attempts -->
       <div class="admin-quick-login">
@@ -32,34 +22,24 @@ class="close-btn"
             v-model="debugCredentials.username"
             placeholder="admin"
             class="debug-input"
-          >
+          />
           <input
             v-model="debugCredentials.password"
             type="password"
             placeholder="admin"
             class="debug-input"
-          >
-          <button
-type="submit"
-class="debug-btn"
->
-Login
-</button>
+          />
+          <button type="submit" class="debug-btn">Login</button>
         </form>
       </div>
 
       <!-- Fake product testing section -->
       <div class="product-test">
         <h4>Hidden Products Access</h4>
-        <button
-class="debug-btn"
-@click="fetchHiddenProducts"
->
+        <button class="debug-btn" @click="fetchHiddenProducts">
           Fetch Hidden Products
         </button>
-        <p class="hint">
-Loads all products + VIP editions
-</p>
+        <p class="hint">Loads all products + VIP editions</p>
       </div>
     </div>
   </div>
