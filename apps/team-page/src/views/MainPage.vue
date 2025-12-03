@@ -181,6 +181,7 @@ async function submitAnswers() {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
 }
+
 ul {
   margin: 1rem 0;
   padding-left: 1.5rem;
@@ -189,23 +190,28 @@ ul {
     margin-bottom: 0.5rem;
   }
 }
+
 .answers-form-container {
   margin-top: 2rem;
 }
+
 .form-group {
   margin-bottom: 1.5rem;
 }
+
 label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: bold;
 }
+
 input {
   width: 100%;
   padding: 0.7rem;
   border-radius: 4px;
   border: 1px solid #ccc;
 }
+
 button {
   margin-top: 1rem;
   padding: 0.7rem 2rem;
@@ -216,10 +222,12 @@ button {
   font-weight: bold;
   cursor: pointer;
 }
+
 .error {
   color: #d00;
   margin-top: 0.5rem;
 }
+
 .success {
   color: #090;
   margin-top: 0.5rem;

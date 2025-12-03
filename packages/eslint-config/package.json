@@ -2,6 +2,7 @@
   "name": "@store-hackathon/eslint-config",
   "version": "1.0.0",
   "description": "Shared ESLint configuration for store-hackathon monorepo",
+  "type": "module",
   "main": "index.js",
   "exports": {
     ".": "./index.js",
