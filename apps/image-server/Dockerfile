@@ -11,5 +11,9 @@ RUN mkdir -p /var/www/html/images && \
     chown -R www-data:www-data /var/www/html/images && \
     chmod -R 755 /var/www/html/images
 
-# Expose port 80
-EXPOSE 80
+# Change Apache to listen on port 8090
+RUN sed -i 's/Listen 80/Listen 8090/' /etc/apache2/ports.conf && \
+    sed -i 's/:80/:8090/' /etc/apache2/sites-available/000-default.conf
+
+# Expose port 8090
+EXPOSE 8090

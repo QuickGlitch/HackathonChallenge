@@ -173,7 +173,7 @@ services:
     container_name: store-hackathon-image-server
     restart: unless-stopped
     expose:
-      - "80"
+      - "8090"
     volumes:
       - ./apps/image-server/public/images:/var/www/html/images
     depends_on:
@@ -185,7 +185,7 @@ services:
       - "traefik.http.routers.image-server.rule=Host(`${DOMAIN}`) && PathPrefix(`/images`)"
       - "traefik.http.routers.image-server.entrypoints=web"
       - "traefik.http.routers.image-server.priority=10"
-      - "traefik.http.services.image-server.loadbalancer.server.port=80"
+      - "traefik.http.services.image-server.loadbalancer.server.port=8090"
       # Route for image upload API
       - "traefik.http.routers.image-upload.rule=Host(`${DOMAIN}`) && Path(`/api/upload-image`)"
       - "traefik.http.routers.image-upload.entrypoints=web"
