@@ -1,6 +1,6 @@
 {
-  "name": "team-page",
-  "version": "0.1.0",
+  "name": "@store-hackathon/team-page",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,7 @@
   "dependencies": {
     "@vitejs/plugin-vue": "^6.0.2",
     "vite": "^7.2.4",
-    "vue": "^3.4.0",
-    "vue-router": "^4.2.5"
+    "vue": "^3.5.25",
+    "vue-router": "^4.6.3"
   }
 }
