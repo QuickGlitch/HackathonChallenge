@@ -15,7 +15,8 @@
     "db:reset": "prisma migrate reset --force",
     "db:seed": "node src/seed.js",
     "db:setup": "npm run db:migrate && npm run db:seed",
-    "lint": "eslint src --fix"
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@prisma/client": "^5.13.0",
@@ -31,8 +32,10 @@
     "pino-pretty": "^13.1.2"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
+    "@store-hackathon/eslint-config": "*",
+    "@store-hackathon/prettier-config": "*",
     "nodemon": "^3.1.0",
     "prisma": "^5.13.0"
-  }
+  },
+  "prettier": "@store-hackathon/prettier-config"
 }

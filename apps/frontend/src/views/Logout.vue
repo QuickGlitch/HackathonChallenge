@@ -2,27 +2,48 @@
   <div class="container">
     <div class="logout-form">
       <h1>Confirm Logout</h1>
-      <p class="subtitle">Are you sure you want to sign out?</p>
+      <p class="subtitle">
+Are you sure you want to sign out?
+</p>
 
-      <div v-if="isLoading" class="loading-message">Signing out...</div>
+      <div
+v-if="isLoading"
+class="loading-message"
+>
+Signing out...
+</div>
 
-      <div v-else class="logout-actions">
+      <div
+v-else
+class="logout-actions"
+>
         <button
-          @click="handleLogout"
           class="btn btn-primary"
           :disabled="isLoading"
+          @click="handleLogout"
         >
           Yes, Sign Out
         </button>
 
-        <router-link to="/" class="btn btn-secondary"> Cancel </router-link>
+        <router-link
+to="/"
+class="btn btn-secondary"
+>
+Cancel
+</router-link>
       </div>
 
-      <div v-if="error" class="error-message">
+      <div
+v-if="error"
+class="error-message"
+>
         {{ error }}
       </div>
 
-      <div v-if="successMessage" class="success-message">
+      <div
+v-if="successMessage"
+class="success-message"
+>
         {{ successMessage }}
       </div>
     </div>
@@ -30,38 +51,38 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useAuthStore } from "../stores/auth";
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
 
 const router = useRouter();
 const authStore = useAuthStore();
 
 const isLoading = ref(false);
-const successMessage = ref("");
-const error = ref("");
+const successMessage = ref('');
+const error = ref('');
 
 const handleLogout = async () => {
   isLoading.value = true;
-  error.value = "";
-  successMessage.value = "";
+  error.value = '';
+  successMessage.value = '';
 
   try {
     const result = await authStore.logout();
 
     if (result.success) {
-      successMessage.value = "Successfully signed out. Redirecting to home...";
+      successMessage.value = 'Successfully signed out. Redirecting to home...';
 
       // Redirect to home page after a short delay
       setTimeout(() => {
-        router.push("/");
+        router.push('/');
       }, 1500);
     } else {
-      error.value = result.error || "Logout failed";
+      error.value = result.error || 'Logout failed';
     }
   } catch (err) {
-    console.error("Logout error:", err);
-    error.value = "An error occurred while signing out";
+    console.error('Logout error:', err);
+    error.value = 'An error occurred while signing out';
   } finally {
     isLoading.value = false;
   }

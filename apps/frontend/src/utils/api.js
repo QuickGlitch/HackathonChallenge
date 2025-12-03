@@ -16,9 +16,9 @@ function onTokenRefreshed() {
 // Refresh the access token using the refresh token
 async function refreshAccessToken() {
   try {
-    const response = await fetch("/api/users/refresh", {
-      method: "POST",
-      credentials: "include",
+    const response = await fetch('/api/users/refresh', {
+      method: 'POST',
+      credentials: 'include',
     });
 
     if (response.ok) {
@@ -26,12 +26,12 @@ async function refreshAccessToken() {
     } else {
       // Refresh token is invalid or expired
       // Clear any stored user data
-      localStorage.removeItem("user");
+      localStorage.removeItem('user');
       return false;
     }
   } catch (error) {
-    console.error("Error refreshing token:", error);
-    localStorage.removeItem("user");
+    console.error('Error refreshing token:', error);
+    localStorage.removeItem('user');
     return false;
   }
 }
@@ -41,10 +41,10 @@ export async function apiFetch(url, options = {}) {
   // Ensure credentials are included
   const fetchOptions = {
     ...options,
-    credentials: "include",
+    credentials: 'include',
   };
 
-  let response = await fetch(url, fetchOptions);
+  const response = await fetch(url, fetchOptions);
 
   // If 401 and not already retrying, try to refresh token and retry
   if (response.status === 401 && !options._retry) {

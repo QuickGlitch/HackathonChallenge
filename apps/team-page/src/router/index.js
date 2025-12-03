@@ -1,14 +1,14 @@
-import { createRouter, createWebHistory } from "vue-router";
-import { fetchWithAuth } from "../utils/api.js";
+import { createRouter, createWebHistory } from 'vue-router';
+import { fetchWithAuth } from '../utils/api.js';
 
-import Login from "../views/Login.vue";
-import MainPage from "../views/MainPage.vue";
+import Login from '../views/Login.vue';
+import MainPage from '../views/MainPage.vue';
 
-const base = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
+const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
 
 const routes = [
-  { path: "/", name: "home", component: MainPage },
-  { path: "/login", name: "login", component: Login },
+  { path: '/', name: 'home', component: MainPage },
+  { path: '/login', name: 'login', component: Login },
 ];
 
 const router = createRouter({
@@ -19,10 +19,10 @@ const router = createRouter({
 
 // Navigation guard for accessToken
 router.beforeEach(async (to, from, next) => {
-  if (to.path === "/") {
+  if (to.path === '/') {
     try {
-      const response = await fetchWithAuth("/api/users/me", {
-        method: "GET",
+      const response = await fetchWithAuth('/api/users/me', {
+        method: 'GET',
       });
       const validSession = response.status === 200;
       if (!validSession) {
@@ -32,7 +32,7 @@ router.beforeEach(async (to, from, next) => {
       }
     } catch (error) {
       // If fetch fails, redirect to login
-      const base = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
+      const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
       next(`${base}/login`);
     }
   } else {

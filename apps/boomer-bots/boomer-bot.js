@@ -4,18 +4,18 @@
  * Simulates boomer users browsing the forum and clicking on links in forum message bodies
  */
 
-import puppeteer from "puppeteer";
-import pino from "pino";
+import puppeteer from 'puppeteer';
+import pino from 'pino';
 
 // Create pino logger
 const logger = pino({
-  level: process.env.LOG_LEVEL || "info",
+  level: process.env.LOG_LEVEL || 'info',
   transport: {
-    target: "pino-pretty",
+    target: 'pino-pretty',
     options: {
       colorize: true,
-      translateTime: "SYS:standard",
-      ignore: "pid,hostname",
+      translateTime: 'SYS:standard',
+      ignore: 'pid,hostname',
     },
   },
 });
@@ -23,11 +23,11 @@ const logger = pino({
 class BoomerBot {
   constructor(options = {}) {
     this.credentials = {
-      username: process.env.BOT_USERNAME || "DorothyWilliams",
-      password: process.env.BOT_PASSWORD || "quilting456",
+      username: process.env.BOT_USERNAME || 'DorothyWilliams',
+      password: process.env.BOT_PASSWORD || 'quilting456',
     };
-    this.baseUrl = process.env.FRONTEND_URL || "http://localhost:3000";
-    this.apiBaseUrl = process.env.BACKEND_URL || "http://localhost:3001";
+    this.baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    this.apiBaseUrl = process.env.BACKEND_URL || 'http://localhost:3001';
     this.browser = null;
     this.page = null;
     this.clickTimeout = 5000; // 5 seconds timeout
@@ -35,29 +35,29 @@ class BoomerBot {
   }
 
   async init() {
-    logger.info("Starting BoomerBot...");
+    logger.info('Starting BoomerBot...');
     logger.info(`Headless mode: ${this.headless}`);
 
     this.browser = await puppeteer.launch({
       headless: this.headless,
       defaultViewport: { width: 1280, height: 720 },
       args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
       ],
     });
 
     this.page = await this.browser.newPage();
 
-    logger.info("Browser launched successfully");
+    logger.info('Browser launched successfully');
   }
 
   async notifyBotStatus(isActive) {
     try {
       const response = await fetch(`${this.apiBaseUrl}/api/bot-activity`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           isActive,
           startedAt: isActive ? new Date().toISOString() : null,
@@ -75,37 +75,37 @@ class BoomerBot {
         );
       }
     } catch (error) {
-      logger.error("Error notifying bot status:", error.message);
+      logger.error('Error notifying bot status:', error.message);
     }
   }
 
   async login() {
-    logger.info("Attempting to log in as boomer user...");
+    logger.info('Attempting to log in as boomer user...');
 
     try {
       // Navigate to the login page
       await this.page.goto(`${this.baseUrl}/login`, {
-        waitUntil: "networkidle2",
+        waitUntil: 'networkidle2',
         timeout: 10000,
       });
 
-      logger.info("Filling in login form...");
+      logger.info('Filling in login form...');
 
       // Fill in the login form
-      await this.page.waitForSelector("#username", { timeout: 5000 });
-      await this.page.type("#username", this.credentials.username);
+      await this.page.waitForSelector('#username', { timeout: 5000 });
+      await this.page.type('#username', this.credentials.username);
 
-      await this.page.waitForSelector("#password", { timeout: 5000 });
-      await this.page.type("#password", this.credentials.password);
+      await this.page.waitForSelector('#password', { timeout: 5000 });
+      await this.page.type('#password', this.credentials.password);
 
       // Submit the form
-      logger.info("Submitting login form...");
+      logger.info('Submitting login form...');
 
       // Set up response listener before clicking
       const responsePromise = this.page.waitForResponse(
         (response) =>
-          response.url().includes("/api/users/login") &&
-          response.request().method() === "POST"
+          response.url().includes('/api/users/login') &&
+          response.request().method() === 'POST'
       );
 
       // Click the submit button
@@ -118,15 +118,15 @@ class BoomerBot {
         // Verify we're logged in by checking cookies
         const cookies = await this.page.cookies();
         const hasAccessToken = cookies.some(
-          (cookie) => cookie.name === "accessToken"
+          (cookie) => cookie.name === 'accessToken'
         );
 
         if (hasAccessToken) {
-          logger.info("Successfully logged in as boomer user");
+          logger.info('Successfully logged in as boomer user');
           return true;
         } else {
           logger.error(
-            "Login response was OK but no access token cookie found"
+            'Login response was OK but no access token cookie found'
           );
           return false;
         }
@@ -138,53 +138,53 @@ class BoomerBot {
         return false;
       }
     } catch (error) {
-      logger.error("Login failed:", error.message);
+      logger.error('Login failed:', error.message);
       return false;
     }
   }
 
   async navigateToForum() {
-    logger.info("Navigating to forum...");
+    logger.info('Navigating to forum...');
 
     try {
       await this.page.goto(`${this.baseUrl}/forum`, {
-        waitUntil: "networkidle2",
+        waitUntil: 'networkidle2',
         timeout: 10000,
       });
 
       // Wait for forum content to load
-      await this.page.waitForSelector(".messages-list, .no-messages", {
+      await this.page.waitForSelector('.messages-list, .no-messages', {
         timeout: 5000,
       });
 
-      logger.info("Successfully navigated to forum");
+      logger.info('Successfully navigated to forum');
       return true;
     } catch (error) {
-      logger.error("Failed to navigate to forum:", error.message);
+      logger.error('Failed to navigate to forum:', error.message);
       return false;
     }
   }
 
   async extractForumLinks() {
-    logger.info("Extracting links from forum messages...");
+    logger.info('Extracting links from forum messages...');
 
     try {
       // Extract all links from message bodies using v-html rendered content
       const links = await this.page.evaluate(() => {
-        const messageElements = document.querySelectorAll(".message-body");
+        const messageElements = document.querySelectorAll('.message-body');
         const foundLinks = [];
 
         messageElements.forEach((messageBody, index) => {
-          const linkElements = messageBody.querySelectorAll("a[href]");
+          const linkElements = messageBody.querySelectorAll('a[href]');
           linkElements.forEach((link) => {
-            const href = link.getAttribute("href");
+            const href = link.getAttribute('href');
             const text = link.textContent.trim();
 
             // TODO: add JS vulnerability here later as part of the course
             if (
               href &&
-              !href.startsWith("javascript:") &&
-              !href.startsWith("#")
+              !href.startsWith('javascript:') &&
+              !href.startsWith('#')
             ) {
               foundLinks.push({
                 url: href,
@@ -205,7 +205,7 @@ class BoomerBot {
 
       return links;
     } catch (error) {
-      logger.error("Failed to extract forum links:", error.message);
+      logger.error('Failed to extract forum links:', error.message);
       return [];
     }
   }
@@ -217,26 +217,26 @@ class BoomerBot {
       // Navigate to the link
       const navigationPromise = this.page
         .goto(link.url, {
-          waitUntil: "networkidle2",
+          waitUntil: 'networkidle2',
         })
         .then(async () => {
           // Try to find and click the first button
           try {
-            const buttonFound = await this.page.waitForSelector("button", {
+            const buttonFound = await this.page.waitForSelector('button', {
               timeout: 1000, // Quick check for button
             });
 
             if (buttonFound) {
-              logger.info("Found a button, clicking it...");
-              await this.page.click("button");
+              logger.info('Found a button, clicking it...');
+              await this.page.click('button');
 
               // Wait a bit to see if anything happens
               await new Promise((resolve) => setTimeout(resolve, 1000));
             } else {
-              logger.info("No button found on this page");
+              logger.info('No button found on this page');
             }
           } catch (buttonError) {
-            logger.info("No clickable button found on this page");
+            logger.info('No clickable button found on this page');
           }
           return true;
         });
@@ -261,27 +261,27 @@ class BoomerBot {
   }
 
   async returnToForum() {
-    logger.info("Returning to forum...");
+    logger.info('Returning to forum...');
 
     try {
       await this.page.goto(`${this.baseUrl}/forum`, {
-        waitUntil: "domcontentloaded",
+        waitUntil: 'domcontentloaded',
         timeout: 10000,
       });
 
       // Wait a moment for the page to settle using setTimeout wrapped in Promise
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      logger.info("Successfully returned to forum");
+      logger.info('Successfully returned to forum');
       return true;
     } catch (error) {
-      logger.error("Failed to return to forum:", error.message);
+      logger.error('Failed to return to forum:', error.message);
       return false;
     }
   }
 
   async simulateForumBrowsing() {
-    logger.info("Boomer user is starting to browse the forum...");
+    logger.info('Boomer user is starting to browse the forum...');
 
     try {
       // Notify that bot is starting activity
@@ -290,7 +290,7 @@ class BoomerBot {
       // Navigate to forum
       const forumNavSuccess = await this.navigateToForum();
       if (!forumNavSuccess) {
-        throw new Error("Failed to navigate to forum");
+        throw new Error('Failed to navigate to forum');
       }
 
       // Extract all links from forum messages
@@ -298,7 +298,7 @@ class BoomerBot {
 
       if (forumLinks.length === 0) {
         logger.info(
-          "No links found in forum messages. Dorothy has nothing to click!"
+          'No links found in forum messages. Dorothy has nothing to click!'
         );
         return;
       }
@@ -321,9 +321,9 @@ class BoomerBot {
         }
       }
 
-      logger.info("\nBoomer user has finished browsing all forum links!");
+      logger.info('\nBoomer user has finished browsing all forum links!');
     } catch (error) {
-      logger.error("Error during forum browsing simulation:", error.message);
+      logger.error('Error during forum browsing simulation:', error.message);
     } finally {
       // Notify that bot has stopped activity
       await this.notifyBotStatus(false);
@@ -337,21 +337,21 @@ class BoomerBot {
 
         const loginSuccess = await this.login();
         if (!loginSuccess) {
-          throw new Error("Failed to login");
+          throw new Error('Failed to login');
         }
 
         await this.simulateForumBrowsing();
       } catch (error) {
-        logger.error("Bot execution failed:", error.message);
+        logger.error('Bot execution failed:', error.message);
       } finally {
         if (this.browser) {
-          logger.info("Closing browser...");
+          logger.info('Closing browser...');
           await this.browser.close();
         }
       }
 
       // Wait before next run (configurable via BOT_DELAY_MINUTES env variable)
-      const delayMinutes = parseInt(process.env.BOT_DELAY_MINUTES || "10", 10);
+      const delayMinutes = parseInt(process.env.BOT_DELAY_MINUTES || '10', 10);
       const delayMs = delayMinutes * 60 * 1000;
       logger.info(`⏰ Waiting ${delayMinutes} minutes before next run...`);
       await new Promise((resolve) => setTimeout(resolve, delayMs));
@@ -368,17 +368,17 @@ class BoomerBot {
 // Handle graceful shutdown - only exit if explicitly requested
 let isShuttingDown = false;
 
-process.on("SIGINT", async () => {
+process.on('SIGINT', async () => {
   if (!isShuttingDown) {
-    logger.info("\nReceived SIGINT, shutting down gracefully...");
+    logger.info('\nReceived SIGINT, shutting down gracefully...');
     isShuttingDown = true;
     process.exit(0);
   }
 });
 
-process.on("SIGTERM", async () => {
+process.on('SIGTERM', async () => {
   if (!isShuttingDown) {
-    logger.info("\nReceived SIGTERM, shutting down gracefully...");
+    logger.info('\nReceived SIGTERM, shutting down gracefully...');
     isShuttingDown = true;
     process.exit(0);
   }
@@ -391,15 +391,15 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const options = {};
 
   args.forEach((arg) => {
-    if (arg.startsWith("--headless=")) {
-      const value = arg.split("=")[1];
-      options.headless = value === "true";
+    if (arg.startsWith('--headless=')) {
+      const value = arg.split('=')[1];
+      options.headless = value === 'true';
     }
   });
 
   const boomerBot = new BoomerBot(options);
   boomerBot.run().catch((error) => {
-    logger.error("Fatal error:", error);
+    logger.error('Fatal error:', error);
     process.exit(1);
   });
 }

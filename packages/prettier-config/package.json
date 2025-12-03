@@ -1,0 +1,12 @@
+{
+  "name": "@store-hackathon/prettier-config",
+  "version": "1.0.0",
+  "description": "Shared Prettier configuration for store-hackathon monorepo",
+  "main": "index.js",
+  "dependencies": {
+    "prettier": "^3.4.2"
+  },
+  "peerDependencies": {
+    "prettier": "^3.0.0"
+  }
+}

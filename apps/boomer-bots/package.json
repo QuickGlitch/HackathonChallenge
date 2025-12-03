@@ -7,7 +7,9 @@
   "scripts": {
     "test": "node ./tests/test-bot.js",
     "dev": "node --env-file=.env.dev --watch boomer-bot.js",
-    "start": "node boomer-bot.js"
+    "start": "node boomer-bot.js",
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "keywords": [
     "boomer",
@@ -20,5 +22,10 @@
     "pino": "^10.1.0",
     "pino-pretty": "^13.1.2",
     "puppeteer": "^24.30.0"
-  }
+  },
+  "devDependencies": {
+    "@store-hackathon/eslint-config": "*",
+    "@store-hackathon/prettier-config": "*"
+  },
+  "prettier": "@store-hackathon/prettier-config"
 }

@@ -12,11 +12,13 @@ This backend service uses [logrotate](https://github.com/logrotate/logrotate) to
 ## Viewing Logs
 
 To view current logs:
+
 ```bash
 docker exec store-hackathon-backend tail -f /app/logs/access.log
 ```
 
 To view rotated logs:
+
 ```bash
 docker exec store-hackathon-backend ls -lh /app/logs/
 ```
@@ -24,6 +26,7 @@ docker exec store-hackathon-backend ls -lh /app/logs/
 ## Manual Rotation
 
 To manually trigger log rotation:
+
 ```bash
 docker exec store-hackathon-backend logrotate -f /etc/logrotate.d/backend-logs
 ```
@@ -40,6 +43,7 @@ docker-compose up -d backend
 ## Log Location on Host
 
 The logs are stored in a Docker volume. To find the location on the host:
+
 ```bash
 docker volume inspect store-hackathon_backend-logs
 ```

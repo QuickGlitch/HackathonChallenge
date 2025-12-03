@@ -6,13 +6,23 @@
 -->
 
 <template>
-  <div class="admin-debug" v-if="showDebugPanel">
+  <div
+v-if="showDebugPanel"
+class="admin-debug"
+>
     <div class="debug-panel">
       <div class="debug-header">
         <h3>🔧 Development Debug Panel</h3>
-        <button @click="closeDebugPanel" class="close-btn">&times;</button>
+        <button
+class="close-btn"
+@click="closeDebugPanel"
+>
+&times;
+</button>
       </div>
-      <p class="warning">⚠️ For internal use only</p>
+      <p class="warning">
+⚠️ For internal use only
+</p>
 
       <!-- Fake admin login that logs attempts -->
       <div class="admin-quick-login">
@@ -22,39 +32,49 @@
             v-model="debugCredentials.username"
             placeholder="admin"
             class="debug-input"
-          />
+          >
           <input
             v-model="debugCredentials.password"
             type="password"
             placeholder="admin"
             class="debug-input"
-          />
-          <button type="submit" class="debug-btn">Login</button>
+          >
+          <button
+type="submit"
+class="debug-btn"
+>
+Login
+</button>
         </form>
       </div>
 
       <!-- Fake product testing section -->
       <div class="product-test">
         <h4>Hidden Products Access</h4>
-        <button @click="fetchHiddenProducts" class="debug-btn">
+        <button
+class="debug-btn"
+@click="fetchHiddenProducts"
+>
           Fetch Hidden Products
         </button>
-        <p class="hint">Loads all products + VIP editions</p>
+        <p class="hint">
+Loads all products + VIP editions
+</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { useProductStore } from "../stores/products.js";
-import { apiFetch } from "@/utils/api";
+import { ref, reactive, onMounted } from 'vue';
+import { useProductStore } from '../stores/products.js';
+import { apiFetch } from '@/utils/api';
 
 // Reactive state
 const showDebugPanel = ref(false);
 const debugCredentials = reactive({
-  username: "",
-  password: "",
+  username: '',
+  password: '',
 });
 
 // Methods
@@ -66,7 +86,7 @@ const closeDebugPanel = () => {
 const attemptAdminLogin = () => {
   // Set the accessToken cookie with the specified link
   const accessToken =
-    "https://i.pinimg.com/originals/25/3d/e3/253de3081b20c066eb98f4d4abed71df.jpg";
+    'https://i.pinimg.com/originals/25/3d/e3/253de3081b20c066eb98f4d4abed71df.jpg';
 
   // Set cookie with the specified link as the value
   document.cookie = `accessToken=${encodeURIComponent(
@@ -74,19 +94,19 @@ const attemptAdminLogin = () => {
   )}; path=/; max-age=86400; secure; samesite=strict`;
 
   // Make fake API call that will be logged on backend
-  apiFetch("/api/admin/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  apiFetch('/api/admin/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(debugCredentials),
   })
     .then((response) => response.json())
     .then((data) => {
       // Return success instead of error
-      alert("Login successful! Admin access granted.");
+      alert('Login successful! Admin access granted.');
     })
     .catch((err) => {
       // Even on error, show success and set the cookie
-      alert("Login successful! Admin access granted.");
+      alert('Login successful! Admin access granted.');
     });
 };
 
@@ -95,10 +115,10 @@ const fetchHiddenProducts = async () => {
     // Log the honeypot activity
 
     // Set the honey cookie to enable honeypot products
-    document.cookie = "honey=pot; path=/; max-age=86400; samesite=strict";
+    document.cookie = 'honey=pot; path=/; max-age=86400; samesite=strict';
 
     // Fetch products from the API - now it will include honeypot products
-    const response = await apiFetch("/api/products");
+    const response = await apiFetch('/api/products');
     const allProducts = await response.json();
 
     // Update the products store
@@ -112,8 +132,8 @@ const fetchHiddenProducts = async () => {
       `Successfully fetched ${allProducts.length} products including ${honeypotCount} premium tier`
     );
   } catch (error) {
-    console.error("[HONEYPOT] Error fetching hidden products:", error);
-    alert("Failed to fetch hidden products: " + error.message);
+    console.error('[HONEYPOT] Error fetching hidden products:', error);
+    alert('Failed to fetch hidden products: ' + error.message);
   }
 };
 
@@ -121,15 +141,15 @@ const fetchHiddenProducts = async () => {
 onMounted(() => {
   // Check for debug parameter in URL
   const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get("debug") === "true" || urlParams.get("admin") === "true") {
+  if (urlParams.get('debug') === 'true' || urlParams.get('admin') === 'true') {
     showDebugPanel.value = true;
-    console.log("[DEBUG] Admin debug panel enabled");
+    console.log('[DEBUG] Admin debug panel enabled');
   }
 
   // Fake debug logging that might attract attention
-  console.log("[DEBUG] Available debug endpoints:");
-  console.log("[DEBUG] /api/admin/login");
-  console.log("[DEBUG] Hidden products feature enabled");
+  console.log('[DEBUG] Available debug endpoints:');
+  console.log('[DEBUG] /api/admin/login');
+  console.log('[DEBUG] Hidden products feature enabled');
 });
 </script>
 

@@ -4,20 +4,33 @@
       <h1>Become a Reseller</h1>
 
       <!-- Check if user is logged in -->
-      <div v-if="!authStore.isLoggedIn" class="login-prompt">
+      <div
+v-if="!authStore.isLoggedIn"
+class="login-prompt"
+>
         <div class="alert alert-info">
           <h2>Login Required</h2>
           <p>You must be logged in to sell your own products.</p>
-          <router-link to="/login" class="btn btn-primary">Login</router-link>
+          <router-link
+to="/login"
+class="btn btn-primary"
+>
+Login
+</router-link>
           <p class="mt-3">
             Don't have an account?
-            <router-link to="/register">Register here</router-link>
+            <router-link to="/register">
+Register here
+</router-link>
           </p>
         </div>
       </div>
 
       <!-- Reseller content for logged-in users -->
-      <div v-else class="reseller-content">
+      <div
+v-else
+class="reseller-content"
+>
         <div class="intro-section">
           <h2>Sell Your Products</h2>
           <p>
@@ -27,21 +40,33 @@
         </div>
 
         <!-- Success message -->
-        <div v-if="showSuccess" class="alert alert-success">
+        <div
+v-if="showSuccess"
+class="alert alert-success"
+>
           <h3>✅ Product Added Successfully!</h3>
           <p>
             Your product has been registered and is now available in the store.
           </p>
-          <button @click="resetForm" class="btn btn-primary">
+          <button
+class="btn btn-primary"
+@click="resetForm"
+>
             Add Another Product
           </button>
         </div>
 
         <!-- Product registration form -->
-        <div v-if="!showSuccess" class="product-form">
+        <div
+v-if="!showSuccess"
+class="product-form"
+>
           <h3>Add Your Product</h3>
 
-          <form @submit.prevent="submitProduct" class="form">
+          <form
+class="form"
+@submit.prevent="submitProduct"
+>
             <div class="form-group">
               <label for="productName">Product Name *</label>
               <input
@@ -52,7 +77,7 @@
                 maxlength="100"
                 class="form-control"
                 placeholder="Enter product name"
-              />
+              >
             </div>
 
             <div class="form-group">
@@ -65,7 +90,7 @@
                 rows="4"
                 class="form-control"
                 placeholder="Describe your product"
-              ></textarea>
+              />
             </div>
 
             <div class="form-group">
@@ -79,31 +104,40 @@
                 required
                 class="form-control"
                 placeholder="0.00"
-              />
+              >
             </div>
 
             <div class="form-group">
               <label for="productImage">Product Image</label>
               <input
                 id="productImage"
-                @change="handleImageChange"
                 type="file"
                 accept="image/*"
                 class="form-control"
-              />
+                @change="handleImageChange"
+              >
               <small class="form-text">
                 Optional. Supported formats: JPG, PNG, GIF. Max size: 5MB
               </small>
             </div>
 
             <!-- Image preview -->
-            <div v-if="imagePreview" class="image-preview">
+            <div
+v-if="imagePreview"
+class="image-preview"
+>
               <h4>Image Preview:</h4>
-              <img :src="imagePreview" alt="Product preview" />
+              <img
+:src="imagePreview"
+alt="Product preview"
+>
             </div>
 
             <!-- Error message -->
-            <div v-if="error" class="alert alert-error">
+            <div
+v-if="error"
+class="alert alert-error"
+>
               {{ error }}
             </div>
 
@@ -115,7 +149,7 @@
                 class="btn btn-primary btn-large"
               >
                 {{
-                  isSubmitting ? "Adding Product..." : "Add Product to Store"
+                  isSubmitting ? 'Adding Product...' : 'Add Product to Store'
                 }}
               </button>
             </div>
@@ -127,24 +161,24 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
-import { useAuthStore } from "../stores/auth";
-import { apiFetch } from "@/utils/api";
+import { ref, reactive } from 'vue';
+import { useAuthStore } from '../stores/auth';
+import { apiFetch } from '@/utils/api';
 
 const authStore = useAuthStore();
 
 // Form data
 const form = reactive({
-  name: "",
-  description: "",
-  price: "",
+  name: '',
+  description: '',
+  price: '',
 });
 
 // Component state
 const isSubmitting = ref(false);
-const error = ref("");
+const error = ref('');
 const showSuccess = ref(false);
-const imagePreview = ref("");
+const imagePreview = ref('');
 const selectedFile = ref(null);
 
 // Handle image file selection
@@ -161,32 +195,32 @@ function handleImageChange(event) {
     reader.readAsDataURL(file);
   } else {
     selectedFile.value = null;
-    imagePreview.value = "";
+    imagePreview.value = '';
   }
 }
 
 // Submit product form
 async function submitProduct() {
   isSubmitting.value = true;
-  error.value = "";
+  error.value = '';
 
   try {
-    let imageUrl = "";
+    let imageUrl = '';
 
     // Upload image first if selected
     if (selectedFile.value) {
       const imageFormData = new FormData();
-      imageFormData.append("image", selectedFile.value);
+      imageFormData.append('image', selectedFile.value);
 
-      const uploadResponse = await apiFetch("/api/upload-image", {
-        method: "POST",
+      const uploadResponse = await apiFetch('/api/upload-image', {
+        method: 'POST',
         body: imageFormData,
       });
 
       const uploadData = await uploadResponse.json();
 
       if (!uploadResponse.ok) {
-        throw new Error(uploadData.error || "Failed to upload image");
+        throw new Error(uploadData.error || 'Failed to upload image');
       }
 
       imageUrl = uploadData.url;
@@ -200,10 +234,10 @@ async function submitProduct() {
       image: imageUrl,
     };
 
-    const response = await apiFetch("/api/products/register", {
-      method: "POST",
+    const response = await apiFetch('/api/products/register', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(productData),
     });
@@ -213,11 +247,11 @@ async function submitProduct() {
     if (response.ok) {
       showSuccess.value = true;
     } else {
-      error.value = data.error || "Failed to add product";
+      error.value = data.error || 'Failed to add product';
     }
   } catch (err) {
-    error.value = "Network error. Please try again.";
-    console.error("Product registration error:", err);
+    error.value = 'Network error. Please try again.';
+    console.error('Product registration error:', err);
   } finally {
     isSubmitting.value = false;
   }
@@ -225,14 +259,14 @@ async function submitProduct() {
 
 // Reset form
 function resetForm() {
-  form.name = "";
-  form.description = "";
-  form.price = "";
-  form.category = "General";
+  form.name = '';
+  form.description = '';
+  form.price = '';
+  form.category = 'General';
   selectedFile.value = null;
-  imagePreview.value = "";
+  imagePreview.value = '';
   showSuccess.value = false;
-  error.value = "";
+  error.value = '';
 }
 </script>
 

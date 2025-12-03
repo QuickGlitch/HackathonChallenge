@@ -1,21 +1,21 @@
-import express from "express";
+import express from 'express';
 
 const router = express.Router();
 
 // Admin user UUID (payable to admin for scoring purposes)
-const ADMIN_USER_ID = "00000000-0000-0000-0000-000000000001";
+const ADMIN_USER_ID = '00000000-0000-0000-0000-000000000001';
 
 // Team user UUIDs (Hackors 1-5, corresponding to users 2-6 in the original seed)
 const TEAM_USER_IDS = [
-  "00000000-0000-0000-0000-000000000002", // Hackors1
-  "00000000-0000-0000-0000-000000000003", // Hackors2
-  "00000000-0000-0000-0000-000000000004", // Hackors3
-  "00000000-0000-0000-0000-000000000005", // Hackors4
-  "00000000-0000-0000-0000-000000000006", // Hackors5
+  '00000000-0000-0000-0000-000000000002', // Hackors1
+  '00000000-0000-0000-0000-000000000003', // Hackors2
+  '00000000-0000-0000-0000-000000000004', // Hackors3
+  '00000000-0000-0000-0000-000000000005', // Hackors4
+  '00000000-0000-0000-0000-000000000006', // Hackors5
 ];
 
 // GET /api/scores - Get team scores
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const prisma = req.prisma;
 
@@ -114,8 +114,8 @@ router.get("/", async (req, res) => {
 
     res.json(teamScores);
   } catch (error) {
-    console.error("Error calculating scores:", error);
-    res.status(500).json({ error: "Failed to calculate scores" });
+    console.error('Error calculating scores:', error);
+    res.status(500).json({ error: 'Failed to calculate scores' });
   }
 });
 

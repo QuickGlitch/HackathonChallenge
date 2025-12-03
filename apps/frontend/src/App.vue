@@ -5,14 +5,34 @@
 
     <header class="header">
       <div class="container">
-        <h1 class="logo">🛒 Hackathon Store</h1>
+        <h1 class="logo">
+🛒 Hackathon Store
+</h1>
         <nav class="nav">
-          <router-link to="/" class="nav-link">Home</router-link>
-          <router-link to="/products" class="nav-link">Products</router-link>
-          <router-link to="/forum" class="nav-link">Forum</router-link>
-          <router-link to="/cart" class="nav-link"
-            >Cart ({{ cartStore.itemCount }})</router-link
-          >
+          <router-link
+to="/"
+class="nav-link"
+>
+Home
+</router-link>
+          <router-link
+to="/products"
+class="nav-link"
+>
+Products
+</router-link>
+          <router-link
+to="/forum"
+class="nav-link"
+>
+Forum
+</router-link>
+          <router-link
+to="/cart"
+class="nav-link"
+>
+            Cart ({{ cartStore.itemCount }})
+          </router-link>
           <router-link
             v-if="authStore.isLoggedIn"
             to="/reseller"
@@ -51,10 +71,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import DebugPanel from "./components/DebugPanel.vue";
-import { useCartStore } from "./stores/cart";
-import { useAuthStore } from "./stores/auth";
+import { ref, onMounted } from 'vue';
+import DebugPanel from './components/DebugPanel.vue';
+import { useCartStore } from './stores/cart';
+import { useAuthStore } from './stores/auth';
 
 const cartStore = useCartStore();
 const authStore = useAuthStore();
@@ -64,7 +84,7 @@ const showDebugPanel = ref(false);
 
 onMounted(() => {
   const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get("debug") === "true" || urlParams.get("admin") === "true") {
+  if (urlParams.get('debug') === 'true' || urlParams.get('admin') === 'true') {
     showDebugPanel.value = true;
   }
 });

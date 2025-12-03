@@ -2,11 +2,19 @@
   <div class="container">
     <div class="login-form">
       <h1>Welcome Back</h1>
-      <p class="subtitle">Sign in to your account</p>
+      <p class="subtitle">
+Sign in to your account
+</p>
 
-      <form @submit.prevent="handleLogin" class="form">
+      <form
+class="form"
+@submit.prevent="handleLogin"
+>
         <div class="form-group">
-          <label for="username" class="label">Username</label>
+          <label
+for="username"
+class="label"
+>Username</label>
           <input
             id="username"
             v-model="form.username"
@@ -15,14 +23,20 @@
             :class="{ 'input-error': errors.username }"
             placeholder="Enter your username"
             required
-          />
-          <span v-if="errors.username" class="error-text">{{
+          >
+          <span
+v-if="errors.username"
+class="error-text"
+>{{
             errors.username
           }}</span>
         </div>
 
         <div class="form-group">
-          <label for="password" class="label">Password</label>
+          <label
+for="password"
+class="label"
+>Password</label>
           <input
             id="password"
             v-model="form.password"
@@ -31,8 +45,11 @@
             :class="{ 'input-error': errors.password }"
             placeholder="Enter your password"
             required
-          />
-          <span v-if="errors.password" class="error-text">{{
+          >
+          <span
+v-if="errors.password"
+class="error-text"
+>{{
             errors.password
           }}</span>
         </div>
@@ -47,11 +64,17 @@
           <span v-else>Sign In</span>
         </button>
 
-        <div v-if="generalError" class="error-message">
+        <div
+v-if="generalError"
+class="error-message"
+>
           {{ generalError }}
         </div>
 
-        <div v-if="successMessage" class="success-message">
+        <div
+v-if="successMessage"
+class="success-message"
+>
           {{ successMessage }}
         </div>
       </form>
@@ -59,7 +82,12 @@
       <div class="form-footer">
         <p>
           Don't have an account?
-          <router-link to="/register" class="link">Create one here</router-link>
+          <router-link
+to="/register"
+class="link"
+>
+            Create one here
+          </router-link>
         </p>
       </div>
     </div>
@@ -67,34 +95,34 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
-import { useRouter } from "vue-router";
-import { useAuthStore } from "../stores/auth";
+import { ref, reactive } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
 
 const router = useRouter();
 const authStore = useAuthStore();
 
 // Form data
 const form = reactive({
-  username: "",
-  password: "",
+  username: '',
+  password: '',
 });
 
 // Form state
 const isLoading = ref(false);
-const generalError = ref("");
-const successMessage = ref("");
+const generalError = ref('');
+const successMessage = ref('');
 const errors = reactive({
-  username: "",
-  password: "",
+  username: '',
+  password: '',
 });
 
 // Clear errors when user types
 const clearErrors = () => {
   Object.keys(errors).forEach((key) => {
-    errors[key] = "";
+    errors[key] = '';
   });
-  generalError.value = "";
+  generalError.value = '';
 };
 
 // Validate form
@@ -104,13 +132,13 @@ const validateForm = () => {
 
   // Username validation
   if (!form.username.trim()) {
-    errors.username = "Username is required";
+    errors.username = 'Username is required';
     isValid = false;
   }
 
   // Password validation
   if (!form.password) {
-    errors.password = "Password is required";
+    errors.password = 'Password is required';
     isValid = false;
   }
 
@@ -122,8 +150,8 @@ const handleLogin = async () => {
   if (!validateForm()) return;
 
   isLoading.value = true;
-  generalError.value = "";
-  successMessage.value = "";
+  generalError.value = '';
+  successMessage.value = '';
 
   const result = await authStore.login({
     username: form.username,
@@ -131,15 +159,15 @@ const handleLogin = async () => {
   });
 
   if (result.success) {
-    successMessage.value = "Login successful! Redirecting...";
+    successMessage.value = 'Login successful! Redirecting...';
 
     // Reset form
-    form.username = "";
-    form.password = "";
+    form.username = '';
+    form.password = '';
 
     // Redirect to home page after success
     setTimeout(() => {
-      router.push("/");
+      router.push('/');
     }, 1500);
   } else {
     generalError.value = result.error;

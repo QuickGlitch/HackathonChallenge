@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "node server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "keywords": [
     "csrf",
@@ -16,6 +18,9 @@
     "express": "^4.18.2"
   },
   "devDependencies": {
+    "@store-hackathon/eslint-config": "*",
+    "@store-hackathon/prettier-config": "*",
     "serve": "^14.2.0"
-  }
+  },
+  "prettier": "@store-hackathon/prettier-config"
 }

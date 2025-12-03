@@ -12,11 +12,11 @@ export function validatePrice(price) {
   const numPrice = parseFloat(price);
 
   if (isNaN(numPrice)) {
-    return { valid: false, error: "Price must be a valid number" };
+    return { valid: false, error: 'Price must be a valid number' };
   }
 
   if (numPrice <= 0) {
-    return { valid: false, error: "Price must be a positive number" };
+    return { valid: false, error: 'Price must be a positive number' };
   }
 
   if (numPrice > MAX_PRICE) {

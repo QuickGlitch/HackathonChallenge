@@ -22,39 +22,39 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue';
 // import axios from "axios";
-import { useRouter } from "vue-router";
+import { useRouter } from 'vue-router';
 
-const username = ref("");
-const password = ref("");
-const error = ref("");
+const username = ref('');
+const password = ref('');
+const error = ref('');
 const loading = ref(false);
 const router = useRouter();
 
 async function handleLogin() {
-  error.value = "";
+  error.value = '';
   loading.value = true;
   try {
-    const response = await fetch("/api/users/login", {
-      method: "POST",
+    const response = await fetch('/api/users/login', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         username: username.value,
         password: password.value,
       }),
-      credentials: "include",
+      credentials: 'include',
     });
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.error || "Login failed");
+      throw new Error(data.error || 'Login failed');
     }
-    localStorage.setItem("user", JSON.stringify(data.user));
-    router.push("/");
+    localStorage.setItem('user', JSON.stringify(data.user));
+    router.push('/');
   } catch (e) {
-    error.value = e.message || "Login failed";
+    error.value = e.message || 'Login failed';
   } finally {
     loading.value = false;
   }

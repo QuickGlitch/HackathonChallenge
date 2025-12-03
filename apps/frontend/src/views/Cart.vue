@@ -1,38 +1,55 @@
 <template>
   <div class="container">
     <div class="cart-view">
-      <h1 class="header">Shopping Cart</h1>
+      <h1 class="header">
+Shopping Cart
+</h1>
       <div>
-        <div v-if="cartStore.items.length === 0" class="empty-cart">
+        <div
+v-if="cartStore.items.length === 0"
+class="empty-cart"
+>
           <p>Your cart is empty</p>
-          <router-link to="/products" class="btn"
-            >Continue Shopping</router-link
-          >
+          <router-link
+to="/products"
+class="btn"
+>
+            Continue Shopping
+          </router-link>
         </div>
 
-        <div class="cart-goodies" v-else>
+        <div
+v-else
+class="cart-goodies"
+>
           <div class="cart-items">
             <div
               v-for="item in cartStore.items"
               :key="item.id"
               class="cart-item card"
             >
-              <img :src="item.image" :alt="item.name" class="item-image" />
+              <img
+:src="item.image"
+:alt="item.name"
+class="item-image"
+>
               <div class="item-details">
                 <h3>{{ item.name }}</h3>
-                <p class="item-price">${{ item.price.toFixed(2) }} each</p>
+                <p class="item-price">
+${{ item.price.toFixed(2) }} each
+</p>
               </div>
               <div class="item-quantity">
                 <button
-                  @click="updateQuantity(item.id, item.quantity - 1)"
                   class="btn btn-secondary"
+                  @click="updateQuantity(item.id, item.quantity - 1)"
                 >
                   -
                 </button>
                 <span class="quantity">{{ item.quantity }}</span>
                 <button
-                  @click="updateQuantity(item.id, item.quantity + 1)"
                   class="btn btn-secondary"
+                  @click="updateQuantity(item.id, item.quantity + 1)"
                 >
                   +
                 </button>
@@ -40,7 +57,12 @@
               <div class="item-total">
                 ${{ (item.price * item.quantity).toFixed(2) }}
               </div>
-              <button @click="removeItem(item.id)" class="btn-remove">×</button>
+              <button
+class="btn-remove"
+@click="removeItem(item.id)"
+>
+×
+</button>
             </div>
           </div>
 
@@ -55,12 +77,18 @@
               <span>${{ cartStore.totalPrice.toFixed(2) }}</span>
             </div>
             <div class="cart-actions">
-              <button @click="clearCart" class="btn btn-secondary">
+              <button
+class="btn btn-secondary"
+@click="clearCart"
+>
                 Clear Cart
               </button>
-              <router-link to="/checkout" class="btn"
-                >Proceed to Checkout</router-link
-              >
+              <router-link
+to="/checkout"
+class="btn"
+>
+                Proceed to Checkout
+              </router-link>
             </div>
           </div>
         </div>
@@ -70,7 +98,7 @@
 </template>
 
 <script setup>
-import { useCartStore } from "../stores/cart";
+import { useCartStore } from '../stores/cart';
 
 const cartStore = useCartStore();
 

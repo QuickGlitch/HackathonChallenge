@@ -1,15 +1,20 @@
 <template>
   <div class="score-chart">
-    <h2 class="chart-title">Team Scores</h2>
+    <h2 class="chart-title">
+Team Scores
+</h2>
     <div class="chart-container">
-      <Bar :data="chartData" :options="chartOptions" />
+      <Bar
+:data="chartData"
+:options="chartOptions"
+/>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { Bar } from "vue-chartjs";
+import { computed } from 'vue';
+import { Bar } from 'vue-chartjs';
 import {
   Chart as ChartJS,
   Title,
@@ -18,7 +23,7 @@ import {
   BarElement,
   CategoryScale,
   LinearScale,
-} from "chart.js";
+} from 'chart.js';
 
 ChartJS.register(
   Title,
@@ -38,12 +43,12 @@ const props = defineProps({
 
 // Color palette for bars
 const CHART_COLORS = [
-  "rgba(255, 99, 132, 0.8)",
-  "rgba(54, 162, 235, 0.8)",
-  "rgba(255, 206, 86, 0.8)",
-  "rgba(75, 192, 192, 0.8)",
-  "rgba(153, 102, 255, 0.8)",
-  "rgba(255, 159, 64, 0.8)",
+  'rgba(255, 99, 132, 0.8)',
+  'rgba(54, 162, 235, 0.8)',
+  'rgba(255, 206, 86, 0.8)',
+  'rgba(75, 192, 192, 0.8)',
+  'rgba(153, 102, 255, 0.8)',
+  'rgba(255, 159, 64, 0.8)',
 ];
 
 // Reactive chart data
@@ -53,7 +58,7 @@ const chartData = computed(() => {
       labels: [],
       datasets: [
         {
-          label: "Score",
+          label: 'Score',
           data: [],
           backgroundColor: [],
           borderColor: [],
@@ -66,13 +71,13 @@ const chartData = computed(() => {
   const labels = props.scores.map((team) => team.teamName);
   const data = props.scores.map((team) => team.totalScore);
   const backgroundColor = CHART_COLORS.slice(0, data.length);
-  const borderColor = backgroundColor.map((color) => color.replace("0.8", "1"));
+  const borderColor = backgroundColor.map((color) => color.replace('0.8', '1'));
 
   return {
     labels,
     datasets: [
       {
-        label: "Score",
+        label: 'Score',
         data,
         backgroundColor,
         borderColor,
@@ -106,7 +111,7 @@ const chartOptions = {
     y: {
       beginAtZero: true,
       grid: {
-        color: "rgba(0, 0, 0, 0.1)",
+        color: 'rgba(0, 0, 0, 0.1)',
       },
       ticks: {
         callback: (value) => Math.round(value),

@@ -10,8 +10,11 @@
             placeholder="Search products..."
             class="search-input"
             @input="handleSearch"
-          />
-          <button @click="clearSearch" class="btn btn-secondary">
+          >
+          <button
+class="btn btn-secondary"
+@click="clearSearch"
+>
             Clear Search
           </button>
         </div>
@@ -21,13 +24,24 @@
     <div class="container">
       <h1>Products</h1>
 
-      <div v-if="productStore.loading" class="loading">Loading products...</div>
+      <div
+v-if="productStore.loading"
+class="loading"
+>
+Loading products...
+</div>
 
-      <div v-else-if="productStore.error" class="alert alert-error">
+      <div
+v-else-if="productStore.error"
+class="alert alert-error"
+>
         {{ productStore.error }}
       </div>
 
-      <div v-else class="grid grid-3">
+      <div
+v-else
+class="grid grid-3"
+>
         <div
           v-for="product in productStore.products"
           :key="product.id"
@@ -41,11 +55,19 @@
           >
             Reseller
           </div>
-          <img :src="product.image" :alt="product.name" class="product-image" />
+          <img
+:src="product.image"
+:alt="product.name"
+class="product-image"
+>
           <div class="product-info">
             <h3>{{ product.name }}</h3>
-            <p class="product-description">{{ product.description }}</p>
-            <div class="product-price">${{ product.price.toFixed(2) }}</div>
+            <p class="product-description">
+              {{ product.description }}
+            </p>
+            <div class="product-price">
+${{ product.price.toFixed(2) }}
+</div>
             <div class="product-actions">
               <router-link
                 :to="`/products/${product.id}`"
@@ -53,7 +75,10 @@
               >
                 View Details
               </router-link>
-              <button @click="addToCart(product)" class="btn">
+              <button
+class="btn"
+@click="addToCart(product)"
+>
                 Add to Cart
               </button>
             </div>
@@ -65,13 +90,13 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
-import { useProductStore } from "../stores/products";
-import { useCartStore } from "../stores/cart";
+import { onMounted, ref } from 'vue';
+import { useProductStore } from '../stores/products';
+import { useCartStore } from '../stores/cart';
 
 const productStore = useProductStore();
 const cartStore = useCartStore();
-const searchQuery = ref("");
+const searchQuery = ref('');
 let debounceTimer = null;
 
 function addToCart(product) {
@@ -103,7 +128,7 @@ function clearSearch() {
   if (debounceTimer) {
     clearTimeout(debounceTimer);
   }
-  searchQuery.value = "";
+  searchQuery.value = '';
   productStore.fetchProducts();
 }
 
@@ -135,7 +160,9 @@ onMounted(() => {
   font-size: 1rem;
   border: 2px solid #e1e5e9;
   border-radius: 8px;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
   background-color: white;
 }
 

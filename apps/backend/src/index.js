@@ -1,45 +1,45 @@
-import express from "express";
-import cors from "cors";
-import pino from "pino";
-import pinoHttp from "pino-http";
-import rateLimit from "express-rate-limit";
-import cookieParser from "cookie-parser";
-import fs from "fs";
-import path from "path";
-import { PrismaClient } from "@prisma/client";
+import express from 'express';
+import cors from 'cors';
+import pino from 'pino';
+import pinoHttp from 'pino-http';
+import rateLimit from 'express-rate-limit';
+import cookieParser from 'cookie-parser';
+import fs from 'fs';
+import path from 'path';
+import { PrismaClient } from '@prisma/client';
 
 // Import routes
-import productRoutes from "./routes/products.js";
-import orderRoutes from "./routes/orders.js";
-import userRoutes from "./routes/users.js";
-import adminRoutes from "./routes/admin.js";
-import scoresRoutes from "./routes/scores.js";
-import forumRoutes from "./routes/forum.js";
-import hackathonRoutes from "./routes/hackathon.js";
+import productRoutes from './routes/products.js';
+import orderRoutes from './routes/orders.js';
+import userRoutes from './routes/users.js';
+import adminRoutes from './routes/admin.js';
+import scoresRoutes from './routes/scores.js';
+import forumRoutes from './routes/forum.js';
+import hackathonRoutes from './routes/hackathon.js';
 
 // Create logs directory if it doesn't exist
-const logsDir = path.join(process.cwd(), "logs");
+const logsDir = path.join(process.cwd(), 'logs');
 if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir, { recursive: true });
 }
 
 // Create pino logger
-const isDevelopment = process.env.LOG_LEVEL === "development";
+const isDevelopment = process.env.LOG_LEVEL === 'development';
 
 const logger = isDevelopment
   ? pino({
-      level: "trace",
+      level: 'trace',
       transport: {
-        target: "pino-pretty",
+        target: 'pino-pretty',
         options: {
           colorize: true,
-          translateTime: "SYS:standard",
-          ignore: "pid,hostname",
+          translateTime: 'SYS:standard',
+          ignore: 'pid,hostname',
         },
       },
     })
   : pino({
-      level: "info",
+      level: 'info',
     });
 
 // Create HTTP logger middleware
@@ -50,7 +50,7 @@ const port = process.env.PORT || 3001;
 
 // Trust proxy headers set before rate limiter
 // Set to 2 because there are 2 proxies (CloudFront + Traefik) between user and server
-app.set("trust proxy", 2);
+app.set('trust proxy', 2);
 
 // Initialize Prisma
 const prisma = new PrismaClient();
@@ -69,12 +69,12 @@ const botActivityClients = new Set();
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   max: 50,
-  message: "Too many requests from this IP, please try again later.",
+  message: 'Too many requests from this IP, please try again later.',
   skip: (req) => {
     // Skip rate limiting for scoreboard endpoints
     return (
-      req.path.startsWith("/api/scores") ||
-      req.path.startsWith("/api/bot-activity")
+      req.path.startsWith('/api/scores') ||
+      req.path.startsWith('/api/bot-activity')
     );
   },
 });
@@ -89,7 +89,7 @@ app.use(
 );
 app.use(httpLogger); // Pino HTTP logger
 app.use(cookieParser());
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(limiter);
 
@@ -100,22 +100,22 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use("/api/products", productRoutes);
-app.use("/api/orders", orderRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/admin", adminRoutes); // Honeypot admin routes
-app.use("/api/scores", scoresRoutes);
-app.use("/api/forum", forumRoutes);
-app.use("/api/hackathon", hackathonRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/admin', adminRoutes); // Honeypot admin routes
+app.use('/api/scores', scoresRoutes);
+app.use('/api/forum', forumRoutes);
+app.use('/api/hackathon', hackathonRoutes);
 
 // SSE endpoint for bot activity stream
-app.get("/api/bot-activity/stream", (req, res) => {
+app.get('/api/bot-activity/stream', (req, res) => {
   // Set SSE headers
   res.writeHead(200, {
-    "Content-Type": "text/event-stream",
-    "Cache-Control": "no-cache",
-    Connection: "keep-alive",
-    "Access-Control-Allow-Origin": "*",
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    Connection: 'keep-alive',
+    'Access-Control-Allow-Origin': '*',
   });
 
   // Send current state immediately
@@ -126,11 +126,11 @@ app.get("/api/bot-activity/stream", (req, res) => {
 
   // Send heartbeat every 30 seconds to keep connection alive
   const heartbeatInterval = setInterval(() => {
-    res.write(": heartbeat\n\n");
+    res.write(': heartbeat\n\n');
   }, 30000);
 
   // Remove client on disconnect
-  req.on("close", () => {
+  req.on('close', () => {
     clearInterval(heartbeatInterval);
     botActivityClients.delete(res);
     logger.info(
@@ -144,7 +144,7 @@ app.get("/api/bot-activity/stream", (req, res) => {
 });
 
 // Bot activity update endpoint
-app.post("/api/bot-activity", express.json(), (req, res) => {
+app.post('/api/bot-activity', express.json(), (req, res) => {
   const { isActive, startedAt } = req.body;
 
   // Update bot activity state
@@ -162,7 +162,7 @@ app.post("/api/bot-activity", express.json(), (req, res) => {
     try {
       client.write(message);
     } catch (error) {
-      logger.error("Error writing to SSE client:", error);
+      logger.error('Error writing to SSE client:', error);
       botActivityClients.delete(client);
     }
   });
@@ -171,18 +171,18 @@ app.post("/api/bot-activity", express.json(), (req, res) => {
 });
 
 // Health check
-app.get("/api/health", (req, res) => {
-  res.json({ status: "OK", message: "Server is running" });
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK', message: 'Server is running' });
 });
 
 // Test endpoint to check IP address
-app.get("/api/ip", (req, res) => {
+app.get('/api/ip', (req, res) => {
   res.json({
     ip: req.ip,
     ips: req.ips,
     headers: {
-      "x-forwarded-for": req.headers["x-forwarded-for"],
-      "x-real-ip": req.headers["x-real-ip"],
+      'x-forwarded-for': req.headers['x-forwarded-for'],
+      'x-real-ip': req.headers['x-real-ip'],
       forwarded: req.headers.forwarded,
     },
     remoteAddress: req.socket.remoteAddress,
@@ -190,19 +190,19 @@ app.get("/api/ip", (req, res) => {
 });
 
 // 404 handler
-app.use("*", (req, res) => {
-  res.status(404).json({ error: "Route not found" });
+app.use('*', (req, res) => {
+  res.status(404).json({ error: 'Route not found' });
 });
 
 // Error handler
 app.use((err, req, res, next) => {
   logger.error(err.stack);
-  res.status(500).json({ error: "Something went wrong!" });
+  res.status(500).json({ error: 'Something went wrong!' });
 });
 
 // Graceful shutdown
-process.on("SIGINT", async () => {
-  logger.info("Shutting down gracefully...");
+process.on('SIGINT', async () => {
+  logger.info('Shutting down gracefully...');
   await prisma.$disconnect();
   process.exit(0);
 });

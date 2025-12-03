@@ -1,5 +1,5 @@
-import express from "express";
-import { authenticateToken } from "../middleware/auth.js";
+import express from 'express';
+import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -12,13 +12,13 @@ const POINTS = {
 
 // Helper function to normalize strings for comparison (case-insensitive, trim whitespace)
 function normalizeString(str) {
-  return (str || "").trim().toLowerCase();
+  return (str || '').trim().toLowerCase();
 }
 
 // Helper function to fetch CTF text from file
 function getCTFText() {
   // hardcoded since CTF isn't meant to be accesible from here
-  return "Maybe the the real CTF is the friends we made along the way.";
+  return 'Maybe the the real CTF is the friends we made along the way.';
 }
 
 // Helper function to calculate scores
@@ -33,7 +33,7 @@ async function calculateScores(answers, prisma) {
     prisma.user.findMany({
       where: {
         username: {
-          in: ["Hackors1", "Hackors2", "Hackors3", "Hackors4", "Hackors5"],
+          in: ['Hackors1', 'Hackors2', 'Hackors3', 'Hackors4', 'Hackors5'],
         },
       },
       select: {
@@ -54,7 +54,7 @@ async function calculateScores(answers, prisma) {
     getCTFText(),
   ]);
 
-  console.log("Unreleased product:", unreleasedProduct);
+  console.log('Unreleased product:', unreleasedProduct);
 
   // Create a map of username -> PII for easy lookup
   const piiMap = {};
@@ -79,11 +79,11 @@ async function calculateScores(answers, prisma) {
 
   // Check PII for each team
   const piiFields = [
-    "hackors1PII",
-    "hackors2PII",
-    "hackors3PII",
-    "hackors4PII",
-    "hackors5PII",
+    'hackors1PII',
+    'hackors2PII',
+    'hackors3PII',
+    'hackors4PII',
+    'hackors5PII',
   ];
 
   for (const field of piiFields) {
@@ -105,11 +105,11 @@ async function calculateScores(answers, prisma) {
 }
 
 // POST /api/hackathon/answers - Submit hackathon answers
-router.post("/answers", authenticateToken, async (req, res) => {
+router.post('/answers', authenticateToken, async (req, res) => {
   try {
     const { answers } = req.body;
-    if (!answers || typeof answers !== "object") {
-      return res.status(400).json({ error: "answers (object) is required" });
+    if (!answers || typeof answers !== 'object') {
+      return res.status(400).json({ error: 'answers (object) is required' });
     }
 
     // Get the current user's username to prevent self-scoring
@@ -119,7 +119,7 @@ router.post("/answers", authenticateToken, async (req, res) => {
     });
 
     if (!currentUser) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: 'User not found' });
     }
 
     // Remove the user's own PII field from answers to prevent self-scoring
@@ -129,7 +129,7 @@ router.post("/answers", authenticateToken, async (req, res) => {
         userId: req.user.userId,
         username: currentUser.username,
         attemptedField: userPiiField,
-        msg: "User attempted to submit their own PII for points",
+        msg: 'User attempted to submit their own PII for points',
       });
 
       // Remove their own PII field
@@ -164,7 +164,7 @@ router.post("/answers", authenticateToken, async (req, res) => {
     });
 
     res.status(201).json({
-      message: "Answers submitted successfully",
+      message: 'Answers submitted successfully',
       scores: {
         ctfFlagPoints: scores.ctfFlagPoints,
         piiPoints: scores.piiPoints,
@@ -173,8 +173,8 @@ router.post("/answers", authenticateToken, async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error submitting answers:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Error submitting answers:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

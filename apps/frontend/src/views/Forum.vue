@@ -4,9 +4,15 @@
       <h1>Community Forum</h1>
 
       <!-- New Message Form (only shown when logged in) -->
-      <div v-if="authStore.isLoggedIn" class="new-message-form">
+      <div
+v-if="authStore.isLoggedIn"
+class="new-message-form"
+>
         <h3>Post a New Message</h3>
-        <form @submit.prevent="createMessage" class="message-form">
+        <form
+class="message-form"
+@submit.prevent="createMessage"
+>
           <div class="form-group">
             <label for="title">Title:</label>
             <input
@@ -16,7 +22,7 @@
               placeholder="Enter message title..."
               required
               class="form-input"
-            />
+            >
           </div>
 
           <div class="form-group">
@@ -28,7 +34,7 @@
               required
               rows="4"
               class="form-textarea"
-            ></textarea>
+            />
           </div>
 
           <button
@@ -36,17 +42,25 @@
             :disabled="isSubmitting"
             class="btn btn-primary"
           >
-            {{ isSubmitting ? "Posting..." : "Post Message" }}
+            {{ isSubmitting ? 'Posting...' : 'Post Message' }}
           </button>
         </form>
       </div>
 
       <!-- Login prompt for anonymous users -->
-      <div v-else class="login-prompt">
+      <div
+v-else
+class="login-prompt"
+>
         <p>
           You must be
-          <router-link to="/login" class="link">logged in</router-link> to post
-          messages.
+          <router-link
+to="/login"
+class="link"
+>
+logged in
+</router-link> to
+          post messages.
         </p>
       </div>
 
@@ -54,17 +68,31 @@
       <div class="messages-section">
         <h3>Recent Messages</h3>
 
-        <div v-if="isLoading" class="loading">Loading messages...</div>
+        <div
+v-if="isLoading"
+class="loading"
+>
+Loading messages...
+</div>
 
-        <div v-else-if="error" class="alert alert-error">
+        <div
+v-else-if="error"
+class="alert alert-error"
+>
           {{ error }}
         </div>
 
-        <div v-else-if="messages.length === 0" class="no-messages">
+        <div
+v-else-if="messages.length === 0"
+class="no-messages"
+>
           No messages yet. Be the first to post!
         </div>
 
-        <div v-else class="messages-list">
+        <div
+v-else
+class="messages-list"
+>
           <div
             v-for="message in messages"
             :key="message.id"
@@ -73,7 +101,10 @@
             <div class="message-header">
               <!-- VULNERABILITY: Raw HTML rendering without sanitization -->
               <!-- This allows XSS attacks through malicious titles -->
-              <h4 class="message-title" v-html="message.title"></h4>
+              <h4
+class="message-title"
+v-html="message.title"
+/>
               <div class="message-meta">
                 <span class="author">by {{ message.author.username }}</span>
                 <span class="date">{{ formatDate(message.createdAt) }}</span>
@@ -83,7 +114,7 @@
             <div class="message-body">
               <!-- VULNERABILITY: Raw HTML rendering without sanitization -->
               <!-- This allows XSS attacks through malicious message bodies -->
-              <p v-html="message.body"></p>
+              <p v-html="message.body" />
             </div>
 
             <!-- Edit/Delete buttons for message author -->
@@ -96,14 +127,14 @@
               class="message-actions"
             >
               <button
-                @click="editMessage(message)"
                 class="btn btn-secondary btn-sm"
+                @click="editMessage(message)"
               >
                 Edit
               </button>
               <button
-                @click="deleteMessage(message.id)"
                 class="btn btn-danger btn-sm"
+                @click="deleteMessage(message.id)"
               >
                 Delete
               </button>
@@ -113,10 +144,20 @@
       </div>
 
       <!-- Edit Message Modal -->
-      <div v-if="editingMessage" class="modal-overlay" @click="cancelEdit">
-        <div class="modal" @click.stop>
+      <div
+v-if="editingMessage"
+class="modal-overlay"
+@click="cancelEdit"
+>
+        <div
+class="modal"
+@click.stop
+>
           <h3>Edit Message</h3>
-          <form @submit.prevent="updateMessage" class="message-form">
+          <form
+class="message-form"
+@submit.prevent="updateMessage"
+>
             <div class="form-group">
               <label for="edit-title">Title:</label>
               <input
@@ -125,7 +166,7 @@
                 type="text"
                 required
                 class="form-input"
-              />
+              >
             </div>
 
             <div class="form-group">
@@ -136,7 +177,7 @@
                 required
                 rows="4"
                 class="form-textarea"
-              ></textarea>
+              />
             </div>
 
             <div class="modal-actions">
@@ -145,12 +186,12 @@
                 :disabled="isSubmitting"
                 class="btn btn-primary"
               >
-                {{ isSubmitting ? "Updating..." : "Update Message" }}
+                {{ isSubmitting ? 'Updating...' : 'Update Message' }}
               </button>
               <button
                 type="button"
-                @click="cancelEdit"
                 class="btn btn-secondary"
+                @click="cancelEdit"
               >
                 Cancel
               </button>
@@ -163,12 +204,12 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
-import { useAuthStore } from "../stores/auth.js";
-import { apiFetch } from "@/utils/api";
+import { ref, onMounted } from 'vue';
+import { useAuthStore } from '../stores/auth.js';
+import { apiFetch } from '@/utils/api';
 
 export default {
-  name: "Forum",
+  name: 'Forum',
   setup() {
     const authStore = useAuthStore();
     const messages = ref([]);
@@ -178,8 +219,8 @@ export default {
     const editingMessage = ref(null);
 
     const newMessage = ref({
-      title: "",
-      body: "",
+      title: '',
+      body: '',
     });
 
     // Fetch all forum messages
@@ -188,18 +229,18 @@ export default {
       error.value = null;
 
       try {
-        const response = await apiFetch("/api/forum", {
-          method: "GET",
+        const response = await apiFetch('/api/forum', {
+          method: 'GET',
         });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch messages");
+          throw new Error('Failed to fetch messages');
         }
 
         messages.value = await response.json();
       } catch (err) {
         error.value = err.message;
-        console.error("Error fetching messages:", err);
+        console.error('Error fetching messages:', err);
       } finally {
         isLoading.value = false;
       }
@@ -214,10 +255,10 @@ export default {
       isSubmitting.value = true;
 
       try {
-        const response = await apiFetch("/api/forum", {
-          method: "POST",
+        const response = await apiFetch('/api/forum', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             title: newMessage.value.title,
@@ -228,15 +269,15 @@ export default {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to create message");
+          throw new Error(errorData.error || 'Failed to create message');
         }
 
         // Reset form and refresh messages
-        newMessage.value = { title: "", body: "" };
+        newMessage.value = { title: '', body: '' };
         await fetchMessages();
       } catch (err) {
         error.value = err.message;
-        console.error("Error creating message:", err);
+        console.error('Error creating message:', err);
       } finally {
         isSubmitting.value = false;
       }
@@ -266,9 +307,9 @@ export default {
         const response = await apiFetch(
           `/api/forum/${editingMessage.value.id}`,
           {
-            method: "PUT",
+            method: 'PUT',
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               title: editingMessage.value.title,
@@ -279,14 +320,14 @@ export default {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to update message");
+          throw new Error(errorData.error || 'Failed to update message');
         }
 
         editingMessage.value = null;
         await fetchMessages();
       } catch (err) {
         error.value = err.message;
-        console.error("Error updating message:", err);
+        console.error('Error updating message:', err);
       } finally {
         isSubmitting.value = false;
       }
@@ -299,31 +340,31 @@ export default {
 
     // Delete a message
     async function deleteMessage(messageId) {
-      if (!confirm("Are you sure you want to delete this message?")) {
+      if (!confirm('Are you sure you want to delete this message?')) {
         return;
       }
 
       try {
         const response = await apiFetch(`/api/forum/${messageId}`, {
-          method: "DELETE",
+          method: 'DELETE',
         });
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to delete message");
+          throw new Error(errorData.error || 'Failed to delete message');
         }
 
         await fetchMessages();
       } catch (err) {
         error.value = err.message;
-        console.error("Error deleting message:", err);
+        console.error('Error deleting message:', err);
       }
     }
 
     // Format date for display
     function formatDate(dateString) {
       const date = new Date(dateString);
-      return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
     }
 
     // Initialize

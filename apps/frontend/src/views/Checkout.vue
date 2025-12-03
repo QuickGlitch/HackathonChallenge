@@ -1,21 +1,42 @@
 <template>
   <div class="container">
     <div class="checkout-view">
-      <h1 class="header">Checkout</h1>
+      <h1 class="header">
+Checkout
+</h1>
 
-      <div v-if="!authStore.isLoggedIn" class="empty-cart">
+      <div
+v-if="!authStore.isLoggedIn"
+class="empty-cart"
+>
         <h3>Login Required</h3>
         <p>You must be logged in to place an order.</p>
-        <router-link to="/login" class="btn">Login</router-link>
+        <router-link
+to="/login"
+class="btn"
+>
+Login
+</router-link>
       </div>
 
-      <div v-else-if="orderComplete" class="empty-cart">
+      <div
+v-else-if="orderComplete"
+class="empty-cart"
+>
         <h3>Order Placed Successfully!</h3>
         <p>Thank you for your purchase. Your order ID is: {{ orderId }}</p>
-        <router-link to="/products" class="btn">Continue Shopping</router-link>
+        <router-link
+to="/products"
+class="btn"
+>
+          Continue Shopping
+        </router-link>
       </div>
 
-      <div class="checkout-goodies" v-else>
+      <div
+v-else
+class="checkout-goodies"
+>
         <div class="checkout-form card">
           <h3>Billing Information</h3>
           <form @submit.prevent="submitOrder">
@@ -26,10 +47,12 @@
                 type="text"
                 class="form-input"
                 required
-              />
+              >
             </div>
 
-            <h3 class="payment-section">Payment Information</h3>
+            <h3 class="payment-section">
+Payment Information
+</h3>
 
             <div class="form-group">
               <label class="form-label">Card Number</label>
@@ -38,23 +61,37 @@
                 class="form-input"
                 value="4111111111111111"
                 disabled
-              />
+              >
             </div>
 
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Expiry Date</label>
-                <input type="text" class="form-input" value="12/55" disabled />
+                <input
+type="text"
+class="form-input"
+value="12/55"
+disabled
+>
               </div>
 
               <div class="form-group">
                 <label class="form-label">CVV</label>
-                <input type="text" class="form-input" value="123" disabled />
+                <input
+type="text"
+class="form-input"
+value="123"
+disabled
+>
               </div>
             </div>
 
-            <button type="submit" class="btn" :disabled="processing">
-              {{ processing ? "Processing..." : "Place Order" }}
+            <button
+type="submit"
+class="btn"
+:disabled="processing"
+>
+              {{ processing ? 'Processing...' : 'Place Order' }}
             </button>
           </form>
         </div>
@@ -67,9 +104,7 @@
             class="summary-row"
           >
             <span>{{ item.name }} × {{ item.quantity }}</span>
-            <span class="item-total"
-              >${{ (item.price * item.quantity).toFixed(2) }}</span
-            >
+            <span class="item-total">${{ (item.price * item.quantity).toFixed(2) }}</span>
           </div>
           <div class="summary-row total">
             <span>Total Price:</span>
@@ -82,10 +117,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useCartStore } from "../stores/cart";
-import { useAuthStore } from "../stores/auth";
-import { apiFetch } from "@/utils/api";
+import { ref, onMounted } from 'vue';
+import { useCartStore } from '../stores/cart';
+import { useAuthStore } from '../stores/auth';
+import { apiFetch } from '@/utils/api';
 
 const cartStore = useCartStore();
 const authStore = useAuthStore();
@@ -96,14 +131,14 @@ onMounted(() => {
 });
 
 const form = ref({
-  name: "",
-  email: "",
-  address: "",
-  city: "",
-  zipCode: "",
-  cardNumber: "",
-  expiryDate: "",
-  cvv: "",
+  name: '',
+  email: '',
+  address: '',
+  city: '',
+  zipCode: '',
+  cardNumber: '',
+  expiryDate: '',
+  cvv: '',
 });
 
 const processing = ref(false);
@@ -131,25 +166,29 @@ async function submitOrder() {
       },
     };
 
-    const response = await apiFetch("/api/orders", {
-      method: "POST",
+    const response = await apiFetch('/api/orders', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(orderData),
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      
+
       // Check if it's a cart limit error
-      if (response.status === 400 && errorData.error && errorData.error.includes("Cart limit exceeded")) {
+      if (
+        response.status === 400 &&
+        errorData.error &&
+        errorData.error.includes('Cart limit exceeded')
+      ) {
         alert(errorData.error);
       } else {
-        alert("Failed to place order. Please try again.");
+        alert('Failed to place order. Please try again.');
       }
-      
-      throw new Error("Failed to place order");
+
+      throw new Error('Failed to place order');
     }
 
     const data = await response.json();
@@ -157,8 +196,8 @@ async function submitOrder() {
     orderComplete.value = true;
     cartStore.clearCart();
   } catch (error) {
-    console.error("Order submission failed:", error);
-    alert("Failed to place order. Please try again.");
+    console.error('Order submission failed:', error);
+    alert('Failed to place order. Please try again.');
   } finally {
     processing.value = false;
   }

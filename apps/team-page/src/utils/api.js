@@ -13,13 +13,13 @@ async function refreshAccessToken() {
   }
 
   isRefreshing = true;
-  refreshPromise = fetch("/api/users/refresh", {
-    method: "POST",
-    credentials: "include",
+  refreshPromise = fetch('/api/users/refresh', {
+    method: 'POST',
+    credentials: 'include',
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error("Token refresh failed");
+        throw new Error('Token refresh failed');
       }
       return response.json();
     })
@@ -38,7 +38,7 @@ export async function fetchWithAuth(url, options = {}) {
   // Ensure credentials are included
   const fetchOptions = {
     ...options,
-    credentials: "include",
+    credentials: 'include',
   };
 
   // Make initial request
@@ -52,8 +52,8 @@ export async function fetchWithAuth(url, options = {}) {
       response = await fetch(url, fetchOptions);
     } catch (refreshError) {
       // Refresh failed, redirect to login
-      localStorage.removeItem("user");
-      const base = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
+      localStorage.removeItem('user');
+      const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
       window.location.href = `${base}/login`;
       throw refreshError;
     }

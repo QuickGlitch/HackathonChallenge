@@ -1,11 +1,11 @@
-import express from "express";
-import jwt from "jsonwebtoken";
-import bcrypt, { encodeBase64 } from "bcryptjs";
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import bcrypt, { encodeBase64 } from 'bcryptjs';
 import {
   authenticateToken,
   requireAdmin,
   requireUserOrAdmin,
-} from "../middleware/auth.js";
+} from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -13,50 +13,50 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
 // Token expiration times
-const ACCESS_TOKEN_EXPIRY = "1m";
-const REFRESH_TOKEN_EXPIRY = "24h";
+const ACCESS_TOKEN_EXPIRY = '1m';
+const REFRESH_TOKEN_EXPIRY = '24h';
 
 // Cookie maxAge in milliseconds
 const ACCESS_TOKEN_MAX_AGE = 1 * 60 * 1000; // 1 minute
 const REFRESH_TOKEN_MAX_AGE = 24 * 60 * 60 * 1000; // 24 hours
 
 // POST /api/users - Create a new user
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
   try {
-    const { username, password, name, role = "customer" } = req.body;
+    const { username, password, name, role = 'customer' } = req.body;
 
     if (!username || !password) {
       return res
         .status(400)
-        .json({ error: "Username and password are required" });
+        .json({ error: 'Username and password are required' });
     }
 
     // If trying to create an admin user, require authentication and admin role
-    if (role === "admin") {
+    if (role === 'admin') {
       // Check if user is authenticated
       let token = req.cookies?.accessToken;
       if (!token) {
-        const authHeader = req.headers["authorization"];
-        token = authHeader && authHeader.split(" ")[1];
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
       }
 
       if (!token) {
         return res.status(401).json({
-          error: "Authentication required to create admin users",
+          error: 'Authentication required to create admin users',
         });
       }
 
       // Verify token and check if user is admin
       try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        if (decoded.role !== "admin") {
+        if (decoded.role !== 'admin') {
           return res.status(403).json({
-            error: "Only admins can create admin users",
+            error: 'Only admins can create admin users',
           });
         }
       } catch (tokenError) {
         return res.status(403).json({
-          error: "Invalid or expired token",
+          error: 'Invalid or expired token',
         });
       }
     }
@@ -67,7 +67,7 @@ router.post("/", async (req, res) => {
     });
 
     if (existingUser) {
-      return res.status(409).json({ error: "Username already exists" });
+      return res.status(409).json({ error: 'Username already exists' });
     }
 
     // Hash password
@@ -91,24 +91,24 @@ router.post("/", async (req, res) => {
     });
 
     res.status(201).json({
-      message: "User created successfully",
+      message: 'User created successfully',
       user,
     });
   } catch (error) {
-    console.error("Error creating user:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Error creating user:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 // POST /api/users/login - User login
-router.post("/login", async (req, res) => {
+router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
 
     if (!username || !password) {
       return res
         .status(400)
-        .json({ error: "Username and password are required" });
+        .json({ error: 'Username and password are required' });
     }
 
     // Find user
@@ -117,13 +117,13 @@ router.post("/login", async (req, res) => {
     });
 
     if (!user) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     // Verify password
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     // Generate tokens
@@ -140,50 +140,50 @@ router.post("/login", async (req, res) => {
     });
 
     // Set cookies
-    res.cookie("accessToken", accessToken, {
+    res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      secure: process.env.USE_SECURE_COOKIES === "true", // Use secure cookies when HTTPS is available
+      secure: process.env.USE_SECURE_COOKIES === 'true', // Use secure cookies when HTTPS is available
       maxAge: ACCESS_TOKEN_MAX_AGE,
     });
 
-    res.cookie("refreshToken", refreshToken, {
+    res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: process.env.USE_SECURE_COOKIES === "true",
-      sameSite: "strict",
+      secure: process.env.USE_SECURE_COOKIES === 'true',
+      sameSite: 'strict',
       maxAge: REFRESH_TOKEN_MAX_AGE,
-      path: "/api/users/refresh",
+      path: '/api/users/refresh',
     });
 
     res.json({
-      message: "Login successful",
+      message: 'Login successful',
       user: {
         username: user.username,
         id: user.id,
         name: user.name,
         role: user.role,
-        tkn: Buffer.from(accessToken).toString("base64"),
+        tkn: Buffer.from(accessToken).toString('base64'),
       },
     });
   } catch (error) {
-    console.error("Error during login:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Error during login:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 // POST /api/users/refresh - Refresh access token
-router.post("/refresh", (req, res) => {
+router.post('/refresh', (req, res) => {
   // Try to get refresh token from request body (backward compatibility) or cookies
   let refreshToken = req.body.refreshToken || req.cookies.refreshToken;
 
   if (!refreshToken) {
-    return res.status(401).json({ error: "Refresh token required" });
+    return res.status(401).json({ error: 'Refresh token required' });
   }
 
   jwt.verify(refreshToken, JWT_REFRESH_SECRET, (err, user) => {
     if (err) {
       return res
         .status(403)
-        .json({ error: "Invalid or expired refresh token" });
+        .json({ error: 'Invalid or expired refresh token' });
     }
 
     const tokenPayload = {
@@ -196,26 +196,26 @@ router.post("/refresh", (req, res) => {
     });
 
     // Set new access token as cookie
-    res.cookie("accessToken", accessToken, {
+    res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      secure: process.env.USE_SECURE_COOKIES === "true",
-      sameSite: "strict",
+      secure: process.env.USE_SECURE_COOKIES === 'true',
+      sameSite: 'strict',
       maxAge: ACCESS_TOKEN_MAX_AGE,
     });
 
-    res.json({ message: "Token refreshed successfully" });
+    res.json({ message: 'Token refreshed successfully' });
   });
 });
 
 // POST /api/users/logout - Logout user by clearing cookies
-router.post("/logout", (req, res) => {
-  res.clearCookie("accessToken");
-  res.clearCookie("refreshToken", { path: "/api/users/refresh" });
-  res.json({ message: "Logged out successfully" });
+router.post('/logout', (req, res) => {
+  res.clearCookie('accessToken');
+  res.clearCookie('refreshToken', { path: '/api/users/refresh' });
+  res.json({ message: 'Logged out successfully' });
 });
 
 // GET /api/users - Get all users (admin only)
-router.get("/", authenticateToken, requireAdmin, async (req, res) => {
+router.get('/', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const users = await req.prisma.user.findMany({
       select: {
@@ -230,13 +230,13 @@ router.get("/", authenticateToken, requireAdmin, async (req, res) => {
 
     res.json(users);
   } catch (error) {
-    console.error("Error fetching users:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 // GET /api/users/me - Get current user's profile
-router.get("/me", authenticateToken, async (req, res) => {
+router.get('/me', authenticateToken, async (req, res) => {
   try {
     const user = await req.prisma.user.findUnique({
       where: { username: req.user.username },
@@ -252,22 +252,22 @@ router.get("/me", authenticateToken, async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: 'User not found' });
     }
 
     res.json({
       ...user,
-      tkn: Buffer.from(req.cookies.accessToken || "").toString("base64"),
+      tkn: Buffer.from(req.cookies.accessToken || '').toString('base64'),
     });
   } catch (error) {
-    console.error("Error fetching user profile:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Error fetching user profile:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 // GET /api/users/:username - Get specific user
 router.get(
-  "/:username",
+  '/:username',
   authenticateToken,
   requireUserOrAdmin(),
   async (req, res) => {
@@ -287,20 +287,20 @@ router.get(
       });
 
       if (!user) {
-        return res.status(404).json({ error: "User not found" });
+        return res.status(404).json({ error: 'User not found' });
       }
 
       res.json(user);
     } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ error: "Internal server error" });
+      console.error('Error fetching user:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
   }
 );
 
 // PUT /api/users/:username - Update user
 router.put(
-  "/:username",
+  '/:username',
   authenticateToken,
   requireUserOrAdmin(),
   async (req, res) => {
@@ -309,10 +309,10 @@ router.put(
       const { name, password, role, PII } = req.body;
 
       // Only admins can change roles
-      if (role && req.user.role !== "admin") {
+      if (role && req.user.role !== 'admin') {
         return res
           .status(403)
-          .json({ error: "Only admins can change user roles" });
+          .json({ error: 'Only admins can change user roles' });
       }
 
       const updateData = {};
@@ -339,22 +339,22 @@ router.put(
       });
 
       res.json({
-        message: "User updated successfully",
+        message: 'User updated successfully',
         user,
       });
     } catch (error) {
-      if (error.code === "P2025") {
-        return res.status(404).json({ error: "User not found" });
+      if (error.code === 'P2025') {
+        return res.status(404).json({ error: 'User not found' });
       }
-      console.error("Error updating user:", error);
-      res.status(500).json({ error: "Internal server error" });
+      console.error('Error updating user:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
   }
 );
 
 // DELETE /api/users/:username - Delete user (admin only)
 router.delete(
-  "/:username",
+  '/:username',
   authenticateToken,
   requireAdmin,
   async (req, res) => {
@@ -365,13 +365,13 @@ router.delete(
         where: { username },
       });
 
-      res.json({ message: "User deleted successfully" });
+      res.json({ message: 'User deleted successfully' });
     } catch (error) {
-      if (error.code === "P2025") {
-        return res.status(404).json({ error: "User not found" });
+      if (error.code === 'P2025') {
+        return res.status(404).json({ error: 'User not found' });
       }
-      console.error("Error deleting user:", error);
-      res.status(500).json({ error: "Internal server error" });
+      console.error('Error deleting user:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
   }
 );

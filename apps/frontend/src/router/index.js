@@ -1,64 +1,64 @@
-import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
-import Products from "../views/Products.vue";
-import ProductDetail from "../views/ProductDetail.vue";
-import Cart from "../views/Cart.vue";
-import Checkout from "../views/Checkout.vue";
-import Register from "../views/Register.vue";
-import Login from "../views/Login.vue";
-import Logout from "../views/Logout.vue";
-import Reseller from "../views/Reseller.vue";
-import Forum from "../views/Forum.vue";
+import { createRouter, createWebHistory } from 'vue-router';
+import Home from '../views/Home.vue';
+import Products from '../views/Products.vue';
+import ProductDetail from '../views/ProductDetail.vue';
+import Cart from '../views/Cart.vue';
+import Checkout from '../views/Checkout.vue';
+import Register from '../views/Register.vue';
+import Login from '../views/Login.vue';
+import Logout from '../views/Logout.vue';
+import Reseller from '../views/Reseller.vue';
+import Forum from '../views/Forum.vue';
 
 const routes = [
   {
-    path: "/",
-    name: "Home",
+    path: '/',
+    name: 'Home',
     component: Home,
   },
   {
-    path: "/products",
-    name: "Products",
+    path: '/products',
+    name: 'Products',
     component: Products,
   },
   {
-    path: "/products/:id",
-    name: "ProductDetail",
+    path: '/products/:id',
+    name: 'ProductDetail',
     component: ProductDetail,
   },
   {
-    path: "/cart",
-    name: "Cart",
+    path: '/cart',
+    name: 'Cart',
     component: Cart,
   },
   {
-    path: "/checkout",
-    name: "Checkout",
+    path: '/checkout',
+    name: 'Checkout',
     component: Checkout,
   },
   {
-    path: "/register",
-    name: "Register",
+    path: '/register',
+    name: 'Register',
     component: Register,
   },
   {
-    path: "/login",
-    name: "Login",
+    path: '/login',
+    name: 'Login',
     component: Login,
   },
   {
-    path: "/logout",
-    name: "Logout",
+    path: '/logout',
+    name: 'Logout',
     component: Logout,
   },
   {
-    path: "/reseller",
-    name: "Reseller",
+    path: '/reseller',
+    name: 'Reseller',
     component: Reseller,
   },
   {
-    path: "/forum",
-    name: "Forum",
+    path: '/forum',
+    name: 'Forum',
     component: Forum,
   },
 ];

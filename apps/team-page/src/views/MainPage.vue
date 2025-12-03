@@ -106,18 +106,18 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import { fetchWithAuth } from "../utils/api.js";
+import { ref, computed, onMounted } from 'vue';
+import { fetchWithAuth } from '../utils/api.js';
 
 // Environment variables with defaults for local development
 const frontendUrl =
-  import.meta.env.VITE_FRONTEND_URL || "http://localhost:3000";
+  import.meta.env.VITE_FRONTEND_URL || 'http://localhost:3000';
 const scoreboardUrl =
-  import.meta.env.VITE_SCOREBOARD_URL || "http://localhost:5174";
+  import.meta.env.VITE_SCOREBOARD_URL || 'http://localhost:5174';
 
 // All hackathon teams
-const allTeams = ["Hackors1", "Hackors2", "Hackors3", "Hackors4", "Hackors5"];
-const currentTeam = ref("");
+const allTeams = ['Hackors1', 'Hackors2', 'Hackors3', 'Hackors4', 'Hackors5'];
+const currentTeam = ref('');
 
 // Compute the list of other teams (excluding current team)
 const otherTeams = computed(() => {
@@ -126,34 +126,34 @@ const otherTeams = computed(() => {
 
 // Initialize answers object
 const answers = ref({
-  ctfText: "",
-  unreleasedProduct: "",
+  ctfText: '',
+  unreleasedProduct: '',
 });
 
-const error = ref("");
-const success = ref("");
+const error = ref('');
+const success = ref('');
 const loading = ref(false);
 
 // Get current team on mount
 onMounted(() => {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  currentTeam.value = user.username || "";
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  currentTeam.value = user.username || '';
 
   // Initialize PII fields for other teams
   otherTeams.value.forEach((team) => {
-    answers.value[`${team.toLowerCase()}PII`] = "";
+    answers.value[`${team.toLowerCase()}PII`] = '';
   });
 });
 
 async function submitAnswers() {
-  error.value = "";
-  success.value = "";
+  error.value = '';
+  success.value = '';
   loading.value = true;
   try {
-    const response = await fetchWithAuth("/api/hackathon/answers", {
-      method: "POST",
+    const response = await fetchWithAuth('/api/hackathon/answers', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         answers: { ...answers.value },
@@ -161,11 +161,11 @@ async function submitAnswers() {
     });
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.error || "Submission failed");
+      throw new Error(data.error || 'Submission failed');
     }
-    success.value = "Answers submitted successfully!";
+    success.value = 'Answers submitted successfully!';
   } catch (e) {
-    error.value = e.message || "Submission failed";
+    error.value = e.message || 'Submission failed';
   } finally {
     loading.value = false;
   }

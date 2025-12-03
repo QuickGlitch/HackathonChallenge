@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <section class="hero">
-      <div class="hero-overlay"></div>
+      <div class="hero-overlay" />
       <div class="hero-content">
         <div class="hero-text">
           <h1>Your One-Stop Shop for Quality Products</h1>
@@ -10,12 +10,18 @@
             secure, and reliable.
           </p>
           <div class="hero-buttons">
-            <router-link to="/products" class="btn-primary"
-              >Explore Products</router-link
-            >
-            <router-link to="/register" class="btn-secondary"
-              >Become a Seller</router-link
-            >
+            <router-link
+to="/products"
+class="btn-primary"
+>
+              Explore Products
+            </router-link>
+            <router-link
+to="/register"
+class="btn-secondary"
+>
+              Become a Seller
+            </router-link>
           </div>
         </div>
       </div>
@@ -25,36 +31,56 @@
       <div class="container">
         <div class="stats-grid">
           <div class="stat-item">
-            <div class="stat-number">10+</div>
-            <div class="stat-label">Products</div>
+            <div class="stat-number">
+10+
+</div>
+            <div class="stat-label">
+Products
+</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number">5+</div>
-            <div class="stat-label">Happy Customers</div>
+            <div class="stat-number">
+5+
+</div>
+            <div class="stat-label">
+Happy Customers
+</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number">99.9%</div>
-            <div class="stat-label">Uptime locally</div>
+            <div class="stat-number">
+99.9%
+</div>
+            <div class="stat-label">
+Uptime locally
+</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number">24*/7**</div>
-            <div class="stat-label">Support***</div>
+            <div class="stat-number">
+24*/7**
+</div>
+            <div class="stat-label">
+Support***
+</div>
           </div>
         </div>
       </div>
     </section>
 
     <section class="pen-shop">
-      <h3 class="news">News</h3>
+      <h3 class="news">
+News
+</h3>
       <div class="pen-shop-content">
         <div class="pen-shop-image">
           <img
             src="https://images.unsplash.com/photo-1531087131490-07836ca4341d?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt="Pen Testing"
-          />
+          >
         </div>
         <div class="pen-shop-text">
-          <div class="pen-badge">Coming Soon</div>
+          <div class="pen-badge">
+Coming Soon
+</div>
           <h2>Not all pens are created equal</h2>
           <p>
             As part of his upcoming pop-up store, join renowned pen designer
@@ -84,19 +110,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url("https://images.unsplash.com/photo-1736244424560-8bb764133c72?q=80&w=1800&auto=format&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  background-image: url('https://images.unsplash.com/photo-1736244424560-8bb764133c72?q=80&w=1800&auto=format&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
   /* background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #3b82f6 100%); */
   overflow: hidden;
 }
 
 .hero::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(
+  background:
+    radial-gradient(
       circle at 20% 50%,
       rgba(96, 165, 250, 0.1) 0%,
       transparent 50%

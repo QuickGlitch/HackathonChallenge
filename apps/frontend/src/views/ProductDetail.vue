@@ -1,27 +1,57 @@
 <template>
   <div class="container">
-    <div v-if="loading" class="loading">Loading product...</div>
+    <div
+v-if="loading"
+class="loading"
+>
+Loading product...
+</div>
 
-    <div v-else-if="error" class="alert alert-error">
+    <div
+v-else-if="error"
+class="alert alert-error"
+>
       {{ error }}
     </div>
 
-    <div v-else-if="product" class="product-detail">
+    <div
+v-else-if="product"
+class="product-detail"
+>
       <div class="grid grid-2">
         <div class="product-image-container">
           <!-- Reseller badge for products not from main store -->
-          <div v-if="product.payableTo !== 1" class="reseller-badge">
+          <div
+v-if="product.payableTo !== 1"
+class="reseller-badge"
+>
             Reseller
           </div>
-          <img :src="product.image" :alt="product.name" class="product-image" />
+          <img
+:src="product.image"
+:alt="product.name"
+class="product-image"
+>
         </div>
         <div class="product-info">
           <h1>{{ product.name }}</h1>
-          <p class="product-description">{{ product.description }}</p>
-          <div class="product-price">${{ product.price.toFixed(2) }}</div>
+          <p class="product-description">
+            {{ product.description }}
+          </p>
+          <div class="product-price">
+${{ product.price.toFixed(2) }}
+</div>
           <div class="product-actions">
-            <button @click="addToCart(product)" class="btn">Add to Cart</button>
-            <router-link to="/products" class="btn btn-secondary">
+            <button
+class="btn"
+@click="addToCart(product)"
+>
+Add to Cart
+</button>
+            <router-link
+to="/products"
+class="btn btn-secondary"
+>
               Back to Products
             </router-link>
           </div>
@@ -32,10 +62,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { useProductStore } from "../stores/products";
-import { useCartStore } from "../stores/cart";
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useProductStore } from '../stores/products';
+import { useCartStore } from '../stores/cart';
 
 const route = useRoute();
 const productStore = useProductStore();
@@ -54,7 +84,7 @@ onMounted(async () => {
     loading.value = true;
     product.value = await productStore.fetchProduct(route.params.id);
   } catch (err) {
-    error.value = "Failed to load product";
+    error.value = 'Failed to load product';
   } finally {
     loading.value = false;
   }

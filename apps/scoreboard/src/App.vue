@@ -6,17 +6,35 @@
     </div>
 
     <!-- Fishing GIF Overlay -->
-    <div v-if="showBotActivity" class="gif-overlay" @click="hideGif">
+    <div
+v-if="showBotActivity"
+class="gif-overlay"
+@click="hideGif"
+>
       <div class="gif-container">
-        <img :src="currentGif" alt="Fishing GIF" class="fishing-gif" />
-        <div class="gif-close">Click to close or wait...</div>
+        <img
+:src="currentGif"
+alt="Fishing GIF"
+class="fishing-gif"
+>
+        <div class="gif-close">
+Click to close or wait...
+</div>
       </div>
     </div>
 
     <div class="scoreboard-card">
-      <div v-if="loading" class="loading">Loading scores...</div>
+      <div
+v-if="loading"
+class="loading"
+>
+Loading scores...
+</div>
 
-      <div v-else-if="error" class="error">
+      <div
+v-else-if="error"
+class="error"
+>
         {{ error }}
       </div>
 
@@ -37,47 +55,58 @@
     </div>
 
     <!-- Fishing GIF Overlay -->
-    <div v-if="showBotActivity" class="gif-overlay" @click="hideGif">
+    <div
+v-if="showBotActivity"
+class="gif-overlay"
+@click="hideGif"
+>
       <div class="gif-container">
-        <img :src="currentGif" alt="Fishing GIF" class="fishing-gif" />
-        <p class="gif-caption">🎣</p>
+        <img
+:src="currentGif"
+alt="Fishing GIF"
+class="fishing-gif"
+>
+        <p class="gif-caption">
+🎣
+</p>
       </div>
     </div>
 
     <!-- News Ticker -->
-    <div v-if="showBotActivity" class="news-ticker">
+    <div
+v-if="showBotActivity"
+class="news-ticker"
+>
       <div class="news-content">
         <span class="breaking-label">BREAKING NEWS:</span>
-        <span class="news-text"
-          >It's fishing season - boomer bots are clicking links</span
-        >
+        <span class="news-text">It's fishing season - boomer bots are clicking links</span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
-import axios from "axios";
-import sunTzu from "sun-tzu-quotes";
-import ScoreChart from "./components/ScoreChart.vue";
+import { ref, onMounted, onUnmounted } from 'vue';
+import axios from 'axios';
+import sunTzu from 'sun-tzu-quotes';
+import ScoreChart from './components/ScoreChart.vue';
 
 const scores = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const lastUpdated = ref(new Date());
-const currentQuote = ref("");
+const currentQuote = ref('');
 const showBotActivity = ref(false);
-const currentGif = ref("");
+const currentGif = ref('');
 let intervalId = null;
 let eventSource = null;
-let hasInitialLoad = ref(false);
+const hasInitialLoad = ref(false);
 
 // Use relative path for production (via Traefik), fallback to localhost for dev
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
-  (window.location.hostname === "localhost" ? "http://localhost:3001/api" : "");
-const GIPHY_API_KEY = "GlVGYHkr3WSBnllca54iNt0yFbjz7L65"; // Public demo key
+  (window.location.hostname === 'localhost' ? 'http://localhost:3001/api' : '');
+const GIPHY_API_KEY = 'GlVGYHkr3WSBnllca54iNt0yFbjz7L65'; // Public demo key
 
 const getNewQuote = () => {
   currentQuote.value = sunTzu();
@@ -88,10 +117,10 @@ const fetchRandomFishingGif = async () => {
     const response = await axios.get(`https://api.giphy.com/v1/gifs/search`, {
       params: {
         api_key: GIPHY_API_KEY,
-        q: "fishing",
+        q: 'fishing',
         limit: 50,
-        rating: "g",
-        lang: "en",
+        rating: 'g',
+        lang: 'en',
       },
     });
 
@@ -102,7 +131,7 @@ const fetchRandomFishingGif = async () => {
       showBotActivity.value = true;
     }
   } catch (err) {
-    console.error("Failed to fetch fishing GIF:", err);
+    console.error('Failed to fetch fishing GIF:', err);
   }
 };
 
@@ -111,18 +140,18 @@ const hideGif = () => {
 };
 
 const setupBotActivityStream = () => {
-  console.log("Connecting to bot activity stream...");
+  console.log('Connecting to bot activity stream...');
 
   eventSource = new EventSource(`${API_BASE_URL}/bot-activity/stream`);
 
   eventSource.onopen = () => {
-    console.log("Connected to bot activity stream");
+    console.log('Connected to bot activity stream');
   };
 
   eventSource.onmessage = (event) => {
     try {
       const data = JSON.parse(event.data);
-      console.log("Bot activity update:", data);
+      console.log('Bot activity update:', data);
 
       if (data.isActive && !showBotActivity.value) {
         // Bot just started - fetch a fishing GIF and show it
@@ -132,16 +161,16 @@ const setupBotActivityStream = () => {
         setTimeout(() => (showBotActivity.value = false), 10000);
       }
     } catch (error) {
-      console.error("Error parsing bot activity data:", error);
+      console.error('Error parsing bot activity data:', error);
     }
   };
 
   eventSource.onerror = (error) => {
-    console.error("SSE connection error:", error);
+    console.error('SSE connection error:', error);
     // Attempt to reconnect after 5 seconds
     setTimeout(() => {
       if (eventSource.readyState === EventSource.CLOSED) {
-        console.log("Attempting to reconnect...");
+        console.log('Attempting to reconnect...');
         setupBotActivityStream();
       }
     }, 5000);
@@ -152,7 +181,7 @@ const closeEventSource = () => {
   if (eventSource) {
     eventSource.close();
     eventSource = null;
-    console.log("Closed bot activity stream");
+    console.log('Closed bot activity stream');
   }
 };
 
@@ -180,9 +209,9 @@ const fetchScores = async () => {
     // Get a new inspirational quote every time scores are fetched
     getNewQuote();
   } catch (err) {
-    console.error("Failed to fetch scores:", err);
+    console.error('Failed to fetch scores:', err);
     error.value =
-      "Failed to fetch scores. Please check if the backend is running.";
+      'Failed to fetch scores. Please check if the backend is running.';
   } finally {
     // Clear the loading timeout if it exists
     if (loadingTimeout) {
@@ -251,7 +280,8 @@ onUnmounted(() => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .header {

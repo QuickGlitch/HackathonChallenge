@@ -1,0 +1,20 @@
+{
+  "name": "@store-hackathon/eslint-config",
+  "version": "1.0.0",
+  "description": "Shared ESLint configuration for store-hackathon monorepo",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./vue": "./vue.js"
+  },
+  "dependencies": {
+    "eslint": "^9.16.0",
+    "@eslint/js": "^9.16.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-vue": "^10.6.2",
+    "globals": "^15.13.0"
+  },
+  "peerDependencies": {
+    "eslint": "^9.0.0"
+  }
+}

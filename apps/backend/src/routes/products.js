@@ -1,25 +1,25 @@
-import express from "express";
-import multer from "multer";
-import path from "path";
+import express from 'express';
+import multer from 'multer';
+import path from 'path';
 import {
   authenticateToken,
   optionalAuthentication,
-} from "../middleware/auth.js";
-import { validatePrice } from "../utils/validation.js";
+} from '../middleware/auth.js';
+import { validatePrice } from '../utils/validation.js';
 
 const router = express.Router();
 
 // Helper function to ensure image URLs are absolute
 function ensureAbsoluteImageUrl(imageUrl) {
-  if (!imageUrl) return "https://via.placeholder.com/300x200";
+  if (!imageUrl) return 'https://via.placeholder.com/300x200';
 
   // If it's already absolute, return as is
-  if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
     return imageUrl;
   }
 
   // If it's relative, make it absolute
-  if (imageUrl.startsWith("/static/")) {
+  if (imageUrl.startsWith('/static/')) {
     const baseUrl =
       process.env.BASE_URL || `http://localhost:${process.env.PORT || 3001}`;
     return `${baseUrl}${imageUrl}`;
@@ -28,7 +28,7 @@ function ensureAbsoluteImageUrl(imageUrl) {
   return imageUrl;
 }
 // POST /api/products/register - Register a new product by a user (authenticated)
-router.post("/register", authenticateToken, async (req, res) => {
+router.post('/register', authenticateToken, async (req, res) => {
   try {
     const { name, description, price, category, image } = req.body;
     const userId = req.user.userId; // Get user ID from authenticated token
@@ -36,7 +36,7 @@ router.post("/register", authenticateToken, async (req, res) => {
     if (!name || !description || !price) {
       return res
         .status(400)
-        .json({ error: "Missing required fields: name, description, price" });
+        .json({ error: 'Missing required fields: name, description, price' });
     }
 
     // Validate price
@@ -47,7 +47,7 @@ router.post("/register", authenticateToken, async (req, res) => {
     const productPrice = priceValidation.value;
 
     // Handle image URL
-    let imageUrl = image || "https://via.placeholder.com/300x200"; // default image
+    let imageUrl = image || 'https://via.placeholder.com/300x200'; // default image
 
     const product = await req.prisma.product.create({
       data: {
@@ -55,30 +55,30 @@ router.post("/register", authenticateToken, async (req, res) => {
         description: description.trim(),
         price: productPrice,
         image: imageUrl,
-        category: category?.trim() || "General",
+        category: category?.trim() || 'General',
         payableTo: userId,
       },
     });
 
     res.status(201).json({
       success: true,
-      message: "Product registered successfully",
+      message: 'Product registered successfully',
       product,
     });
   } catch (error) {
-    console.error("Error registering product:", error);
-    res.status(500).json({ error: "Failed to register product" });
+    console.error('Error registering product:', error);
+    res.status(500).json({ error: 'Failed to register product' });
   }
 });
 
 // GET /api/products - Get all products
-router.get("/", optionalAuthentication, async (req, res) => {
+router.get('/', optionalAuthentication, async (req, res) => {
   try {
     // Check if user is admin (from optional authentication)
-    const isAdmin = req.user && req.user.role === "admin";
+    const isAdmin = req.user && req.user.role === 'admin';
 
     // Check for honeypot cookie
-    const hasHoneyCookie = req.cookies && req.cookies.honey === "pot";
+    const hasHoneyCookie = req.cookies && req.cookies.honey === 'pot';
 
     // Build query filter - non-admins only see released products
     // Also filter out honeypot products unless the honey cookie is present
@@ -89,7 +89,7 @@ router.get("/", optionalAuthentication, async (req, res) => {
 
     const products = await req.prisma.product.findMany({
       where: whereFilter,
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
     });
 
     // Ensure all image URLs are absolute
@@ -100,13 +100,13 @@ router.get("/", optionalAuthentication, async (req, res) => {
 
     res.json(productsWithAbsoluteUrls);
   } catch (error) {
-    console.error("Error fetching products:", error);
-    res.status(500).json({ error: "Failed to fetch products" });
+    console.error('Error fetching products:', error);
+    res.status(500).json({ error: 'Failed to fetch products' });
   }
 });
 
 // GET /api/products/search - Search products by name (CONTROLLED SQL injection for training)
-router.get("/search", optionalAuthentication, async (req, res) => {
+router.get('/search', optionalAuthentication, async (req, res) => {
   try {
     const { q } = req.query;
 
@@ -123,51 +123,51 @@ router.get("/search", optionalAuthentication, async (req, res) => {
     // Basic input sanitization to prevent destructive operations
     const dangerousKeywords = [
       // Destructive operations
-      "delete",
-      "drop",
-      "truncate",
-      "insert",
-      "update",
-      "alter",
-      "create",
+      'delete',
+      'drop',
+      'truncate',
+      'insert',
+      'update',
+      'alter',
+      'create',
       // System functions and procedures
-      "exec",
-      "execute",
-      "sp_",
-      "xp_",
-      "dbms_",
-      "utl_",
-      "sys_eval",
+      'exec',
+      'execute',
+      'sp_',
+      'xp_',
+      'dbms_',
+      'utl_',
+      'sys_eval',
       // Schema inspection
-      "information_schema",
-      "pg_catalog",
-      "sys.",
-      "master.",
-      "msdb.",
-      "tempdb.",
-      "pg_tables",
-      "pg_class",
-      "pg_namespace",
-      "pg_proc",
-      "pg_user",
+      'information_schema',
+      'pg_catalog',
+      'sys.',
+      'master.',
+      'msdb.',
+      'tempdb.',
+      'pg_tables',
+      'pg_class',
+      'pg_namespace',
+      'pg_proc',
+      'pg_user',
       // Other table names
-      "users",
-      "orders",
-      "order_items",
-      "forum_messages",
+      'users',
+      'orders',
+      'order_items',
+      'forum_messages',
       // File operations and command execution
-      "load_file",
-      "into outfile",
-      "into dumpfile",
-      "load data",
+      'load_file',
+      'into outfile',
+      'into dumpfile',
+      'load data',
       // Additional dangerous functions
-      "benchmark",
-      "sleep",
-      "waitfor",
-      "pg_sleep",
+      'benchmark',
+      'sleep',
+      'waitfor',
+      'pg_sleep',
     ];
 
-    const queryLower = q.toLowerCase().replace(/\s+/g, " ").trim();
+    const queryLower = q.toLowerCase().replace(/\s+/g, ' ').trim();
     const containsDangerous = dangerousKeywords.some((keyword) =>
       queryLower.includes(keyword.toLowerCase())
     );
@@ -175,23 +175,23 @@ router.get("/search", optionalAuthentication, async (req, res) => {
     if (containsDangerous) {
       return res.status(400).json({
         error:
-          "For hackathon purposes, this query is blocked try simpler / less harmful injections.",
+          'For hackathon purposes, this query is blocked try simpler / less harmful injections.',
       });
     }
 
     // Additional check for multiple statements (basic)
-    if (queryLower.includes(";") && queryLower.split(";").length > 2) {
+    if (queryLower.includes(';') && queryLower.split(';').length > 2) {
       return res.status(400).json({
         error:
-          "For hackathon purposes, multi-statement queries are blocked try simpler / less harmful injections.",
+          'For hackathon purposes, multi-statement queries are blocked try simpler / less harmful injections.',
       });
     }
 
     // CONTROLLED VULNERABILITY: Limited SQL injection in a constrained context
     // This allows SQL injection but limits it to the products table only
     // Note: Admin check for released products is intentionally bypassable via SQL injection
-    const isAdmin = req.user && req.user.role === "admin";
-    const releasedFilter = isAdmin ? "" : "AND released = true";
+    const isAdmin = req.user && req.user.role === 'admin';
+    const releasedFilter = isAdmin ? '' : 'AND released = true';
 
     const rawQuery = `
       SELECT id, name, description, price, image, category, released, "payableTo", "createdAt", "updatedAt"
@@ -211,8 +211,8 @@ router.get("/search", optionalAuthentication, async (req, res) => {
       });
     } catch (dbError) {
       // If there's a database error, don't expose details
-      console.error("Database query error:", dbError);
-      throw new Error("Search failed");
+      console.error('Database query error:', dbError);
+      throw new Error('Search failed');
     }
 
     // Ensure all image URLs are absolute
@@ -223,15 +223,15 @@ router.get("/search", optionalAuthentication, async (req, res) => {
 
     res.json(productsWithAbsoluteUrls);
   } catch (error) {
-    console.error("Error searching products:", error);
+    console.error('Error searching products:', error);
 
     // Don't expose detailed database errors that might help attackers
-    res.status(500).json({ error: "Failed to search products" });
+    res.status(500).json({ error: 'Failed to search products' });
   }
 });
 
 // GET /api/products/:id - Get a single product
-router.get("/:id", optionalAuthentication, async (req, res) => {
+router.get('/:id', optionalAuthentication, async (req, res) => {
   try {
     const { id } = req.params;
     const product = await req.prisma.product.findUnique({
@@ -239,7 +239,7 @@ router.get("/:id", optionalAuthentication, async (req, res) => {
     });
 
     if (!product) {
-      return res.status(404).json({ error: "Product not found" });
+      return res.status(404).json({ error: 'Product not found' });
     }
 
     // Intentional IDOR vulnerability: Non-released products are visible to anyone who looks for them
@@ -256,25 +256,25 @@ router.get("/:id", optionalAuthentication, async (req, res) => {
 
     res.json(productWithAbsoluteUrl);
   } catch (error) {
-    console.error("Error fetching product:", error);
-    res.status(500).json({ error: "Failed to fetch product" });
+    console.error('Error fetching product:', error);
+    res.status(500).json({ error: 'Failed to fetch product' });
   }
 });
 
 // POST /api/products - Create a new product
-router.post("/", authenticateToken, async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
   try {
     const { name, description, price, image, category, released } = req.body;
 
     if (!name || !description || !price) {
-      return res.status(400).json({ error: "Missing required fields" });
+      return res.status(400).json({ error: 'Missing required fields' });
     }
 
     // Only admins can create unreleased products
-    if (released === false && req.user.role !== "admin") {
+    if (released === false && req.user.role !== 'admin') {
       return res
         .status(403)
-        .json({ error: "Only admins can create unreleased products" });
+        .json({ error: 'Only admins can create unreleased products' });
     }
 
     const product = await req.prisma.product.create({
@@ -282,30 +282,30 @@ router.post("/", authenticateToken, async (req, res) => {
         name,
         description,
         price: parseFloat(price),
-        image: image || "https://via.placeholder.com/300x200",
-        category: category || "General",
+        image: image || 'https://via.placeholder.com/300x200',
+        category: category || 'General',
         released: released !== undefined ? released : true,
       },
     });
 
     res.status(201).json(product);
   } catch (error) {
-    console.error("Error creating product:", error);
-    res.status(500).json({ error: "Failed to create product" });
+    console.error('Error creating product:', error);
+    res.status(500).json({ error: 'Failed to create product' });
   }
 });
 
 // PUT /api/products/:id - Update a product
-router.put("/:id", authenticateToken, async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { name, description, price, image, category, released } = req.body;
 
     // Only admins can modify the released status
-    if (released !== undefined && req.user.role !== "admin") {
+    if (released !== undefined && req.user.role !== 'admin') {
       return res
         .status(403)
-        .json({ error: "Only admins can modify release status" });
+        .json({ error: 'Only admins can modify release status' });
     }
 
     const product = await req.prisma.product.update({
@@ -322,16 +322,16 @@ router.put("/:id", authenticateToken, async (req, res) => {
 
     res.json(product);
   } catch (error) {
-    if (error.code === "P2025") {
-      return res.status(404).json({ error: "Product not found" });
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: 'Product not found' });
     }
-    console.error("Error updating product:", error);
-    res.status(500).json({ error: "Failed to update product" });
+    console.error('Error updating product:', error);
+    res.status(500).json({ error: 'Failed to update product' });
   }
 });
 
 // DELETE /api/products/:id - Delete a product
-router.delete("/:id", authenticateToken, async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -339,13 +339,13 @@ router.delete("/:id", authenticateToken, async (req, res) => {
       where: { id: parseInt(id) },
     });
 
-    res.json({ message: "Product deleted successfully" });
+    res.json({ message: 'Product deleted successfully' });
   } catch (error) {
-    if (error.code === "P2025") {
-      return res.status(404).json({ error: "Product not found" });
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: 'Product not found' });
     }
-    console.error("Error deleting product:", error);
-    res.status(500).json({ error: "Failed to delete product" });
+    console.error('Error deleting product:', error);
+    res.status(500).json({ error: 'Failed to delete product' });
   }
 });
 

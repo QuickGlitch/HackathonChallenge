@@ -1,8 +1,8 @@
-import { defineStore } from "pinia";
-import { ref, computed } from "vue";
-import { apiFetch } from "@/utils/api";
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+import { apiFetch } from '@/utils/api';
 
-export const useAuthStore = defineStore("auth", () => {
+export const useAuthStore = defineStore('auth', () => {
   const user = ref(null);
   const isLoading = ref(false);
   const error = ref(null);
@@ -15,8 +15,8 @@ export const useAuthStore = defineStore("auth", () => {
   // Check authentication status by calling the backend
   async function checkAuthStatus() {
     try {
-      const response = await apiFetch("/api/users/me", {
-        method: "GET",
+      const response = await apiFetch('/api/users/me', {
+        method: 'GET',
       });
 
       if (response.ok) {
@@ -27,26 +27,26 @@ export const useAuthStore = defineStore("auth", () => {
       } else {
         // Not authenticated
         user.value = null;
-        localStorage.removeItem("user");
+        localStorage.removeItem('user');
         return false;
       }
     } catch (err) {
       // Network error or server down - assume not authenticated
       user.value = null;
-      localStorage.removeItem("user");
+      localStorage.removeItem('user');
       return false;
     }
   }
 
   // Get current user info from stored data
   function getCurrentUser() {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem('user');
     if (storedUser) {
       try {
         return JSON.parse(storedUser);
       } catch (e) {
-        console.error("Error parsing stored user data:", e);
-        localStorage.removeItem("user");
+        console.error('Error parsing stored user data:', e);
+        localStorage.removeItem('user');
       }
     }
     return null;
@@ -84,10 +84,10 @@ export const useAuthStore = defineStore("auth", () => {
     error.value = null;
 
     try {
-      const response = await apiFetch("/api/users/login", {
-        method: "POST",
+      const response = await apiFetch('/api/users/login', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(credentials),
       });
@@ -96,15 +96,15 @@ export const useAuthStore = defineStore("auth", () => {
 
       if (response.ok) {
         user.value = data.user;
-        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem('user', JSON.stringify(data.user));
         initialized.value = true; // Mark as initialized after successful login
         return { success: true, data };
       } else {
-        error.value = data.error || "Login failed";
+        error.value = data.error || 'Login failed';
         return { success: false, error: error.value };
       }
     } catch (err) {
-      error.value = "Network error. Please try again.";
+      error.value = 'Network error. Please try again.';
       return { success: false, error: error.value };
     } finally {
       isLoading.value = false;
@@ -117,20 +117,20 @@ export const useAuthStore = defineStore("auth", () => {
     error.value = null;
 
     try {
-      const response = await apiFetch("/api/users/logout", {
-        method: "POST",
+      const response = await apiFetch('/api/users/logout', {
+        method: 'POST',
       });
 
       // Always clear client state regardless of server response
       user.value = null;
-      localStorage.removeItem("user");
+      localStorage.removeItem('user');
       initialized.value = true; // Keep initialized state
 
       return { success: true };
     } catch (err) {
       // Even if network error, clear client state
       user.value = null;
-      localStorage.removeItem("user");
+      localStorage.removeItem('user');
       return { success: true };
     } finally {
       isLoading.value = false;
