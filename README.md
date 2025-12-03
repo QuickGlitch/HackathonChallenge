@@ -26,7 +26,7 @@ npm run dev # the rest of the aplications can be run locally assuming you have n
 This will setup multiple applications (frontend, backend, admin panel) running on different ports with only the database running within a Docker container. For the actual hackathon, you probably want to use the production setup instead:
 
 ```sh
-npm run docker:up:prod 
+npm run docker:up:production 
 # which is equivalent to:
 docker-compose -f docker-compose.yml up
 
@@ -41,20 +41,34 @@ docker-compose -f docker-compose.yml up
 
 ### Starting the event
 
-Once the application is running, organizers can share the `team-page` app with the competing teams. Teams are created beforehand (see [seed.js](./apps/backend/src/seed.js)) and their credentials should be shared with the respective teams. Once logged in, teams will find the hackathon rules and are free to start exploring the application and looking for vulnerabilities.
+Once the application is running, organizers can share the `team-page` app with the competing teams. Teams are created beforehand (see [seed.js](./apps/backend/src/seed.js), Hackors1 - Hackors5) and their credentials should be shared with the respective teams. Once logged in, teams will find the hackathon rules and are free to start exploring the application and looking for vulnerabilities.
+
+The entrypoint for teams is the team-page app, which contains links to the main frontend application as well as the scoreboard and rules. Teams can submit answers to fixed questions directly in the team page, while other vulnerabilities are tracked automatically by the backend.
+
+### Scoring
+
+For some of the known vulnerabilities, teams will need to submit answers in the team page app. These answers and free purchases exploited on the app are automatically scored and shown in the scoreboard. However, there are additional vulenerabilities that organizers can choose to reward points for at their own digression.
+
+## Known Vulnerabilities
+
+Please see the [intentional-vulnerabilities.md](./intentional_vulnerabilities.md) file for a list of known vulnerabilities in the application along with their descriptions.
+
+### Example Exploits
+
+Example exploits of the known vulnerabilities can be found in the [attack-utils](./attack-utils) directory.
 
 ## Application Overview
 
 The hackathon application consists of several apps managed with Docker:
 
-- **PostgreSQL Database** (Port 5432): Stores all application data including products, users, orders, and forum messages.
-- **Backend API** (Port 3001): Express.js REST API that handles authentication, business logic, and database operations using Prisma ORM.
-- **Frontend** (Port 3000): Vue.js e-commerce web application where users can browse products, make purchases, and participate in the forum.
-- **Scoreboard** (Port 5174): Vue.js application displaying real-time scores for gamified vulnerabilities exploited by competing teams.
-- **Team Page** (Port 5175): Vue.js dashboard for hackathon teams to view rules, submit answers to fixed questions, and track their progress.
-- **Image Server** (Port 8080): PHP server for handling product image uploads and serving static images.
-- **Boomer Bots** (No external port): Automated bot users (DorothyWilliams and admin) that periodically interact with the forum to simulate real users.
-- **CSRF App** (Port 8081): Demonstration application for testing Cross-Site Request Forgery attack vectors.
+- **PostgreSQL Database**: Stores all application data including products, users, orders, and forum messages.
+- **Backend API**: Express.js REST API that handles authentication, business logic, and database operations using Prisma ORM.
+- **Frontend**: Vue.js e-commerce web application where users can browse products, make purchases, and participate in the forum.
+- **Scoreboard**: Vue.js application displaying real-time scores for gamified vulnerabilities exploited by competing teams.
+- **Team Page**: Vue.js dashboard for hackathon teams to view rules, submit answers to fixed questions, and track their progress.
+- **Image Server**: PHP server for handling product image uploads and serving static images.
+- **Boomer Bots**: Automated bot users (DorothyWilliams and admin) that periodically interact with the forum to simulate real users.
+- **CSRF App**: Demonstration application for testing Cross-Site Request Forgery attack vectors.
 
 ## Useful Resources to share with participants
 
