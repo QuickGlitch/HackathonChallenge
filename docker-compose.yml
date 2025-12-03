@@ -46,10 +46,8 @@ services:
     restart: unless-stopped
     environment:
       BASE_URL: "http://traefik"
-      DOMAIN: "${DOMAIN}"
       NODE_ENV: production
-      LOG_LEVEL: ${LOG_LEVEL:-production} # Override with LOG_LEVEL env var, defaults to 'production'
-      PORT: 3001
+      LOG_LEVEL: ${LOG_LEVEL:-production}
       DATABASE_URL: "postgresql://storeuser:storepass@postgres:5432/storedb?schema=public"
       JWT_SECRET: "your-secret-key-here-change-in-production"
       JWT_REFRESH_SECRET: "your-refresh-secret-key-here-change-in-production"
@@ -205,8 +203,6 @@ services:
     container_name: store-hackathon-boomer-bot-dorothy
     restart: on-failure
     environment:
-      BASE_URL: "http://traefik"
-      DOMAIN: "${DOMAIN}"
       BOT_USERNAME: "DorothyWilliams"
       BOT_PASSWORD: "quilting456"
       FRONTEND_URL: "http://traefik"
@@ -227,8 +223,6 @@ services:
     container_name: store-hackathon-boomer-bot-admin
     restart: on-failure
     environment:
-      BASE_URL: "http://traefik"
-      DOMAIN: "${DOMAIN}"
       BOT_USERNAME: "admin"
       BOT_PASSWORD: "miele_hackathon"
       FRONTEND_URL: "http://traefik"

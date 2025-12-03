@@ -72,6 +72,8 @@ The hackathon application consists of several apps managed with Docker:
 - **Boomer Bots**: Automated bot users (DorothyWilliams and admin) that periodically interact with the forum to simulate real users.
 - **CSRF App**: Demonstration application for testing Cross-Site Request Forgery attack vectors.
 
+In the production docker compose setup they will be proxied through Traefik for easier access.
+
 ## Useful Resources to share with participants
 
 - [attack payloads](https://github.com/swisskyrepo/PayloadsAllTheThings)

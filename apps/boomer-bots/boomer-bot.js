@@ -245,7 +245,7 @@ class BoomerBot {
       const timeoutPromise = new Promise((resolve) => {
         setTimeout(() => {
           logger.info(
-            `⏰ ${this.clickTimeout / 1000}s timeout reached for ${link.url}`
+            `${this.clickTimeout / 1000}s timeout reached for ${link.url}`
           );
           resolve(false);
         }, this.clickTimeout);
@@ -353,7 +353,7 @@ class BoomerBot {
       // Wait before next run (configurable via BOT_DELAY_MINUTES env variable)
       const delayMinutes = parseInt(process.env.BOT_DELAY_MINUTES || '10', 10);
       const delayMs = delayMinutes * 60 * 1000;
-      logger.info(`⏰ Waiting ${delayMinutes} minutes before next run...`);
+      logger.info(`Waiting ${delayMinutes} minutes before next run...`);
       await new Promise((resolve) => setTimeout(resolve, delayMs));
     }
   }
