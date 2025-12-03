@@ -26,14 +26,13 @@ router.beforeEach(async (to, from, next) => {
       });
       const validSession = response.status === 200;
       if (!validSession) {
-        next(`${base}/login`);
+        next('/login');
       } else {
         next();
       }
     } catch {
       // If fetch fails, redirect to login
-      const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-      next(`${base}/login`);
+      next('/login');
     }
   } else {
     next();

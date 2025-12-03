@@ -38,7 +38,7 @@ docker-compose -f docker-compose.yml up
 # Backend API: http://localhost/api
 # Scoreboard: http://localhost/scoreboard
 # Team Page: http://localhost/team-page
-# Image Server: http://localhost:api/upload-image
+# Image Server: http://localhost/api/upload-image
 ```
 
 ### Starting the event
