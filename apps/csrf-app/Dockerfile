@@ -2,14 +2,21 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# Copy package files
+# Copy workspace root package.json
 COPY package*.json ./
 
-# Install dependencies
+# Copy workspace packages for local dependencies
+COPY packages ./packages
+
+# Copy csrf-app app files
+COPY apps/csrf-app/package*.json ./apps/csrf-app/
+
+# Install dependencies from csrf-app directory
+WORKDIR /app/apps/csrf-app
 RUN npm install
 
 # Copy application files
-COPY . .
+COPY apps/csrf-app ./
 
 # Expose port
 EXPOSE 8081

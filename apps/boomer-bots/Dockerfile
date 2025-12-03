@@ -16,14 +16,21 @@ ENV DEV_MODE=false
 
 WORKDIR /app
 
-# Copy package files
+# Copy workspace root package.json
 COPY package*.json ./
 
-# Install dependencies
+# Copy workspace packages for local dependencies
+COPY packages ./packages
+
+# Copy boomer-bots app files
+COPY apps/boomer-bots/package*.json ./apps/boomer-bots/
+
+# Install dependencies from boomer-bots directory
+WORKDIR /app/apps/boomer-bots
 RUN npm install --omit=dev
 
 # Copy application files
-COPY . .
+COPY apps/boomer-bots ./
 
 # Run the boomer bot directly with Node.js
 CMD ["node", "boomer-bot.js"]

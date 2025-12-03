@@ -40,8 +40,8 @@ services:
   # Backend API (Express.js)
   backend:
     build:
-      context: ./apps/backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./apps/backend/Dockerfile
     container_name: store-hackathon-backend
     restart: unless-stopped
     environment:
@@ -80,8 +80,8 @@ services:
   # Frontend (Vue.js)
   frontend:
     build:
-      context: ./apps/frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile
     container_name: store-hackathon-frontend
     restart: unless-stopped
     expose:
@@ -110,8 +110,8 @@ services:
   # Scoreboard (Vue.js)
   scoreboard:
     build:
-      context: ./apps/scoreboard
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./apps/scoreboard/Dockerfile
       args:
         VITE_API_BASE_URL: "${BASE_URL}/api"
         VITE_FRONTEND_URL: "${BASE_URL}"
@@ -139,8 +139,8 @@ services:
   # Team Page (Vue.js)
   team-page:
     build:
-      context: ./apps/team-page
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./apps/team-page/Dockerfile
       args:
         VITE_API_BASE_URL: "${BASE_URL}/api"
         VITE_FRONTEND_URL: "${BASE_URL}"
@@ -168,8 +168,8 @@ services:
   # Image Server (PHP)
   image-server:
     build:
-      context: ./apps/image-server
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./apps/image-server/Dockerfile
     container_name: store-hackathon-image-server
     restart: unless-stopped
     expose:
@@ -200,8 +200,8 @@ services:
   # Boomer Bots (Forum Bots)
   boomer-bot-dorothy:
     build:
-      context: ./apps/boomer-bots
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./apps/boomer-bots/Dockerfile
     container_name: store-hackathon-boomer-bot-dorothy
     restart: on-failure
     environment:
@@ -222,8 +222,8 @@ services:
 
   boomer-bot-admin:
     build:
-      context: ./apps/boomer-bots
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./apps/boomer-bots/Dockerfile
     container_name: store-hackathon-boomer-bot-admin
     restart: on-failure
     environment:

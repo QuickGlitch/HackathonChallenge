@@ -4,7 +4,7 @@ FROM php:8.2-apache
 WORKDIR /var/www/html
 
 # Copy application files
-COPY public/ /var/www/html/
+COPY apps/image-server/public/ /var/www/html/
 
 # Create images directory and set permissions
 RUN mkdir -p /var/www/html/images && \

@@ -2,14 +2,14 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
+# Copy workspace root package.json
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Copy workspace packages for local dependencies
+COPY packages ./packages
 
-# Copy source code
-COPY . .
+# Copy team-page app files
+COPY apps/team-page/package*.json ./apps/team-page/
 
 # Accept build arguments for environment variables
 ARG VITE_API_BASE_URL
@@ -21,7 +21,12 @@ ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 ENV VITE_FRONTEND_URL=$VITE_FRONTEND_URL
 ENV VITE_SCOREBOARD_URL=$VITE_SCOREBOARD_URL
 
-# Build the application
+# Install dependencies from team-page directory
+WORKDIR /app/apps/team-page
+RUN npm install
+
+# Copy rest of team-page source code and build
+COPY apps/team-page ./
 RUN npm run build
 
 ####################
@@ -34,8 +39,8 @@ WORKDIR /app
 # Install serve globally
 RUN npm install -g serve
 
-# Copy built files
-COPY --from=builder /app/dist ./dist
+# Copy built files from builder
+COPY --from=builder /app/apps/team-page/dist ./dist
 
 # Create serve.json for proper SPA routing
 RUN echo '{"rewrites": [{"source": "**", "destination": "/index.html"}]}' > serve.json

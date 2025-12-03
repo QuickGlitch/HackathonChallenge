@@ -5,21 +5,25 @@ RUN apk add --no-cache openssl curl logrotate
 
 WORKDIR /app
 
-# Copy package files
+# Copy workspace root package.json
 COPY package*.json ./
 
-COPY prisma ./prisma/
+# Copy workspace packages for local dependencies
+COPY packages ./packages
 
+# Copy backend app files
+COPY apps/backend/package*.json ./apps/backend/
+COPY apps/backend/prisma ./apps/backend/prisma/
+
+# Install dependencies from backend directory
+WORKDIR /app/apps/backend
 RUN npm install --omit=dev
 
-# Copy rest of source code
-COPY . .
-
-# Copy logrotate configuration
-COPY logrotate.conf /etc/logrotate.d/backend-logs
+# Copy rest of backend source code
+COPY apps/backend ./
 
 # Create logs directory with proper permissions
-RUN mkdir -p /app/logs && chmod 755 /app/logs
+RUN mkdir -p ./logs && chmod 755 ./logs
 
 # Expose port
 EXPOSE 3001
@@ -29,9 +33,8 @@ ENV NODE_ENV=production
 HEALTHCHECK --interval=60s --timeout=3s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:3001/api/health || exit 1
 
-# Copy and set entrypoint script
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# Set entrypoint script executable
+RUN chmod +x entrypoint.sh
 
 # Start the application with migrations, seeding, and logrotate
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
