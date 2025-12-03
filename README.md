@@ -74,6 +74,8 @@ The hackathon application consists of several apps managed with Docker:
 
 In the production docker compose setup they will be proxied through Traefik for easier access.
 
+
+
 ## Useful Resources to share with participants
 
 - [attack payloads](https://github.com/swisskyrepo/PayloadsAllTheThings)
