@@ -1,5 +1,6 @@
 import express from "express";
 import { authenticateToken, requireAdmin } from "../middleware/auth.js";
+import { validatePrice } from "../utils/validation.js";
 
 const router = express.Router();
 
@@ -97,6 +98,16 @@ router.post("/", authenticateToken, async (req, res) => {
       return res.status(400).json({
         error: "Cart limit exceeded: Maximum 10 items allowed in total",
       });
+    }
+
+    // Validate price for each item does not exceed maximum limit
+    for (const item of items) {
+      const priceValidation = validatePrice(item.price);
+      if (!priceValidation.valid) {
+        return res.status(400).json({
+          error: `Invalid price for item: ${priceValidation.error}`,
+        });
+      }
     }
 
     // Get client IP address

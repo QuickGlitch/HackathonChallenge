@@ -1,7 +1,7 @@
 {
   "name": "store-hackathon",
   "version": "1.0.0",
-  "description": "Pentesting application - Simple web shop with Vue.js frontend and Express.js backend",
+  "description": "Pentesting hackathon application - Simple web shop with Vue.js frontend, Express.js & PHP backend. Comes with a scoareboard and various security challenges.",
   "private": true,
   "scripts": {
     "build": "turbo run build",
@@ -12,7 +12,7 @@
     "db:reset": "turbo run db:reset",
     "db:setup": "turbo run db:setup",
     "docker:up": "docker-compose -f docker-compose.dev.yml up -d",
-    "docker:up:prod": "docker-compose -f docker-compose.yml up",
+    "docker:up:production": "docker-compose -f docker-compose.yml up",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f"
   },

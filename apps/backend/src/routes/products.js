@@ -5,6 +5,7 @@ import {
   authenticateToken,
   optionalAuthentication,
 } from "../middleware/auth.js";
+import { validatePrice } from "../utils/validation.js";
 
 const router = express.Router();
 
@@ -38,18 +39,12 @@ router.post("/register", authenticateToken, async (req, res) => {
         .json({ error: "Missing required fields: name, description, price" });
     }
 
-    // Validate price is a number
-    const productPrice = parseFloat(price);
-    if (isNaN(productPrice) || productPrice <= 0) {
-      return res
-        .status(400)
-        .json({ error: "Price must be a valid positive number" });
+    // Validate price
+    const priceValidation = validatePrice(price);
+    if (!priceValidation.valid) {
+      return res.status(400).json({ error: priceValidation.error });
     }
-
-    // Validate price does not exceed maximum limit
-    if (productPrice > 200) {
-      return res.status(400).json({ error: "Price cannot exceed 150" });
-    }
+    const productPrice = priceValidation.value;
 
     // Handle image URL
     let imageUrl = image || "https://via.placeholder.com/300x200"; // default image
