@@ -7,7 +7,6 @@ graph TB
     subgraph "Client Layer"
         User[👤 User/Browser]
         Attacker[Attacker/Pentester]
-        Bot[simulated users]
     end
 
     subgraph "Reverse Proxy Layer - Port 80"
@@ -38,12 +37,12 @@ graph TB
     Attacker -->|HTTP :80| Traefik
 
     %% Traefik routing
-    Traefik -->|"/ (priority 1)"| Frontend
-    Traefik -->|"/api (priority 10)"| Backend
+    Traefik -->|"/"| Frontend
+    Traefik -->|"/api"| Backend
     Traefik -->|"/scoreboard"| Scoreboard
     Traefik -->|"/team-page"| TeamPage
-    Traefik -->|"/images (priority 10)"| ImageServer
-    Traefik -->|"/api/upload-image (priority 20)"| ImageServer
+    Traefik -->|"/images"| ImageServer
+    Traefik -->|"/api/upload-image"| ImageServer
 
     %% Frontend communications
     Frontend -->|API Calls| Backend
@@ -67,12 +66,9 @@ graph TB
     Backend -.->|Reference URLs| ImageServer
 
     %% Bot interactions
-    Dorothy -->|HTTP :80| Traefik
-    Admin -->|HTTP :80| Traefik
-    Dorothy -->|Browse & Post| Frontend
-    Admin -->|Browse & Post| Frontend
-    Bot -.->|Status Updates| Backend
-
+    %% Bot interactions
+    Dorothy -->|HTTP requests| Traefik
+    Admin -->|HTTP requests| Traefik
     %% Styling
     classDef vulnerable fill:#ff6b6b,stroke:#c92a2a,color:#fff
     classDef secure fill:#51cf66,stroke:#2f9e44,color:#000
