@@ -5,7 +5,7 @@
 ```mermaid
 graph TB
     subgraph "Client Layer"
-        User[👤 User/Browser]
+        User[User/Browser]
         Attacker[Attacker/Pentester]
     end
 
@@ -171,6 +171,47 @@ graph LR
 All services communicate within the `store-network` Docker bridge network. Only Traefik exposes port 80 to the host.
 
 ## Data Flow
+
+### Scoreboard Flow
+```mermaid
+sequenceDiagram
+    participant Team as Team Member
+    participant TP as Team Page
+    participant T as Traefik
+    participant BE as Backend
+    participant DB as PostgreSQL
+    participant SB as Scoreboard
+    participant Bot as Boomer Bot
+    
+    Note over SB,BE: Scoreboard establishes SSE connection
+    SB->>T: GET /api/bot-activity/stream
+    T->>BE: Route request
+    BE-->>SB: SSE: Connection established
+    
+    Note over Bot,BE: Bot updates status
+    Bot->>T: POST /api/bot-activity
+    T->>BE: Route request
+    BE->>SB: SSE: Push bot status
+    
+    Note over Team,BE: Team submits answer
+    Team->>TP: Submit answer
+    TP->>T: POST /api/hackathon/submit
+    T->>BE: Route request
+    BE->>DB: Store submission
+    BE->>DB: Calculate score
+    DB-->>BE: Updated score
+    BE-->>TP: Confirmation
+    
+    Note over SB,BE: Scoreboard polls for scores
+    loop Every few seconds
+        SB->>T: GET /api/scores
+        T->>BE: Route request
+        BE->>DB: Query all scores
+        DB-->>BE: Score data
+        BE-->>SB: JSON response
+        SB->>SB: Update display
+    end
+```
 
 
 
