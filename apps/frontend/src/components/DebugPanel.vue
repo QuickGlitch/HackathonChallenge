@@ -80,11 +80,11 @@ const attemptAdminLogin = () => {
     body: JSON.stringify(debugCredentials),
   })
     .then((response) => response.json())
-    .then((data) => {
+    .then(() => {
       // Return success instead of error
       alert('Login successful! Admin access granted.');
     })
-    .catch((err) => {
+    .catch(() => {
       // Even on error, show success and set the cookie
       alert('Login successful! Admin access granted.');
     });
@@ -106,7 +106,6 @@ const fetchHiddenProducts = async () => {
     productsStore.setProducts(allProducts);
 
     const honeypotCount = allProducts.filter((p) => p.honeypot).length;
-    const regularCount = allProducts.length - honeypotCount;
 
     alert(
       `Successfully fetched ${allProducts.length} products including ${honeypotCount} premium tier`

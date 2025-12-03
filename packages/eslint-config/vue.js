@@ -13,8 +13,8 @@ export default [
       },
     },
     rules: {
+      "vue/no-v-html": "off",
       "vue/multi-word-component-names": "off",
-      // Disable all Vue formatting rules - let Prettier handle formatting
       "vue/html-indent": "off",
       "vue/max-attributes-per-line": "off",
       "vue/first-attribute-linebreak": "off",

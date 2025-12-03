@@ -235,7 +235,7 @@ class BoomerBot {
             } else {
               logger.info('No button found on this page');
             }
-          } catch (buttonError) {
+          } catch {
             logger.info('No clickable button found on this page');
           }
           return true;

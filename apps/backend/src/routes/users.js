@@ -1,6 +1,6 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import bcrypt, { encodeBase64 } from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import {
   authenticateToken,
   requireAdmin,
@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
             error: 'Only admins can create admin users',
           });
         }
-      } catch (tokenError) {
+      } catch {
         return res.status(403).json({
           error: 'Invalid or expired token',
         });
@@ -173,7 +173,7 @@ router.post('/login', async (req, res) => {
 // POST /api/users/refresh - Refresh access token
 router.post('/refresh', (req, res) => {
   // Try to get refresh token from request body (backward compatibility) or cookies
-  let refreshToken = req.body.refreshToken || req.cookies.refreshToken;
+  const refreshToken = req.body.refreshToken || req.cookies.refreshToken;
 
   if (!refreshToken) {
     return res.status(401).json({ error: 'Refresh token required' });

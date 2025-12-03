@@ -83,7 +83,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
 // POST /api/orders - Create a new order
 router.post('/', authenticateToken, async (req, res) => {
   try {
-    const { items, total, customer, payment } = req.body;
+    const { items, total, customer } = req.body;
 
     if (!items || !items.length || total == null || !customer) {
       return res.status(400).json({ error: 'Missing required fields' });

@@ -1,6 +1,4 @@
 import express from 'express';
-import multer from 'multer';
-import path from 'path';
 import {
   authenticateToken,
   optionalAuthentication,
@@ -47,7 +45,7 @@ router.post('/register', authenticateToken, async (req, res) => {
     const productPrice = priceValidation.value;
 
     // Handle image URL
-    let imageUrl = image || 'https://via.placeholder.com/300x200'; // default image
+    const imageUrl = image || 'https://via.placeholder.com/300x200'; // default image
 
     const product = await req.prisma.product.create({
       data: {

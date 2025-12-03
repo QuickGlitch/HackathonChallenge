@@ -30,7 +30,7 @@ router.beforeEach(async (to, from, next) => {
       } else {
         next();
       }
-    } catch (error) {
+    } catch {
       // If fetch fails, redirect to login
       const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
       next(`${base}/login`);

@@ -2,9 +2,6 @@ import express from 'express';
 
 const router = express.Router();
 
-// Admin user UUID (payable to admin for scoring purposes)
-const ADMIN_USER_ID = '00000000-0000-0000-0000-000000000001';
-
 // Team user UUIDs (Hackors 1-5, corresponding to users 2-6 in the original seed)
 const TEAM_USER_IDS = [
   '00000000-0000-0000-0000-000000000002', // Hackors1

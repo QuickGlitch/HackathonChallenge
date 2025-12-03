@@ -9,6 +9,7 @@
     "dev": "node --env-file=.env.dev --watch boomer-bot.js",
     "start": "node boomer-bot.js",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "format": "prettier --write ."
   },
   "keywords": [

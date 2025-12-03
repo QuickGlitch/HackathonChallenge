@@ -30,7 +30,7 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.removeItem('user');
         return false;
       }
-    } catch (err) {
+    } catch {
       // Network error or server down - assume not authenticated
       user.value = null;
       localStorage.removeItem('user');
@@ -103,7 +103,7 @@ export const useAuthStore = defineStore('auth', () => {
         error.value = data.error || 'Login failed';
         return { success: false, error: error.value };
       }
-    } catch (err) {
+    } catch {
       error.value = 'Network error. Please try again.';
       return { success: false, error: error.value };
     } finally {
@@ -117,7 +117,7 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null;
 
     try {
-      const response = await apiFetch('/api/users/logout', {
+      await apiFetch('/api/users/logout', {
         method: 'POST',
       });
 
@@ -127,7 +127,7 @@ export const useAuthStore = defineStore('auth', () => {
       initialized.value = true; // Keep initialized state
 
       return { success: true };
-    } catch (err) {
+    } catch {
       // Even if network error, clear client state
       user.value = null;
       localStorage.removeItem('user');

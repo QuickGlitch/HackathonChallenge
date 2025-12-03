@@ -55,7 +55,7 @@ onMounted(async () => {
   try {
     loading.value = true;
     product.value = await productStore.fetchProduct(route.params.id);
-  } catch (err) {
+  } catch {
     error.value = 'Failed to load product';
   } finally {
     loading.value = false;
