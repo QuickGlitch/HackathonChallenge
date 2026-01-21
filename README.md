@@ -1,10 +1,10 @@
 # Hackathon instructions
 
-A hackathon project that lets multiple teams compete in finding and exploiting intentional vulnerabilities in an web application.
+A fullstack hackathon monorepo project that lets multiple teams compete in finding and exploiting intentional vulnerabilities in an web application.
 
 ## For organizers
 
-This application is meant to be used as a demo app for hackathons and workshops focused on web security. It contains several intentional vulnerabilities that participants can discover and exploit. Certain exploits and findings are automatically tracked and scored, others need to be entered by competing teams in their team dashboard. We also encourage organizers to have the parcticipants present their findings at the end of the event - and award additional points for any vulnerabilities exploited that were not covered in the initial scoring list.
+This application is meant to be used as a target for hackathons and workshops focused on web security. It contains several intentional vulnerabilities that participants can discover and exploit. Certain exploits and findings are automatically tracked and scored, others need to be entered by competing teams in their team dashboard. We also encourage organizers to have the parcticipants present their findings at the end of the event - and award additional points for any vulnerabilities exploited that were not covered in the initial scoring list.
 
 To get started, clone the repository and follow the setup instructions in the README file.
 
